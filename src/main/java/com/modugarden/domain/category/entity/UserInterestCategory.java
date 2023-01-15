@@ -25,5 +25,5 @@ public class UserInterestCategory extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interest_category_id", nullable = false)
-    private List<InterestCategory> categories = new ArrayList<>();
+    private InterestCategory category;
 }
