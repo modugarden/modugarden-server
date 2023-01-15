@@ -27,7 +27,11 @@ public class Curation extends BaseTimeEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String previewImage;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
     private InterestCategory category;
 }
