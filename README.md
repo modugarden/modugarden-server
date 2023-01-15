@@ -15,7 +15,7 @@
 - 📝 **[DOCS]** : README나 WIKI 등의 문서 개정
 <br>
 
-## [BRANCH CONVENTION](https://www.notion.so/Branch-Convention-adc2b87bf2be49c992454b49039f449f)
+## [BRANCH CONVENTION]
 ```
 브랜치유형/#이슈번호-작업내용
 ```
