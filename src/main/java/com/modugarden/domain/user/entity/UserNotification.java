@@ -16,12 +16,16 @@ public class UserNotification extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private Boolean commentOnOff;
 
+    @Column(nullable = false)
     private Boolean followOnOff;
 
+    @Column(nullable = false)
     private Boolean serviceOnOff;
 
+    @Column(nullable = false)
     private Boolean marketingOnOff;
 
     @OneToOne(fetch = FetchType.LAZY)
