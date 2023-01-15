@@ -14,10 +14,8 @@
 - ♻️ **[REFACTOR]** : 전면 수정
 - 📝 **[DOCS]** : README나 WIKI 등의 문서 개정
 <br>
-
-## [BRANCH CONVENTION]
 ```
-브랜치유형/#이슈번호-작업내용
+[작업유형/#이슈번호] 작업 내용
 ```
 <br>
 
