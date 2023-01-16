@@ -20,6 +20,7 @@ public class Comment extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String content;
+    //validation 할 때 글자 수 제한 물어보기
 
     private Long parentId;
 
