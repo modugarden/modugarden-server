@@ -39,4 +39,10 @@ public class User extends BaseTimeEntity {
 
     @Column(columnDefinition = "TEXT")
     private String profileImg;
+
+    @OneToMany(mappedBy = "user")
+    private List<Board> boards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Curation> curations = new ArrayList<>();
 }
