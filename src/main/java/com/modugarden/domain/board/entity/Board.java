@@ -23,7 +23,7 @@ public class Board extends BaseTimeEntity {
     private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    private List<String> boardImage;
+    private String boardImage;
 
     private String location;
 
