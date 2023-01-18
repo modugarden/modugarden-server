@@ -2,6 +2,7 @@ package com.modugarden.domain.follow.service;
 
 import com.modugarden.domain.follow.entity.Follow;
 import com.modugarden.domain.follow.repository.FollowRepository;
+import com.modugarden.domain.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class FollowService {
@@ -11,11 +12,11 @@ public class FollowService {
     FollowService followService;
 
     public void save(int login_id, int page_id) { // 팔로우
-        Follow f = new Follow();
 
-        f.setFollowing(followService.findById(login_id));
-        f.setFollower(followService.findById(page_id));
+        User follow = followService.findById(login_id);
+        User following =  followService.findById(page_id);
 
+        Follow f = new Follow(follow, following);
         followRepository.save(f);
     }
     public void deleteByFollowingIdAndFollowerId(int id1, int id2) { // 언팔로우
