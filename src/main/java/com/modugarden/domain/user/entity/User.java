@@ -5,10 +5,12 @@ import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.user.entity.enums.UserAuthority;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,9 +42,14 @@ public class User extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String profileImg;
 
-    @OneToMany(mappedBy = "user")
-    private List<Board> boards = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<Curation> curations = new ArrayList<>();
+    @Builder
+    private User(String email, String password, String nickname,
+                 String birth, UserAuthority authority, String profileImg) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.birth = birth;
+        this.authority = authority;
+        this.profileImg = profileImg;
+    }
 }
