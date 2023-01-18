@@ -10,7 +10,7 @@ import static com.modugarden.common.status.enums.BaseResponseStatus.SUCCESS;
 
 @Getter
 @JsonPropertyOrder({"isSuccess", "message", "result"})
-public class BaseResponse<T> {
+public class BaseResponseDto<T> {
 
     @JsonProperty("isSuccess")
     private final Boolean isSuccess;
@@ -20,14 +20,14 @@ public class BaseResponse<T> {
     private T result;
 
     // 요청에 성공한 경우
-    public BaseResponse(T result) {
+    public BaseResponseDto(T result) {
         this.isSuccess = SUCCESS.isSuccess();
         this.message = SUCCESS.getMessage();
         this.result = result;
     }
 
     // 요청에 실패한 경우
-    public BaseResponse(BaseResponseStatus status) {
+    public BaseResponseDto(BaseResponseStatus status) {
         this.isSuccess = status.isSuccess();
         this.message = status.getMessage();
     }
