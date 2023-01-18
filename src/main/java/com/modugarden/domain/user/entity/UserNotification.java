@@ -28,7 +28,4 @@ public class UserNotification extends BaseTimeEntity {
     @Column(nullable = false)
     private Boolean marketingOnOff;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 }

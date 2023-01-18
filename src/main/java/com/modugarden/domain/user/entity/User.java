@@ -42,14 +42,21 @@ public class User extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String profileImg;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_notification_id", nullable = false)
+    private UserNotification notification;
+
     @Builder
     private User(String email, String password, String nickname,
-                 String birth, UserAuthority authority, String profileImg) {
+                 String birth, UserAuthority authority, String profileImg,
+                 UserNotification notification) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.birth = birth;
         this.authority = authority;
         this.profileImg = profileImg;
+        this.notification = notification;
     }
+
 }
