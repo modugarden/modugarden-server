@@ -4,6 +4,7 @@ import com.modugarden.common.entity.BaseTimeEntity;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.user.entity.User;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,4 +35,14 @@ public class Curation extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private InterestCategory category;
+
+    @Builder
+    public Curation(Long id, String title, String link, String previewImage, User user, InterestCategory category) {
+        this.id = id;
+        this.title = title;
+        this.link = link;
+        this.previewImage = previewImage;
+        this.user = user;
+        this.category = category;
+    }
 }
