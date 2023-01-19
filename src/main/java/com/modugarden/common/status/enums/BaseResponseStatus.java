@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum BaseResponseStatus {
 
-    SUCCESS(true,  "요청에 성공하였습니다.");
+    SUCCESS(true,  "요청에 성공하였습니다."),
+    FAIL(false, "요쳥에 실패하였습니다.");
 
     private final boolean isSuccess;
     private final String message;

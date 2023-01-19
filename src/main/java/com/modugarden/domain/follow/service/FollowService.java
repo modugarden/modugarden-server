@@ -11,7 +11,4 @@ public class FollowService {
     @Autowired
     FollowService followService;
 
-    public void deleteByFollowingIdAndFollowerId(Long id1, Long id2) { // 언팔로우
-        followRepository.deleteByFollowingIdAndFollowerId(id2, id1);
-    }
 }
