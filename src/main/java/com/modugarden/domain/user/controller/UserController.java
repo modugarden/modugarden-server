@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/users")
@@ -18,7 +20,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("")
-    public SliceResponseDto<UserNicknameFindResponseDto> findByNickname(@RequestParam String nickname, Pageable pageable) {
+    public SliceResponseDto<UserNicknameFindResponseDto> findByNickname(@RequestParam @Valid String nickname, Pageable pageable) {
         return new SliceResponseDto<>(userService.findByNickname(nickname, pageable));
     }
 }
