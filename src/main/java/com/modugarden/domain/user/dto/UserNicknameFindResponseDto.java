@@ -1,5 +1,10 @@
 package com.modugarden.domain.user.dto;
 
-public class UserNicknameFindResponse {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
+public class UserNicknameFindResponseDto {
     Long userId;
 }
