@@ -3,12 +3,11 @@ package com.modugarden.domain.category.entity;
 import com.modugarden.common.entity.BaseTimeEntity;
 import com.modugarden.domain.user.entity.User;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,4 +25,10 @@ public class UserInterestCategory extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interest_category_id", nullable = false)
     private InterestCategory category;
+
+    @Builder
+    public UserInterestCategory(User user, InterestCategory category) {
+        this.user = user;
+        this.category = category;
+    }
 }
