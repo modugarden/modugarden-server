@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface FollowRepository extends JpaRepository<Follow, Long> {
     //팔로우 유무 체크
     @Query(value = "SELECT count(*) FROM follow WHERE fromUserId =:fromUserId AND toUserId =:toUserId")
@@ -17,4 +19,9 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     @Transactional
     int deleteByFollowingIdAndFollowerId(Long fromUserId, Long toUserId); // 언팔로우 메서드
     //userid가 int인가 long인가 -> long이다.
+
+
+    List<Follow> findByFromUserId(Long fromUserId);
+
+    List<Follow> findByToUserId(Long toUserId);
 }

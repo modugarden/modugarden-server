@@ -2,6 +2,7 @@ package com.modugarden.domain.follow.controller;
 
 import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.common.status.enums.BaseResponseStatus;
+import com.modugarden.domain.follow.dto.FollowResponseDto;
 import com.modugarden.domain.follow.dto.isFollowedResponseDto;
 import com.modugarden.domain.follow.entity.Follow;
 import com.modugarden.domain.follow.repository.FollowRepository;
@@ -10,10 +11,7 @@ import com.modugarden.domain.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -66,12 +64,46 @@ public class FollowController {
         //User 대신 user 객체가 와야 함
 
         int followcheck = followRepository.countByFollowerIdAndFollowingUserId(user.getId(), oToUser.get().getId());
-        if(followcheck==0){
+        if (followcheck == 0) {
             //팔로우 안함
             return new BaseResponseDto<>(new isFollowedResponseDto(false));
-        }
-        else{
+        } else {
             return new BaseResponseDto<>(new isFollowedResponseDto(true));
         }
+    }
+
+    //user가 following user을 following 함
+    //following user을 user가 follower 함
+
+    @GetMapping("/follow/follower")
+    public BaseResponseDto<FollowResponseDto> followerList(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        List<Follow> followerList = followRepository.findByFromUserId(id);
+        List<Follow> pricipalFollowerLists = followRepository.findByFromUserId(user.getId());
+
+        for(Follow f1: followerList){
+            for(Follow f2: pricipalFollowerLists){
+                if(f1.getFollowingUser().getId() == f2.getFollowingUser().getId()){
+                    f1.setMatpal(true);
+                }
+            }
+        }
+        return followerList(id, user);
+        //리턴을 리스트로
+    }
+
+    @GetMapping("/follow/following")
+    public BaseResponseDto<FollowResponseDto> followingList(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        List<Follow> followingList = followRepository.findByToUserId(id);  //팔로워 리스트
+        List<Follow> pricipalFollowingLists = followRepository.findByFromUserId(user.getId());  //팔로우 리스트
+
+        for(Follow f1: followingList){
+            for(Follow f2: pricipalFollowingLists){
+                if(f1.getUser().getId() == f2.getFollowingUser().getId()){
+                    f1.setMatpal(true);
+                }
+            }
+        }
+        return followingList(id, user);
+        // 리턴을 팔로우 리스트를 해줘야 함
     }
 }

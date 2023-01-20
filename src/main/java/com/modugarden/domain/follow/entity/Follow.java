@@ -32,6 +32,9 @@ public class Follow extends BaseTimeEntity {
     //엔티티 객체의 데이터와 테이블의 칼럼과 매핑하고 있는 관계를 제외하기 위해서 사용한다.
     private boolean matpal;
 
+    @Transient
+    private boolean principalMatpal;
+
     public Follow(User user, User followingUser) {
         this.user = user;
         this.followingUser = followingUser;

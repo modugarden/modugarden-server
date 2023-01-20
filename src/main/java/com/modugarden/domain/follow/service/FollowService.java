@@ -5,10 +5,11 @@ import com.modugarden.domain.follow.repository.FollowRepository;
 import com.modugarden.domain.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 public class FollowService {
     @Autowired
     FollowRepository followRepository;
     @Autowired
     FollowService followService;
-
 }
