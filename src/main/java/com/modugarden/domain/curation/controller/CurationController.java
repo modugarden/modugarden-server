@@ -1,7 +1,8 @@
 package com.modugarden.domain.curation.controller;
 
-import com.modugarden.common.response.BaseResponse;
+import com.modugarden.common.response.BaseResponseDto;
 
+import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.domain.curation.dto.CurationCreateRequestDto;
 import com.modugarden.domain.curation.dto.CurationCreateResponseDto;
 import com.modugarden.domain.curation.service.CurationService;
@@ -23,12 +24,12 @@ public class CurationController {
     private CurationService curationService;
 
     @PostMapping(value = "/curations", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public BaseResponse<CurationCreateResponseDto> createCuration(@RequestPart CurationCreateRequestDto curationCreateRequest,
+    public BaseResponseDto<CurationCreateResponseDto> createCuration(@RequestPart CurationCreateRequestDto curationCreateRequest,
 //                                                            @AuthenticationPrincipal User user,
                                                             @RequestPart MultipartFile file) throws IOException {
         //AuthenticationPrincipal을 테스트 못함. 추후 테스트 예정
 
         CurationCreateResponseDto curationCreateResponse = curationService.save(curationCreateRequest,file);
-        return new BaseResponse<>(curationCreateResponse);
+        return new BaseResponseDto<>(curationCreateResponse);
     }
 }
