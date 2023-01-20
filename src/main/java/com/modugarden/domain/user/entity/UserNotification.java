@@ -2,6 +2,7 @@ package com.modugarden.domain.user.entity;
 
 import com.modugarden.common.entity.BaseTimeEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,4 +29,11 @@ public class UserNotification extends BaseTimeEntity {
     @Column(nullable = false)
     private Boolean marketingOnOff;
 
+    @Builder
+    public UserNotification(Boolean commentOnOff, Boolean followOnOff, Boolean serviceOnOff, Boolean marketingOnOff) {
+        this.commentOnOff = commentOnOff;
+        this.followOnOff = followOnOff;
+        this.serviceOnOff = serviceOnOff;
+        this.marketingOnOff = marketingOnOff;
+    }
 }
