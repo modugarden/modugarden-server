@@ -18,6 +18,7 @@ public class CurationGetResponseDto {
     private String user_profile_image;
     private String category_category;
 
+
     public CurationGetResponseDto(Curation curation) {
         this.id=curation.getId();
         this.title=curation.getTitle();
