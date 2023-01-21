@@ -20,13 +20,13 @@ public class CurationUserGetResponseDto {
 
 
     public CurationUserGetResponseDto(Curation curation) {
-        this.id=curation.getId();
-        this.title=curation.getTitle();
-        this.link=curation.getLink();
-        this.preview_image=curation.getPreviewImage();
-        this.user_id=curation.getUser().getId();
-        this.user_nickname=curation.getUser().getNickname();
-        this.user_profile_image=curation.getUser().getProfileImg();
-        this.category_category=curation.getCategory().getCategory();
+        this.id = curation.getId();
+        this.title = curation.getTitle();
+        this.link = curation.getLink();
+        this.preview_image = curation.getPreviewImage();
+        this.user_id = curation.getUser().getId();
+        this.user_nickname = curation.getUser().getNickname();
+        this.user_profile_image = curation.getUser().getProfileImg();
+        this.category_category = curation.getCategory().getCategory();
     }
 }
