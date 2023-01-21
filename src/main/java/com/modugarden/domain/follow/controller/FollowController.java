@@ -58,7 +58,7 @@ public class FollowController {
 
 
     //팔로우 유무 체크
-    public BaseResponseDto<isFollowedResponseDto> profile(@PathVariable Long id, @AuthenticationPrincipal User user) {
+    public @ResponseBody BaseResponseDto<isFollowedResponseDto> profile(@PathVariable Long id, @AuthenticationPrincipal User user) {
 
         Optional<User> oToUser = userRepository.findById(id);
         //User 대신 user 객체가 와야 함
@@ -76,7 +76,7 @@ public class FollowController {
     //following user을 user가 follower 함
 
     @GetMapping("/follow/follower")
-    public BaseResponseDto<FollowResponseDto> followerList(@PathVariable Long id, @AuthenticationPrincipal User user) {
+    public @ResponseBody BaseResponseDto<FollowResponseDto> followerList(@PathVariable Long id, @AuthenticationPrincipal User user) {
         List<Follow> followerList = followRepository.findByFromUserId(id);
         List<Follow> pricipalFollowerLists = followRepository.findByFromUserId(user.getId());
 
@@ -92,7 +92,7 @@ public class FollowController {
     }
 
     @GetMapping("/follow/following")
-    public BaseResponseDto<FollowResponseDto> followingList(@PathVariable Long id, @AuthenticationPrincipal User user) {
+    public @ResponseBody BaseResponseDto<FollowResponseDto> followingList(@PathVariable Long id, @AuthenticationPrincipal User user) {
         List<Follow> followingList = followRepository.findByToUserId(id);  //팔로워 리스트
         List<Follow> pricipalFollowingLists = followRepository.findByFromUserId(user.getId());  //팔로우 리스트
 

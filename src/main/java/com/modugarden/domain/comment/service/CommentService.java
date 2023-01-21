@@ -1,4 +1,4 @@
 package com.modugarden.domain.comment.service;
 
-public class FollowService {
+public class CommentService {
 }
