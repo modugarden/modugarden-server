@@ -10,5 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class CommentController {
     private CommentRepository commentRepository;
     @PostMapping("/boards/{board_id}/comments")
-    public @ResponseBody BaseResponseDto comment(@)
+    public @ResponseBody BaseResponseDto comment(@){
+
+    }
 }
