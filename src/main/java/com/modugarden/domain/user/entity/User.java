@@ -47,7 +47,7 @@ public class User extends BaseTimeEntity {
     private UserNotification notification;
 
     @Builder
-    private User(String email, String password, String nickname,
+    public User(String email, String password, String nickname,
                  String birth, UserAuthority authority, String profileImg,
                  UserNotification notification) {
         this.email = email;
