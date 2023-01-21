@@ -12,4 +12,8 @@ public class FollowService {
     FollowRepository followRepository;
     @Autowired
     FollowService followService;
+
+    public List<Follow> findByFollowingId(Long id) {
+        return followRepository.findByToUserId(id);
+    }
 }

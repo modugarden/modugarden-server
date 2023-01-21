@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
     //팔로우 유무 체크
-    @Query(value = "SELECT count(*) FROM follow WHERE fromUserId =:fromUserId AND toUserId =:toUserId")
+    @Query(value = "SELECT count(*) FROM follow WHERE fromUserId =:fromUserId AND toUserId =:toUserId") //jpql
     // 함수의 반환 값이 0이면 팔로우하는 사람이 없다. 1 이상이면 팔로우하는 사람이 있다.
     int countByFollowerIdAndFollowingUserId(Long fromUserId, Long toUserId); // 팔로우 되어있는지 count하는 메서드
 
