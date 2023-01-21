@@ -2,8 +2,10 @@ package com.modugarden.domain.curation.service;
 
 import com.modugarden.domain.curation.dto.CurationCreateRequestDto;
 import com.modugarden.domain.curation.dto.CurationCreateResponseDto;
+import com.modugarden.domain.curation.dto.CurationGetResponseDto;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.curation.repository.CurationRepository;
+import com.modugarden.domain.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +21,7 @@ public class CurationService {
 
     @Transactional
     public CurationCreateResponseDto save( CurationCreateRequestDto createRequestDto, MultipartFile file)  throws IOException {
+        //조건 title 40자 제한, title,link nullable 체크 추가하기.
 
         // 현재 해당하는 user 정보 가져와서 curation에 저장
 //        createRequestDto.setUser(user);
@@ -37,6 +40,12 @@ public class CurationService {
         Curation curation = createRequestDto.toEntity();
 
         return new CurationCreateResponseDto(curationRepository.save(curation).getId());
+    }
+
+    @Transactional
+        public CurationGetResponseDto get(long id){
+        Curation curation = curationRepository.findById(id).get();
+        return new CurationGetResponseDto(curation);
     }
 
 }
