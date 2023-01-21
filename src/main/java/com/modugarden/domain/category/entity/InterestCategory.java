@@ -2,6 +2,7 @@ package com.modugarden.domain.category.entity;
 
 import com.modugarden.common.entity.BaseTimeEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,4 +19,9 @@ public class InterestCategory extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String category;
+
+    @Builder
+    public InterestCategory(Long id, String category) {
+        this.category = category;
+    }
 }
