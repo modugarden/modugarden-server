@@ -37,8 +37,8 @@ public class CurationController {
     }
 
     //큐레이션 조회 api
-    @GetMapping("/curations/{id}")
-    public CurationGetResponseDto getCuration(@PathVariable Long id){
-        return curationService.get(id);
+    @GetMapping("/curations/{curation_id}")
+    public CurationGetResponseDto getCuration(@PathVariable Long curation_id){
+        return curationService.get(curation_id);
     }
 }
