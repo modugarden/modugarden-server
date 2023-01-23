@@ -1,7 +1,7 @@
 package com.modugarden.domain.follow.controller;
 
+import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.response.BaseResponseDto;
-import com.modugarden.common.status.enums.BaseResponseStatus;
 import com.modugarden.domain.follow.dto.FollowResponseDto;
 import com.modugarden.domain.follow.dto.isFollowedResponseDto;
 import com.modugarden.domain.follow.entity.Follow;
@@ -39,7 +39,7 @@ public class FollowController {
 
         followRepository.save(follow);
 
-        return new BaseResponseDto(BaseResponseStatus.SUCCESS);
+        return new BaseResponseDto(new BaseResponseDto<>(ErrorMessage.SUCCESS));
     }
 
     @DeleteMapping("/follow/{following_id}")
@@ -53,7 +53,7 @@ public class FollowController {
 
         followRepository.deleteByFollowingIdAndFollowerId(user.getId(), oToUser.get().getId());
         //리턴을 dto로 해야 한다.
-        return new BaseResponseDto<>(BaseResponseStatus.SUCCESS);
+        return new BaseResponseDto(new BaseResponseDto<>(ErrorMessage.SUCCESS));
     }
 
 

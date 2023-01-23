@@ -3,17 +3,16 @@ package com.modugarden.domain.comment.entity;
 import com.modugarden.common.entity.BaseTimeEntity;
 import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.user.entity.User;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Entity
+@Builder
+@AllArgsConstructor
 public class Comment extends BaseTimeEntity {
 
     //댓글 id
