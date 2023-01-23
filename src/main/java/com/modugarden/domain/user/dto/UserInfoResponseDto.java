@@ -1,6 +1,5 @@
 package com.modugarden.domain.user.dto;
 
-import com.modugarden.domain.category.entity.UserInterestCategory;
 import com.modugarden.domain.user.entity.enums.UserAuthority;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,5 +14,5 @@ public class UserInfoResponseDto {
     private String birth;
     private UserAuthority userAuthority;
     private String profileImage;
-    private List<UserInterestCategory> categories;
+    private List<String> categories;
 }
