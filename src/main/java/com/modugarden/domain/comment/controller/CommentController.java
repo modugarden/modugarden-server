@@ -3,7 +3,6 @@ package com.modugarden.domain.comment.controller;
 import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.domain.comment.dto.CommentRequestDto;
 import com.modugarden.domain.comment.entity.Comment;
-import com.modugarden.domain.comment.repository.CommentRepository;
 import com.modugarden.domain.comment.service.CommentService;
 import com.modugarden.domain.user.entity.User;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import java.util.List;
 
+// 컨트롤러에서 서비스 호출, 서비스에서 레퍼지토리를 호출
 @Controller
 public class CommentController {
 

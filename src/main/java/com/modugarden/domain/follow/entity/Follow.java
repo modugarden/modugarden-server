@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Setter
 public class Follow extends BaseTimeEntity {

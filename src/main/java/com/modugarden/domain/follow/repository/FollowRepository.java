@@ -1,6 +1,8 @@
 package com.modugarden.domain.follow.repository;
 
 import com.modugarden.domain.follow.entity.Follow;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,13 +17,12 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     int countByFollowerIdAndFollowingUserId(Long fromUserId, Long toUserId); // 팔로우 되어있는지 count하는 메서드
 
     //팔로워 삭제
-    @Modifying
-    @Transactional
     int deleteByFollowingIdAndFollowerId(Long fromUserId, Long toUserId); // 언팔로우 메서드
     //userid가 int인가 long인가 -> long이다.
 
+    //slice로 변경
+    //반환형을 slice user로
+    Slice<Follow> findByFromUserId(Long fromUserId, Pageable pageable);
 
-    List<Follow> findByFromUserId(Long fromUserId);
-
-    List<Follow> findByToUserId(Long toUserId);
+    Slice<Follow> findByToUserId(Long toUserId, Pageable pageable);
 }
