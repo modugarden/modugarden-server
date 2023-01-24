@@ -8,9 +8,7 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     //댓글 조회
-    List<Comment> list(long boardId);
-    //댓글 작성
-    void write(Comment comment);
+    List<Comment> findByBoardId(long boardId);
     //댓글 삭제
-    void delete(Comment comment);
+   // void deleteBy(Comment comment);
 }

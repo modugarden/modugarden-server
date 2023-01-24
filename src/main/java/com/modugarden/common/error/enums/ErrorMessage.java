@@ -24,7 +24,9 @@ public enum ErrorMessage {
 
     WRONG_CURATION(NOT_FOUND,false,"해당 큐레이션을 찾을 수 없습니다."),
 
-    WRONG_CURATION_DELETE(NOT_FOUND,false,"해당 Curation을 삭제할 수 없습니다.");
+    WRONG_CURATION_DELETE(NOT_FOUND,false,"해당 Curation을 삭제할 수 없습니다."),
+    WRONG_POST(NOT_FOUND,false,"해당 포스트를 찾을 수 없습니다.");
+
     private final int code;
     private final boolean isSuccess;
     private final String message;
