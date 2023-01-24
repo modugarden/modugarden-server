@@ -25,9 +25,9 @@ public class CommentService {
     private final BoardRepository boardRepository;
 
     //댓글 조회
-/*    public List<Comment> list(long boardId){
-        return commentRepository.findByBoardId(boardId);
-    }*/
+//    public List<Comment> list(long boardId){
+//        return commentRepository.findByBoardId(boardId);
+//    }
     //댓글 작성
     public CommentCreateResponseDto write(User user, CommentCreateRequestDto dto){
         Board board = boardRepository.findById(dto.getBoardId()).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_POST));
@@ -39,8 +39,8 @@ public class CommentService {
 
     }
     //댓글 삭제
-/*    public void delete(User userId){
-        Comment comment = new Comment();
-        commentRepository.delete(comment);
-    }*/
+//    public void delete(User user){
+//        Comment comment = new Comment();
+//        commentRepository.delete(comment);
+//    }
 }

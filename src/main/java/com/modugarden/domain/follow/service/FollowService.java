@@ -33,7 +33,7 @@ public class FollowService {
         // 원래는 UserService말고 객체가 와야 함
         // User fromUser = userDetail.getUser();
         Optional<User> oToUser = userRepository.findById(id);
-        oToUser.orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND)); //예외처리
+        oToUser.orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND)); //예외처리
         Long fromUser = user.getUserId();
         User toUser = oToUser.get();
 
@@ -51,7 +51,7 @@ public class FollowService {
         // 원래는 UserService말고 객체가 와야 함
         // User fromUser = userDetail.getUser();
         Optional<User> oToUser = userRepository.findById(id);
-        oToUser.orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));  //예외처리
+        oToUser.orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND));  //예외처리
         //User 대신 user 객체가 와야 함
         Long fromUser = user.getUserId();
         User toUser = oToUser.get();
@@ -66,7 +66,7 @@ public class FollowService {
     public int profile(Long id, ModugardenUser user) {
 
         Optional<User> oToUser = userRepository.findById(id);
-        oToUser.orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));  //예외처리
+        oToUser.orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND));  //예외처리
         //User 대신 user 객체가 와야 함
         int followcheck = followRepository.countByUserAndFollowingUser(user.getUserId(), oToUser.get().getId());
         return followcheck;
