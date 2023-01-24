@@ -3,10 +3,7 @@ package com.modugarden.domain.curation.controller;
 import com.modugarden.common.response.BaseResponseDto;
 
 import com.modugarden.common.response.PageResponseDto;
-import com.modugarden.domain.curation.dto.CurationCreateRequestDto;
-import com.modugarden.domain.curation.dto.CurationCreateResponseDto;
-import com.modugarden.domain.curation.dto.CurationGetResponseDto;
-import com.modugarden.domain.curation.dto.CurationUserGetResponseDto;
+import com.modugarden.domain.curation.dto.*;
 import com.modugarden.domain.curation.service.CurationService;
 import com.modugarden.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +31,6 @@ public class CurationController {
                                                                      //@AuthenticationPrincipal User user,
                                                                      @RequestPart MultipartFile file) throws IOException {
         //AuthenticationPrincipal을 테스트 못함. 추후 테스트 예정
-
         CurationCreateResponseDto curationCreateResponse = curationService.save(curationCreateRequest, file);
         return new BaseResponseDto<>(curationCreateResponse);
     }
@@ -48,6 +44,15 @@ public class CurationController {
     //회원 큐레이션 조회 api
     @GetMapping("/curations/users/{user_id}")
     public PageResponseDto<CurationUserGetResponseDto> getUserCuration(@PathVariable Long user_id, Pageable pageable) {
-        return new PageResponseDto<>(curationService.getUserCuration(user_id, pageable));
+        return new PageResponseDto<>(curationService.getUser(user_id, pageable));
     }
+
+    //큐레이션 삭제
+    @DeleteMapping("/curations/{curation_id}") //me로 수정 필요
+    public BaseResponseDto<CurationDeleteResponseDto> deleteCuration(@PathVariable Long curation_id) {
+        CurationDeleteResponseDto curationDeleteResponse = curationService.delete(curation_id);
+        return new BaseResponseDto<>(curationDeleteResponse);
+    }
+
+
 }
