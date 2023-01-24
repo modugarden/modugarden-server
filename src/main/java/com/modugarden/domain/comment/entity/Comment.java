@@ -11,8 +11,6 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Entity
-@Builder
-@AllArgsConstructor
 public class Comment extends BaseTimeEntity {
 
     //댓글 id
@@ -33,4 +31,12 @@ public class Comment extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User userId;
+
+    @Builder
+    public Comment(String content, Long parentId, Board boardId, User userId) {
+        this.content = content;
+        this.parentId = parentId;
+        this.boardId = boardId;
+        this.userId = userId;
+    }
 }
