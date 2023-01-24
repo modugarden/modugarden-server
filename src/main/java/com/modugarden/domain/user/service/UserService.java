@@ -4,6 +4,8 @@ import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.domain.user.dto.UserInfoResponseDto;
 import com.modugarden.domain.user.dto.UserNicknameFindResponseDto;
+import com.modugarden.domain.user.dto.UserNicknameResponseDto;
+import com.modugarden.domain.user.dto.request.UserNicknameRequestDto;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -34,4 +37,10 @@ public class UserService {
         return new UserInfoResponseDto(user.getEmail(), user.getNickname(), user.getBirth(), user.getAuthority(), user.getProfileImg(), categories);
     }
 
+    @Transactional
+    public UserNicknameResponseDto updateUserNickname(Long userId, UserNicknameRequestDto userNicknameRequestDto) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+        user.updateNickname(userNicknameRequestDto.getNickname());
+        return new UserNicknameResponseDto(user.getNickname());
+    }
 }
