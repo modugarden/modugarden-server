@@ -6,8 +6,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long>, CustomUserRepository {
-    User findByUsername(String username);
-    public Slice<User> findByNicknameLike(String nickname, Pageable pageable);
 
+    Slice<User> findByNicknameLike(String nickname, Pageable pageable);
 }
 

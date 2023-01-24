@@ -2,18 +2,17 @@ package com.modugarden.domain.user.controller;
 
 import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.common.response.SliceResponseDto;
-import com.modugarden.domain.follow.repository.FollowRepository;
+import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.user.dto.request.UserNicknameRequestDto;
 import com.modugarden.domain.user.dto.request.UserProfileImgRequestDto;
 import com.modugarden.domain.user.dto.response.UserInfoResponseDto;
 import com.modugarden.domain.user.dto.response.UserNicknameFindResponseDto;
 import com.modugarden.domain.user.dto.response.UserNicknameResponseDto;
 import com.modugarden.domain.user.dto.response.UserProfileImgResponseDto;
-import com.modugarden.domain.user.repository.UserRepository;
 import com.modugarden.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,10 +22,6 @@ import javax.validation.Valid;
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private FollowRepository followRepository;
     private final UserService userService;
 
     @GetMapping("")
@@ -39,20 +34,21 @@ public class UserController {
         return new BaseResponseDto<>(userService.readUserInfo(userId));
     }
 
-    @PatchMapping("/{userId}/nickname") //me로 바뀌어야함
-    public BaseResponseDto<UserNicknameResponseDto> updateUserNickname(@RequestBody @Valid UserNicknameRequestDto userNicknameRequestDto, @PathVariable Long userId) {
-        return new BaseResponseDto<>(userService.updateUserNickname(userId, userNicknameRequestDto));
+    @PatchMapping("/me/nickname") //me로 바뀌어야함
+    public BaseResponseDto<UserNicknameResponseDto> updateUserNickname(@RequestBody @Valid UserNicknameRequestDto userNicknameRequestDto, @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(userService.updateUserNickname(user.getUserId(), userNicknameRequestDto));
     }
 
-    @PatchMapping("/{userId}/profileImg") //me로 바뀌어야 함
-    public BaseResponseDto<UserProfileImgResponseDto> updateProfileImg(@RequestBody @Valid UserProfileImgRequestDto userProfileImgRequestDto, @PathVariable Long userId) {
-        return new BaseResponseDto<>(userService.updateProfileImg(userId, userProfileImgRequestDto));
+    @PatchMapping("/me/profileImg") //me로 바뀌어야 함
+    public BaseResponseDto<UserProfileImgResponseDto> updateProfileImg(@RequestBody @Valid UserProfileImgRequestDto userProfileImgRequestDto, @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(userService.updateProfileImg(user.getUserId(), userProfileImgRequestDto));
     }
-//    @GetMapping("/me/info")
-//    public BaseResponseDto<UserInfoResponseDto> currentUserInfo(@AuthenticationPrincipal User user) {
-//        return new BaseResponseDto<>(userService.currentUserInfo(user.getId()));
-//    }
 
+    @GetMapping("/me/info")
+    public BaseResponseDto<UserInfoResponseDto> currentUserInfo(@AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(userService.readUserInfo(user.getUserId()));
+    }
+    
 //    @GetMapping("/blocked-list/{userId}")
 //    public SliceResponseDto<UserBlockResponseDto> readBlockUser(@PathVariable Long userId, Pageable pageable) {
 //        return new SliceResponseDto<>(userService.readBlockUser(userId, pageable));

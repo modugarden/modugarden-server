@@ -27,18 +27,13 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-        if (user != null) {
-        }
-        return null;
-    }
 
     public Slice<UserNicknameFindResponseDto> findByNickname(String nickname, Pageable pageable) {
         Slice<User> findUsers = userRepository.findByNicknameLike('%' + nickname + '%', pageable);
         Slice<UserNicknameFindResponseDto> result = findUsers.map(u -> new UserNicknameFindResponseDto(u.getId()));
         return result;
     }
+
     public UserInfoResponseDto readUserInfo(Long userId) {
         User user = userRepository.readUserInfo(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
         List<String> categories = userRepository.readUserInterestCategory(userId);

@@ -26,7 +26,6 @@ public class CurationCreateRequestDto {
                 .user(user)
                 .category(category)
                 .build();
-
         return curation;
     }
 }
