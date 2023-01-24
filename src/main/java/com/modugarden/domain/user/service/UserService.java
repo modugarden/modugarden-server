@@ -27,12 +27,6 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-        if (user != null) {
-        }
-        return null;
-    }
 
     public Slice<UserNicknameFindResponseDto> findByNickname(String nickname, Pageable pageable) {
         Slice<User> findUsers = userRepository.findByNicknameLike('%' + nickname + '%', pageable);

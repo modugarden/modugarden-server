@@ -9,20 +9,22 @@ import com.modugarden.domain.follow.entity.Follow;
 import com.modugarden.domain.follow.repository.FollowRepository;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 //여기서는 인자에 @ 사용 안함
 
+@RequiredArgsConstructor
+@Service
 @Transactional(readOnly = true)
 public class FollowService {
-    @Autowired
-    FollowRepository followRepository;
-    @Autowired
-    private UserRepository userRepository;
+
+    private final FollowRepository followRepository;
+    private final UserRepository userRepository;
 
     public BaseResponseDto<isFollowedResponseDto> follow(User user, Long id) {
         // user가 아닌 dto를 써줘야 함
@@ -52,7 +54,7 @@ public class FollowService {
         Long fromUser = user.getId();
         User toUser = oToUser.get();
 
-        followRepository.deleteByFollowingIdAndFollowerId(user.getId(), oToUser.get().getId());
+        followRepository.deleteByFollowingUserAndUser(user.getId(), oToUser.get().getId());
         //리턴을 dto로 해야 한다.
         return new BaseResponseDto(new BaseResponseDto<>(ErrorMessage.SUCCESS));
     }
@@ -65,7 +67,7 @@ public class FollowService {
         oToUser.orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));  //예외처리
         //User 대신 user 객체가 와야 함
 
-        int followcheck = followRepository.countByFollowerIdAndFollowingUserId(user.getId(), oToUser.get().getId());
+        int followcheck = followRepository.countByUserAndFollowingUser(user.getId(), oToUser.get().getId());
         return followcheck;
     }
 
@@ -73,8 +75,8 @@ public class FollowService {
     //following user을 user가 follower 함
     //pathvariable 부분만 넣고 postman에서 잘 돌아가는지 확인하기
     public Slice<FollowResponseDto> followerList(Long id, User user, Pageable pageable) {
-        Slice<Follow> followerList = followRepository.findByFromUserId(id, pageable);
-        Slice<Follow> pricipalFollowerLists = followRepository.findByFromUserId(user.getId(), pageable);
+        Slice<Follow> followerList = followRepository.findByFollowingUser(id, pageable);
+        Slice<Follow> pricipalFollowerLists = followRepository.findByFollowingUser(user.getId(), pageable);
 
         for (Follow f1 : followerList) {
             for (Follow f2 : pricipalFollowerLists) {
@@ -88,8 +90,8 @@ public class FollowService {
     }
 
     public Slice<FollowResponseDto> followingList(Long id, User user, Pageable pageable) {
-        Slice<Follow> followingList = followRepository.findByToUserId(id, pageable);  //팔로워 리스트
-        Slice<Follow> pricipalFollowingLists = followRepository.findByFromUserId(user.getId(), pageable);  //팔로우 리스트
+        Slice<Follow> followingList = followRepository.findByUser(id, pageable);  //팔로워 리스트
+        Slice<Follow> pricipalFollowingLists = followRepository.findByFollowingUser(user.getId(), pageable);  //팔로우 리스트
 
         for (Follow f1 : followingList) {
             for (Follow f2 : pricipalFollowingLists) {
@@ -102,6 +104,6 @@ public class FollowService {
     }
 
     public Slice<Follow> findByFollowingId(Long id, Pageable pageable) {
-        return followRepository.findByToUserId(id, pageable);
+        return followRepository.findByUser(id, pageable);
     }
 }

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 // 컨트롤러에서 서비스 호출, 서비스에서 레퍼지토리를 호출
-@Controller
 @RestController
 @RequestMapping(value = "/folllow")
 public class FollowController {
