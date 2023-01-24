@@ -39,6 +39,7 @@ public class UserService {
         Slice<UserNicknameFindResponseDto> result = findUsers.map(u -> new UserNicknameFindResponseDto(u.getId()));
         return result;
     }
+
     public UserInfoResponseDto readUserInfo(Long userId) {
         User user = userRepository.readUserInfo(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
         List<String> categories = userRepository.readUserInterestCategory(userId);
