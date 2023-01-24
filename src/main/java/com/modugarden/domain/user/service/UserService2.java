@@ -2,6 +2,8 @@ package com.modugarden.domain.user.service;
 
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
+import com.modugarden.domain.auth.dto.IsEmailDuplicatedRequestDto;
+import com.modugarden.domain.auth.dto.IsEmailDuplicatedResponseDto;
 import com.modugarden.domain.auth.dto.TokenDto;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.entity.UserInterestCategory;
@@ -108,5 +110,10 @@ public class UserService2 {
             System.out.println(e.getMessage());
             throw new BusinessException(ErrorMessage.WRONG_PASSWORD);
         }
+    }
+
+    public IsEmailDuplicatedResponseDto isEmailDuplicate(IsEmailDuplicatedRequestDto requestDto) {
+        Boolean isDuplicate = userRepository2.existsByEmail(requestDto.getEmail());
+        return new IsEmailDuplicatedResponseDto(isDuplicate);
     }
 }
