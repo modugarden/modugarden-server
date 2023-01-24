@@ -44,7 +44,7 @@ public class SecurityConfig {
                 //.antMatchers("/boards/**").permitAll()
                 //.antMatchers("/curations/**").permitAll()
                 .antMatchers("/h2/**").permitAll()
-                .antMatchers("/users/log-in", "/users/sign-up").permitAll()
+                .antMatchers("/users/log-in", "/users/sign-up/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)// jwt 커스텀 필터 추가

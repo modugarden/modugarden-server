@@ -1,6 +1,8 @@
 package com.modugarden.domain.auth;
 
 import com.modugarden.common.response.BaseResponseDto;
+import com.modugarden.domain.auth.dto.IsEmailDuplicatedRequestDto;
+import com.modugarden.domain.auth.dto.IsEmailDuplicatedResponseDto;
 import com.modugarden.domain.auth.dto.TokenDto;
 import com.modugarden.domain.user.dto.request.LoginRequestDto;
 import com.modugarden.domain.user.service.UserService2;
@@ -20,6 +22,10 @@ public class AuthController {
     public BaseResponseDto<TokenDto> login(@RequestBody LoginRequestDto loginRequestDto){
         TokenDto tokenDto = userService2.login(loginRequestDto);
         return new BaseResponseDto<>(tokenDto);
+    }
 
+    @PostMapping("/sign-up/email/isDuplicated")
+    public BaseResponseDto<IsEmailDuplicatedResponseDto> checkEmailDuplicated(@RequestBody IsEmailDuplicatedRequestDto requestDto){
+        return new BaseResponseDto<>(userService2.isEmailDuplicate(requestDto));
     }
 }
