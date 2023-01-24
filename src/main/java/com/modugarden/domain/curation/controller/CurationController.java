@@ -3,6 +3,8 @@ package com.modugarden.domain.curation.controller;
 import com.modugarden.common.response.BaseResponseDto;
 
 import com.modugarden.common.response.PageResponseDto;
+import com.modugarden.common.response.SliceResponseDto;
+import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.curation.dto.*;
 import com.modugarden.domain.curation.service.CurationService;
 import com.modugarden.domain.user.entity.User;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Pageable;
 
+import javax.validation.Valid;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -45,6 +48,11 @@ public class CurationController {
     @GetMapping("/curations/users/{user_id}")
     public PageResponseDto<CurationUserGetResponseDto> getUserCuration(@PathVariable Long user_id, Pageable pageable) {
         return new PageResponseDto<>(curationService.getUser(user_id, pageable));
+    }
+    //카테고리, 제목별 큐레이션 검색 api
+    @GetMapping("/curations/search")
+    public SliceResponseDto<CurationSearchResponseDto> searchCuration(@RequestParam @Valid InterestCategory category, @RequestParam @Valid String title, Pageable pageable){
+        return new SliceResponseDto<>(curationService.search(category,title, pageable));
     }
 
     //큐레이션 삭제

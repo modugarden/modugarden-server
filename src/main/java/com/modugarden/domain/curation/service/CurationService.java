@@ -2,12 +2,14 @@ package com.modugarden.domain.curation.service;
 
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
+import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.curation.dto.*;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.curation.repository.CurationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,13 +45,11 @@ public class CurationService {
         return new CurationCreateResponseDto(curationRepository.save(curation).getId());
     }
 
-    @Transactional
     public CurationGetResponseDto get(long id) {
         Curation curation = curationRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
         return new CurationGetResponseDto(curation);
     }
 
-    @Transactional
     public Page<CurationUserGetResponseDto> getUser(long user_id, Pageable pageable) {
         Page<Curation> userCurationList = curationRepository.findAllByUser_Id(user_id, pageable);
 
@@ -63,5 +63,13 @@ public class CurationService {
 
         curationRepository.delete(curation);
         return new CurationDeleteResponseDto(curation.getId());
+    }
+
+    public Slice<CurationSearchResponseDto> search(InterestCategory category, String title, Pageable pageable){
+        Slice<Curation> SearchCurationList = curationRepository.findAllByCategoryAndTitleOrderByCreatedDateDesc(category,title, pageable);
+        if(SearchCurationList.isEmpty())
+            throw new BusinessException(ErrorMessage.WRONG_CURATION_DELETE);
+        Slice<CurationSearchResponseDto> searchCuration = SearchCurationList.map(u -> new CurationSearchResponseDto(u));
+        return searchCuration;
     }
 }
