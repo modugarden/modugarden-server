@@ -1,14 +1,16 @@
 package com.modugarden.domain.user.controller;
 
 import com.modugarden.common.response.BaseResponseDto;
-import com.modugarden.domain.user.dto.SignUpRequestDto;
-import com.modugarden.domain.user.dto.SignUpResponseDto;
+import com.modugarden.domain.auth.entity.ModugardenUser;
+import com.modugarden.domain.user.dto.request.SignUpRequestDto;
+import com.modugarden.domain.user.dto.response.SignUpResponseDto;
 import com.modugarden.domain.user.service.UserService2;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 
 @RequiredArgsConstructor
