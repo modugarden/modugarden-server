@@ -5,7 +5,9 @@ import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.domain.user.dto.UserInfoResponseDto;
 import com.modugarden.domain.user.dto.UserNicknameFindResponseDto;
 import com.modugarden.domain.user.dto.UserNicknameResponseDto;
+import com.modugarden.domain.user.dto.UserProfileImgResponseDto;
 import com.modugarden.domain.user.dto.request.UserNicknameRequestDto;
+import com.modugarden.domain.user.dto.request.UserProfileImgRequestDto;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,5 +44,12 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
         user.updateNickname(userNicknameRequestDto.getNickname());
         return new UserNicknameResponseDto(user.getNickname());
+    }
+
+    @Transactional
+    public UserProfileImgResponseDto updateProfileImg(Long userId, UserProfileImgRequestDto userProfileImgRequestDto) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+        user.updateProfileImage(userProfileImgRequestDto.getProfileImg());
+        return new UserProfileImgResponseDto(user.getProfileImg());
     }
 }

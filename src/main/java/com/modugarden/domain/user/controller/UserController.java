@@ -5,7 +5,9 @@ import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.user.dto.UserInfoResponseDto;
 import com.modugarden.domain.user.dto.UserNicknameFindResponseDto;
 import com.modugarden.domain.user.dto.UserNicknameResponseDto;
+import com.modugarden.domain.user.dto.UserProfileImgResponseDto;
 import com.modugarden.domain.user.dto.request.UserNicknameRequestDto;
+import com.modugarden.domain.user.dto.request.UserProfileImgRequestDto;
 import com.modugarden.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +36,12 @@ public class UserController {
     public BaseResponseDto<UserNicknameResponseDto> updateUserNickname(@RequestBody @Valid UserNicknameRequestDto userNicknameRequestDto,
                                                                        @PathVariable Long userId) {
         return new BaseResponseDto<>(userService.updateUserNickname(userId, userNicknameRequestDto));
+    }
+
+    @PatchMapping("/{userId}/profileImg") //me로 바뀌어야 함
+    public BaseResponseDto<UserProfileImgResponseDto> updateProfileImg(@RequestBody @Valid UserProfileImgRequestDto userProfileImgRequestDto,
+                                                                       @PathVariable Long userId) {
+        return new BaseResponseDto<>(userService.updateProfileImg(userId, userProfileImgRequestDto));
     }
 //    @GetMapping("/me/info")
 //    public BaseResponseDto<UserInfoResponseDto> currentUserInfo(@AuthenticationPrincipal User user) {
