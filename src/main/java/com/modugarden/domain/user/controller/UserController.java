@@ -2,10 +2,10 @@ package com.modugarden.domain.user.controller;
 
 import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.common.response.SliceResponseDto;
-import com.modugarden.domain.user.dto.UserInfoResponseDto;
-import com.modugarden.domain.user.dto.UserNicknameFindResponseDto;
-import com.modugarden.domain.user.dto.UserNicknameResponseDto;
-import com.modugarden.domain.user.dto.UserProfileImgResponseDto;
+import com.modugarden.domain.user.dto.response.UserInfoResponseDto;
+import com.modugarden.domain.user.dto.response.UserNicknameFindResponseDto;
+import com.modugarden.domain.user.dto.response.UserNicknameResponseDto;
+import com.modugarden.domain.user.dto.response.UserProfileImgResponseDto;
 import com.modugarden.domain.user.dto.request.UserNicknameRequestDto;
 import com.modugarden.domain.user.dto.request.UserProfileImgRequestDto;
 import com.modugarden.domain.user.service.UserService;

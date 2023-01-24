@@ -1,8 +1,6 @@
 package com.modugarden.domain.user.repository;
 
-import com.modugarden.domain.user.dto.UserInfoResponseDto;
 import com.modugarden.domain.user.entity.User;
-import com.querydsl.core.Tuple;
 
 import java.util.List;
 import java.util.Optional;

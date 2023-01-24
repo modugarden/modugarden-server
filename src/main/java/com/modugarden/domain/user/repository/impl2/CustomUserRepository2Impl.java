@@ -1,15 +1,7 @@
 package com.modugarden.domain.user.repository.impl2;
 
-import com.modugarden.domain.category.entity.QInterestCategory;
-import com.modugarden.domain.category.entity.QUserInterestCategory;
-import com.modugarden.domain.category.entity.UserInterestCategory;
-import com.modugarden.domain.user.dto.UserInfoResponseDto;
-import com.modugarden.domain.user.entity.QUser;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.repository.CustomUserRepository2;
-import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

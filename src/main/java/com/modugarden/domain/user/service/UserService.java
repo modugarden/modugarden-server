@@ -2,10 +2,10 @@ package com.modugarden.domain.user.service;
 
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
-import com.modugarden.domain.user.dto.UserInfoResponseDto;
-import com.modugarden.domain.user.dto.UserNicknameFindResponseDto;
-import com.modugarden.domain.user.dto.UserNicknameResponseDto;
-import com.modugarden.domain.user.dto.UserProfileImgResponseDto;
+import com.modugarden.domain.user.dto.response.UserInfoResponseDto;
+import com.modugarden.domain.user.dto.response.UserNicknameFindResponseDto;
+import com.modugarden.domain.user.dto.response.UserNicknameResponseDto;
+import com.modugarden.domain.user.dto.response.UserProfileImgResponseDto;
 import com.modugarden.domain.user.dto.request.UserNicknameRequestDto;
 import com.modugarden.domain.user.dto.request.UserProfileImgRequestDto;
 import com.modugarden.domain.user.entity.User;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
