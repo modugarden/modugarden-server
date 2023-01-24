@@ -10,20 +10,21 @@ import com.modugarden.domain.follow.entity.Follow;
 import com.modugarden.domain.follow.repository.FollowRepository;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 //여기서는 인자에 @ 사용 안함
 
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
+@Service
 public class FollowService {
-    @Autowired
-    FollowRepository followRepository;
-    @Autowired
-    private UserRepository userRepository;
+    private final FollowRepository followRepository;
+    private final UserRepository userRepository; //@autoWired 대신에 private final로 사용
 
     public BaseResponseDto<isFollowedResponseDto> follow(ModugardenUser user, Long id) {
         // user가 아닌 dto를 써줘야 함
