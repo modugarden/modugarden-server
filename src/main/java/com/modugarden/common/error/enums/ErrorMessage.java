@@ -23,7 +23,7 @@ public enum ErrorMessage {
     WRONG_JWT_TOKEN(NOT_FOUND, false, "JWT 토큰이 잘못되었습니다."),
 
     WRONG_CURATION(NOT_FOUND,false,"해당 큐레이션을 찾을 수 없습니다."),
-
+    WRONG_CURATION_LIST(NOT_FOUND,false,"해당 큐레이션 리스트를 찾을 수 없습니다."),
     WRONG_CURATION_DELETE(NOT_FOUND,false,"해당 Curation을 삭제할 수 없습니다."),
     WRONG_POST(NOT_FOUND,false,"해당 포스트를 찾을 수 없습니다.");
 
