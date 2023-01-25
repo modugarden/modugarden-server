@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.MediaType;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +38,15 @@ public class CurationController {
         return new BaseResponseDto<>(curationCreateResponse);
     }
 
+    //큐레이션 좋아요 달기 api
+    @PostMapping("/curations/{curation_id}/like")
+    public BaseResponseDto<CurationLikeResponseDto> createCuration(@PathVariable Long curation_id,
+                                                                    @AuthenticationPrincipal User user){
+        CurationLikeResponseDto curationLikeResponse = curationService.createLikes(curation_id, user.getId());
+        return new BaseResponseDto<>(curationLikeResponse);
+    }
+
+
     //큐레이션 하나 조회 api
     @GetMapping("/curations/{curation_id}")
     public CurationGetResponseDto getCuration(@PathVariable Long curation_id) {
@@ -53,6 +63,14 @@ public class CurationController {
     public SliceResponseDto<CurationSearchResponseDto> searchCuration(@RequestParam @Valid InterestCategory category, @RequestParam @Valid String title, Pageable pageable){
         return new SliceResponseDto<>(curationService.search(category,title, pageable));
     }
+
+    //카테고리,날짜별 큐레이션 조회 api
+    @GetMapping("/curations")
+    public SliceResponseDto<CurationSearchResponseDto> getFeedCuration(@RequestParam @Valid InterestCategory category, Pageable pageable){
+        return new SliceResponseDto<>(curationService.getFeed(category, pageable));
+    }
+
+
 
     //큐레이션 삭제
     @DeleteMapping("/curations/{curation_id}") //me로 수정 필요

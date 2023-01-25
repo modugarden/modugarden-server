@@ -6,6 +6,10 @@ import com.modugarden.domain.category.repository.entity.InterestCategory;
 import com.modugarden.domain.curation.dto.*;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.curation.repository.CurationRepository;
+import com.modugarden.domain.like.entity.LikeCuration;
+import com.modugarden.domain.like.repository.LikeRepository;
+import com.modugarden.domain.user.entity.User;
+import com.modugarden.domain.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +25,10 @@ import java.io.IOException;
 public class CurationService {
     @Autowired
     private CurationRepository curationRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private LikeRepository likeRepository;
 
     @Transactional
     public CurationCreateResponseDto save(CurationCreateRequestDto createRequestDto, MultipartFile file) throws IOException {
@@ -45,6 +53,20 @@ public class CurationService {
         return new CurationCreateResponseDto(curationRepository.save(curation).getId());
     }
 
+    @Transactional
+    public CurationLikeResponseDto createLikes(Long curation_id, Long user_id){
+        Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+        User user = userRepository.findById(user_id).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+
+        boolean isAlreadyLike = likeRepository.findByUserAndCuration(user, curation).isPresent();
+
+        if (!isAlreadyLike) {
+            CurationLikeRequestDto curationLikeRequestDto = new CurationLikeRequestDto(user,curation);
+            likeRepository.save(curationLikeRequestDto.toEntity());
+        }
+        return new CurationLikeResponseDto(curation.getId());
+    }
+
     public CurationGetResponseDto get(long id) {
         Curation curation = curationRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
         return new CurationGetResponseDto(curation);
@@ -52,9 +74,21 @@ public class CurationService {
 
     public Page<CurationUserGetResponseDto> getUser(long user_id, Pageable pageable) {
         Page<Curation> userCurationList = curationRepository.findAllByUser_Id(user_id, pageable);
+        return userCurationList.map(u -> new CurationUserGetResponseDto(u));
+    }
 
-        Page<CurationUserGetResponseDto> userCuration = userCurationList.map(u -> new CurationUserGetResponseDto(u));
-        return userCuration;
+    public Slice<CurationSearchResponseDto> search(InterestCategory category, String title, Pageable pageable){
+        Slice<Curation> SearchCurationList = curationRepository.findAllByCategoryAndTitleLikeOrderByCreatedDateDesc(category,'%'+title+'%', pageable);
+        if(SearchCurationList.isEmpty())
+            throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
+        return SearchCurationList.map(u -> new CurationSearchResponseDto(u));
+    }
+
+    public Slice<CurationSearchResponseDto> getFeed(InterestCategory category, Pageable pageable){
+        Slice<Curation> getFeedCurationList = curationRepository.findAllByCategoryOrderByCreatedDateDesc(category, pageable);
+        if(getFeedCurationList.isEmpty())
+            throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
+        return getFeedCurationList.map(u -> new CurationSearchResponseDto(u));
     }
 
     @Transactional
@@ -65,11 +99,5 @@ public class CurationService {
         return new CurationDeleteResponseDto(curation.getId());
     }
 
-    public Slice<CurationSearchResponseDto> search(InterestCategory category, String title, Pageable pageable){
-        Slice<Curation> SearchCurationList = curationRepository.findAllByCategoryAndTitleOrderByCreatedDateDesc(category,title, pageable);
-        if(SearchCurationList.isEmpty())
-            throw new BusinessException(ErrorMessage.WRONG_CURATION_DELETE);
-        Slice<CurationSearchResponseDto> searchCuration = SearchCurationList.map(u -> new CurationSearchResponseDto(u));
-        return searchCuration;
-    }
+
 }

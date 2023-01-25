@@ -28,6 +28,9 @@ repositories {
 }
 
 dependencies {
+	// AWS S3
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 	// Spring Boot JPA
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
@@ -39,6 +42,12 @@ dependencies {
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
+
+	// Spring Email
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.6.3'
+
+	//thymeleaf
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
 	// Spring Web
 	implementation 'org.springframework.boot:spring-boot-starter-web'

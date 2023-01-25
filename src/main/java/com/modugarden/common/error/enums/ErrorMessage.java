@@ -3,9 +3,7 @@ package com.modugarden.common.error.enums;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @Getter
 public enum ErrorMessage {
@@ -23,10 +21,13 @@ public enum ErrorMessage {
     WRONG_JWT_TOKEN(NOT_FOUND, false, "JWT 토큰이 잘못되었습니다."),
 
     WRONG_CURATION(NOT_FOUND,false,"해당 큐레이션을 찾을 수 없습니다."),
-
+    WRONG_CURATION_LIST(NOT_FOUND,false,"해당 큐레이션 리스트를 찾을 수 없습니다."),
     WRONG_CURATION_DELETE(NOT_FOUND,false,"해당 Curation을 삭제할 수 없습니다."),
     WRONG_POST(NOT_FOUND,false,"해당 포스트를 찾을 수 없습니다."),
-    FOLLOW_NOT_FOUND(NOT_FOUND, false, "팔로잉을 찾을 수 없습니다.");
+
+    FOLLOW_NOT_FOUND(NOT_FOUND, false, "팔로잉을 찾을 수 없습니다."),
+
+    SEND_EMAIL_ERROR(BAD_REQUEST, false, "이메일 인증 코드 전송을 실패하였습니다.");
 
     private final int code;
     private final boolean isSuccess;

@@ -18,8 +18,40 @@ spring:
 #        show_sql: true
         format_sql: true
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: modugarden2023@gmail.com
+    password: anqfgczgxihnfzrn
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+
 logging.level:
   org.hibernate.SQL: debug
 #  org.hibernate.type: trace
 
 spring.main.allow-bean-definition-overriding: true
+
+cloud:
+  aws:
+    s3:
+      bucket: modugarden
+    credentials:
+      access-key: AKIASZNM7PTFWFCQMIUM
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: ERROR

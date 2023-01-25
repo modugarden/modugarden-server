@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)// Controller에서 @PreAuthorize 사용해 권한 체크
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity // Spring Security 설정을 시작
@@ -42,9 +44,10 @@ public class SecurityConfig {
                 //.antMatchers("/users/**").permitAll()
                 //.antMatchers("/follow/**").permitAll()
                 //.antMatchers("/boards/**").permitAll()
-                //.antMatchers("/curations/**").permitAll()
+                .antMatchers("/curations/**").permitAll()
                 .antMatchers("/h2/**").permitAll()
-                .antMatchers("/users/log-in", "/users/sign-up").permitAll()
+                .antMatchers("/users/log-in", "/users/sign-up/**").permitAll() // 하위 계층의 구체적인 url 정보가 먼저 작성되어야함
+                //.antMatchers("/users/**").hasAnyRole("GENERAL", "CURATOR")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)// jwt 커스텀 필터 추가
