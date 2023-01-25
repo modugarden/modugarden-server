@@ -11,6 +11,7 @@ import com.modugarden.domain.category.repository.InterestCategoryRepository;
 import com.modugarden.domain.category.repository.UserInterestCategoryRepository;
 import com.modugarden.domain.user.dto.request.LoginRequestDto;
 import com.modugarden.domain.user.dto.request.SignUpRequestDto;
+import com.modugarden.domain.user.dto.response.DeleteUserResponseDto;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.entity.UserNotification;
 import com.modugarden.domain.user.entity.enums.UserAuthority;
@@ -18,6 +19,7 @@ import com.modugarden.domain.user.repository.UserNotificationRepository;
 import com.modugarden.domain.user.repository.UserRepository2;
 import com.modugarden.utils.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -26,8 +28,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static java.lang.Boolean.TRUE;
+import java.util.List;
 
+import static java.lang.Boolean.TRUE;
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -115,5 +119,18 @@ public class UserService2 {
     public IsEmailDuplicatedResponseDto isEmailDuplicate(IsEmailDuplicatedRequestDto requestDto) {
         Boolean isDuplicate = userRepository2.existsByEmail(requestDto.getEmail());
         return new IsEmailDuplicatedResponseDto(isDuplicate);
+    }
+
+    public DeleteUserResponseDto deleteCurrentUser(User user){
+        // User pk로 외래키 연관된 UserInterestCategory부터 삭제
+        List<UserInterestCategory> userInterestCategories = UICRepository.findByUser(user);
+
+        for (UserInterestCategory userInterestCategory : userInterestCategories) {
+            UICRepository.deleteById(userInterestCategory.getId());
+        }
+
+        // 유저 삭제
+        userRepository2.deleteById(user.getId());
+        return new DeleteUserResponseDto(user.getId());
     }
 }
