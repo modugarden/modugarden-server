@@ -58,10 +58,13 @@ public class CurationService {
         Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
         User user = userRepository.findById(user_id).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
 
-        CurationLikeRequestDto curationLikeRequestDto = new CurationLikeRequestDto(user,curation);
+        boolean isAlreadyLike = likeRepository.findByUserAndCuration(user, curation).isPresent();
 
-        LikeCuration likeCuration = curationLikeRequestDto.toEntity();
-        return new CurationLikeResponseDto(likeRepository.save(likeCuration).getId());
+        if (!isAlreadyLike) {
+            CurationLikeRequestDto curationLikeRequestDto = new CurationLikeRequestDto(user,curation);
+            likeRepository.save(curationLikeRequestDto.toEntity());
+        }
+        return new CurationLikeResponseDto(curation.getId());
     }
 
     public CurationGetResponseDto get(long id) {
