@@ -35,3 +35,23 @@ logging.level:
 #  org.hibernate.type: trace
 
 spring.main.allow-bean-definition-overriding: true
+
+cloud:
+  aws:
+    s3:
+      bucket: modugarden
+    credentials:
+      access-key: AKIASZNM7PTFWFCQMIUM
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: ERROR
