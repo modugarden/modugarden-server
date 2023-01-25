@@ -23,4 +23,5 @@ public class GlobalExceptionHandler {
         log.warn("loginCancelException : {}", e);
         return new BaseResponseDto(e.getErrorMessage());
     }
+
 }
