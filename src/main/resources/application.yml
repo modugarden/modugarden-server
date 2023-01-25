@@ -18,6 +18,18 @@ spring:
 #        show_sql: true
         format_sql: true
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: modugarden2023@gmail.com
+    password: anqfgczgxihnfzrn
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+
 logging.level:
   org.hibernate.SQL: debug
 #  org.hibernate.type: trace
