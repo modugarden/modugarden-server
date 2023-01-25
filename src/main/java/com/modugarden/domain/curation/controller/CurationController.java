@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.MediaType;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +38,15 @@ public class CurationController {
         CurationCreateResponseDto curationCreateResponse = curationService.save(curationCreateRequest, file);
         return new BaseResponseDto<>(curationCreateResponse);
     }
+
+    //큐레이션 좋아요 달기 api
+    @PostMapping("/curations/{curation_id}/like")
+    public BaseResponseDto<CurationLikeResponseDto> createCuration(@PathVariable Long curation_id,
+                                                                    @AuthenticationPrincipal User user){
+        CurationLikeResponseDto curationLikeResponse = curationService.createLikes(curation_id, user.getId());
+        return new BaseResponseDto<>(curationLikeResponse);
+    }
+
 
     //큐레이션 하나 조회 api
     @GetMapping("/curations/{curation_id}")

@@ -6,6 +6,10 @@ import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.curation.dto.*;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.curation.repository.CurationRepository;
+import com.modugarden.domain.like.entity.LikeCuration;
+import com.modugarden.domain.like.repository.LikeRepository;
+import com.modugarden.domain.user.entity.User;
+import com.modugarden.domain.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +25,10 @@ import java.io.IOException;
 public class CurationService {
     @Autowired
     private CurationRepository curationRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private LikeRepository likeRepository;
 
     @Transactional
     public CurationCreateResponseDto save(CurationCreateRequestDto createRequestDto, MultipartFile file) throws IOException {
@@ -43,6 +51,20 @@ public class CurationService {
         Curation curation = createRequestDto.toEntity();
 
         return new CurationCreateResponseDto(curationRepository.save(curation).getId());
+    }
+
+    @Transactional
+    public CurationLikeResponseDto createLikes(Long curation_id, Long user_id){
+        Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+        User user = userRepository.findById(user_id).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+
+        boolean isAlreadyLike = likeRepository.findByUserAndCuration(user, curation).isPresent();
+
+        if (!isAlreadyLike) {
+            CurationLikeRequestDto curationLikeRequestDto = new CurationLikeRequestDto(user,curation);
+            likeRepository.save(curationLikeRequestDto.toEntity());
+        }
+        return new CurationLikeResponseDto(curation.getId());
     }
 
     public CurationGetResponseDto get(long id) {
