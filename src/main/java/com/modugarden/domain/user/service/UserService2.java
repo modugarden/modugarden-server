@@ -69,7 +69,7 @@ public class UserService2 {
                 .password(signUpRequestDto.getPassword())
                 .birth(signUpRequestDto.getBirth())
                 .nickname(signUpRequestDto.getNickname())
-                .authority(UserAuthority.GENERAL)
+                .authority(UserAuthority.ROLE_GENERAL)
                 .notification(userNotification)
                 .build();
         
