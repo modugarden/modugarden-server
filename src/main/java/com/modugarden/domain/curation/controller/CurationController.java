@@ -38,6 +38,14 @@ public class CurationController {
         return new BaseResponseDto<>(curationCreateResponse);
     }
 
+    //큐레이션 좋아요 달기 api
+    @PostMapping("/curations/{curation_id}/like")
+    public BaseResponseDto<CurationLikeResponseDto> createCuration(@PathVariable Long curation_id){
+        CurationLikeResponseDto curationLikeResponse = curationService.createLikes(curation_id, (long)1 );
+        return new BaseResponseDto<>(curationLikeResponse);
+    }
+
+
     //큐레이션 하나 조회 api
     @GetMapping("/curations/{curation_id}")
     public CurationGetResponseDto getCuration(@PathVariable Long curation_id) {
