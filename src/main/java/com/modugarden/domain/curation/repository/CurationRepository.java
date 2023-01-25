@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface CurationRepository extends JpaRepository<Curation, Long> {
     Page<Curation> findAllByUser_Id(Long user_id, Pageable pageable);
 
-    Slice<Curation> findAllByCategoryAndTitleOrderByCreatedDateDesc(InterestCategory category, String title, Pageable pageable);
+    Slice<Curation> findAllByCategoryAndTitleLikeOrderByCreatedDateDesc(InterestCategory category, String title, Pageable pageable);
 
+    Slice<Curation> findAllByCategoryOrderByCreatedDateDesc(InterestCategory category, Pageable pageable);
 }

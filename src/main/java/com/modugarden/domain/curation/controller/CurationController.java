@@ -55,6 +55,14 @@ public class CurationController {
         return new SliceResponseDto<>(curationService.search(category,title, pageable));
     }
 
+    //카테고리,날짜별 큐레이션 조회 api
+    @GetMapping("/curations")
+    public SliceResponseDto<CurationSearchResponseDto> getFeedCuration(@RequestParam @Valid InterestCategory category, Pageable pageable){
+        return new SliceResponseDto<>(curationService.getFeed(category, pageable));
+    }
+
+
+
     //큐레이션 삭제
     @DeleteMapping("/curations/{curation_id}") //me로 수정 필요
     public BaseResponseDto<CurationDeleteResponseDto> deleteCuration(@PathVariable Long curation_id) {

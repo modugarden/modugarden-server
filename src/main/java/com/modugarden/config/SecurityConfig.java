@@ -42,7 +42,7 @@ public class SecurityConfig {
                 //.antMatchers("/users/**").permitAll()
                 //.antMatchers("/follow/**").permitAll()
                 //.antMatchers("/boards/**").permitAll()
-                //.antMatchers("/curations/**").permitAll()
+                .antMatchers("/curations/**").permitAll()
                 .antMatchers("/h2/**").permitAll()
                 .antMatchers("/users/log-in", "/users/sign-up/**").permitAll()
                 .anyRequest().authenticated()

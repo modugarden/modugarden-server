@@ -52,9 +52,21 @@ public class CurationService {
 
     public Page<CurationUserGetResponseDto> getUser(long user_id, Pageable pageable) {
         Page<Curation> userCurationList = curationRepository.findAllByUser_Id(user_id, pageable);
+        return userCurationList.map(u -> new CurationUserGetResponseDto(u));
+    }
 
-        Page<CurationUserGetResponseDto> userCuration = userCurationList.map(u -> new CurationUserGetResponseDto(u));
-        return userCuration;
+    public Slice<CurationSearchResponseDto> search(InterestCategory category, String title, Pageable pageable){
+        Slice<Curation> SearchCurationList = curationRepository.findAllByCategoryAndTitleLikeOrderByCreatedDateDesc(category,'%'+title+'%', pageable);
+        if(SearchCurationList.isEmpty())
+            throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
+        return SearchCurationList.map(u -> new CurationSearchResponseDto(u));
+    }
+
+    public Slice<CurationSearchResponseDto> getFeed(InterestCategory category, Pageable pageable){
+        Slice<Curation> getFeedCurationList = curationRepository.findAllByCategoryOrderByCreatedDateDesc(category, pageable);
+        if(getFeedCurationList.isEmpty())
+            throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
+        return getFeedCurationList.map(u -> new CurationSearchResponseDto(u));
     }
 
     @Transactional
@@ -65,11 +77,5 @@ public class CurationService {
         return new CurationDeleteResponseDto(curation.getId());
     }
 
-    public Slice<CurationSearchResponseDto> search(InterestCategory category, String title, Pageable pageable){
-        Slice<Curation> SearchCurationList = curationRepository.findAllByCategoryAndTitleOrderByCreatedDateDesc(category,title, pageable);
-        if(SearchCurationList.isEmpty())
-            throw new BusinessException(ErrorMessage.WRONG_CURATION_DELETE);
-        Slice<CurationSearchResponseDto> searchCuration = SearchCurationList.map(u -> new CurationSearchResponseDto(u));
-        return searchCuration;
-    }
+
 }
