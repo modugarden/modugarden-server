@@ -18,7 +18,7 @@ public class Comment extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
     //내용
-    @Column(nullable = false)
+    @Column(nullable = false, length = 40)
     private String content;
     //validation 할 때 글자 수 제한 물어보기
     //부모댓글 id

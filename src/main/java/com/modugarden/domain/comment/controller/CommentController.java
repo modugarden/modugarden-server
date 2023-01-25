@@ -1,13 +1,14 @@
 package com.modugarden.domain.comment.controller;
 
 import com.modugarden.common.response.BaseResponseDto;
+import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.comment.dto.CommentCreateRequestDto;
 import com.modugarden.domain.comment.dto.CommentCreateResponseDto;
 import com.modugarden.domain.comment.entity.Comment;
 import com.modugarden.domain.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,17 +21,14 @@ import java.util.List;
 @RestController
 public class CommentController {
 
-    private final  CommentService commentService;
+    private final CommentService commentService;
 
     // 댓글 조회
     // 이걸 보통 보드컨트롤러에서 같이 하던데,,흠
-//    @GetMapping("/{board_id}/comments")
-//    @Inject
-//    public @ResponseBody BaseResponseDto commentList(@RequestParam("boardId") long boardId) {
-//        List<Comment> comments = null;
-//        comments = commentService.list(boardId);
-//        return commentList(boardId);
-//    }
+    @GetMapping("/{board_id}/comments")
+    public SliceResponseDto<CommentCreateResponseDto> commentList(@PathVariable Long boardId, @AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+        return new SliceResponseDto<>(commentService.commentList(boardId, user.getUser(), pageable));
+    }
 
     // 댓글 작성
     @PostMapping("/{board_id}/comments")
@@ -40,11 +38,10 @@ public class CommentController {
     }
 
     // 댓글 삭제
-//    @PatchMapping("/{board_id}/comments/{comment_id}")
-//    public BaseResponseDto<CommentCreateResponseDto> delete(@AuthenticationPrincipal ModugardenUser modugardenUser) {
-//        commentService.delete(userId);
-//        CommentCreateResponseDto responseDto = commentService.delete(modugardenUser.getUser(), dto);
-//        return ResponseEntity.ok(userId);
-//    }
+    @PatchMapping("/{board_id}/comments/{comment_id}")
+    public BaseResponseDto<CommentCreateResponseDto> delete(@AuthenticationPrincipal ModugardenUser modugardenUser) {
+        commentService.delete(modugardenUser.getUser());
+        return new BaseResponseDto<>(commentService.delete(modugardenUser.getUser()));
+    }
 
 }
