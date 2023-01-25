@@ -13,28 +13,8 @@ import static com.modugarden.domain.category.entity.QInterestCategory.*;
 import static com.modugarden.domain.category.entity.QUserInterestCategory.*;
 import static com.modugarden.domain.user.entity.QUser.*;
 
-@Repository // 필요한가???????????????
+@Repository
 @RequiredArgsConstructor
 public class CustomUserRepository2Impl implements CustomUserRepository2 {
     private final JPAQueryFactory jpaQueryFactory;
-
-    @Override
-    public Optional<User> readUserInfo(Long userId) {
-        User findUser = jpaQueryFactory
-                .selectFrom(user)
-                .where(user.id.eq(userId))
-                .fetchOne();
-        return Optional.ofNullable(findUser);
-    }
-
-    @Override
-    public List<String> readUserInterestCategory(Long userId) {
-        List<String> categories = jpaQueryFactory
-                .select(interestCategory.category)
-                .from(userInterestCategory)
-                .join(userInterestCategory.category, interestCategory)
-                .where(userInterestCategory.user.id.eq(userId))
-                .fetch();
-        return categories;
-    }
 }
