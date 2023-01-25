@@ -1,5 +1,5 @@
 package com.modugarden.domain.user.entity.enums;
 
 public enum UserAuthority {
-    CURATOR, GENERAL, BLOCKED
+    ROLE_CURATOR, ROLE_GENERAL, ROLE_BLOCKED
 }
