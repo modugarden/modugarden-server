@@ -2,7 +2,7 @@ package com.modugarden.domain.curation.service;
 
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
-import com.modugarden.domain.category.entity.InterestCategory;
+import com.modugarden.domain.category.repository.entity.InterestCategory;
 import com.modugarden.domain.curation.dto.*;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.curation.repository.CurationRepository;

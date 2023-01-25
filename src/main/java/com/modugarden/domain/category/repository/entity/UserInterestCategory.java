@@ -1,4 +1,4 @@
-package com.modugarden.domain.category.entity;
+package com.modugarden.domain.category.repository.entity;
 
 import com.modugarden.common.entity.BaseTimeEntity;
 import com.modugarden.domain.user.entity.User;

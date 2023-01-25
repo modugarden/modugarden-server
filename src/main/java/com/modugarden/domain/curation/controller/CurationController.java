@@ -4,10 +4,9 @@ import com.modugarden.common.response.BaseResponseDto;
 
 import com.modugarden.common.response.PageResponseDto;
 import com.modugarden.common.response.SliceResponseDto;
-import com.modugarden.domain.category.entity.InterestCategory;
+import com.modugarden.domain.category.repository.entity.InterestCategory;
 import com.modugarden.domain.curation.dto.*;
 import com.modugarden.domain.curation.service.CurationService;
-import com.modugarden.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

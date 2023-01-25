@@ -1,14 +1,13 @@
 package com.modugarden.domain.board.entity;
 
 import com.modugarden.common.entity.BaseTimeEntity;
-import com.modugarden.domain.category.entity.InterestCategory;
+import com.modugarden.domain.category.repository.entity.InterestCategory;
 import com.modugarden.domain.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

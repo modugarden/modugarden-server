@@ -1,8 +1,7 @@
 package com.modugarden.domain.item.entity;
 
 import com.modugarden.common.entity.BaseTimeEntity;
-import com.modugarden.domain.board.entity.Board;
-import com.modugarden.domain.category.entity.InterestCategory;
+import com.modugarden.domain.category.repository.entity.InterestCategory;
 import com.modugarden.domain.user.entity.User;
 import lombok.AccessLevel;
 import lombok.Getter;
