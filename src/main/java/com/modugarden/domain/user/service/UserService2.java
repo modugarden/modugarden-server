@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.Boolean.TRUE;
 @Slf4j
@@ -125,7 +126,7 @@ public class UserService2 {
         // User pk로 외래키 연관된 UserInterestCategory부터 삭제
         List<UserInterestCategory> userInterestCategories = UICRepository.findByUser(user);
 
-        for (UserInterestCategory userInterestCategory : userInterestCategories) {
+          for (UserInterestCategory userInterestCategory : userInterestCategories) {
             UICRepository.deleteById(userInterestCategory.getId());
         }
 
