@@ -6,7 +6,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface FollowRepository extends JpaRepository<Follow, Long>{
+public interface FollowRepository extends JpaRepository<Follow, Long>, CustomFollowRepository{
     boolean exists(Long userId, Long followingUserId);
     //팔로우 유무 체크
     @Query(value = "SELECT count(f) FROM Follow f WHERE f.followingUser.id =:fromUserId AND f.user.id =:toUserId") //jpql

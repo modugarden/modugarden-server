@@ -1,18 +1,9 @@
 package com.modugarden.domain.follow.repository.impl;
 
-import com.modugarden.domain.follow.repository.FollowRepository;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import static com.modugarden.domain.follow.entity.QFollow.follow;
-
 @Repository
 @RequiredArgsConstructor
-public abstract class FollowRepositoryImpl implements FollowRepository {
-    private final JPAQueryFactory queryFactory;
-    public boolean exists(Long userId, Long followingUserId) {
-        Integer fetchOne = queryFactory.selectOne().from(follow).where((follow.user.id.eq(userId)).and(follow.followingUser.id.eq(followingUserId))).fetchFirst();
-        return fetchOne != null;
-    }
+public class FollowRepositoryImpl {  //추상클래스라고 해도 되나?
 }
