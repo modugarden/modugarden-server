@@ -1,7 +1,7 @@
 package com.modugarden.domain.category.repository;
 
 
-import com.modugarden.domain.category.repository.entity.UserInterestCategory;
+import com.modugarden.domain.category.entity.UserInterestCategory;
 import com.modugarden.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

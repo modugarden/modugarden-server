@@ -1,6 +1,6 @@
 package com.modugarden.domain.curation.repository;
 
-import com.modugarden.domain.category.repository.entity.InterestCategory;
+import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.curation.entity.Curation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

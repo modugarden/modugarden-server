@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 
-import static com.modugarden.domain.category.repository.entity.QInterestCategory.interestCategory;
-import static com.modugarden.domain.category.repository.entity.QUserInterestCategory.userInterestCategory;
+import static com.modugarden.domain.category.entity.QInterestCategory.*;
+import static com.modugarden.domain.category.entity.QUserInterestCategory.*;
 import static com.modugarden.domain.user.entity.QUser.user;
 
 @Repository
