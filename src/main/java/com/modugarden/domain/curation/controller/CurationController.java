@@ -68,6 +68,12 @@ public class CurationController {
         return new SliceResponseDto<>(curationService.getFeed(category, pageable));
     }
 
+    //큐레이션 좋아요 개수 조회 api
+    @GetMapping("/curations/like/{curation_id}")
+    public CurationLikeResponseDto getLikeCuration(@PathVariable Long curation_id) {
+        return curationService.getLike(curation_id);
+    }
+
     //큐레이션 삭제 api
     //권한을 어떻게 처리해야할지..
     @DeleteMapping("/curations/{curation_id}")

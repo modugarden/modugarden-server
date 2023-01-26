@@ -30,6 +30,24 @@ public class SecurityConfig {
 
     private final CustomUserDetailService customUserDetailService;
 
+    // swagger - permit url
+    private static final String[] PERMIT_URL_ARRAY = {
+            /* swagger v2 */
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/swagger-ui/index.html",
+            "/webjars/**",
+            "/swagger/**",
+            /* swagger v3 */
+            "/v3/api-docs/**",
+            "/swagger-ui/**"
+    };
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -40,6 +58,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers(PERMIT_URL_ARRAY).permitAll() // swagger setting
                 // 원하는 부분 주석 해제하면 로그인 하지 않고 이용가능하도록 설정 가능
                 //.antMatchers("/users/**").permitAll()
                 //.antMatchers("/follow/**").permitAll()
