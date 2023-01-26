@@ -2,7 +2,8 @@ package com.modugarden.domain.curation.service;
 
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
-import com.modugarden.domain.category.repository.entity.InterestCategory;
+import com.modugarden.domain.category.entity.InterestCategory;
+import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.curation.dto.*;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.curation.repository.CurationRepository;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.File;
 import java.io.IOException;
 
 @Service
@@ -30,43 +30,50 @@ public class CurationService {
 
     //큐레이션 생성
     @Transactional
-    public CurationCreateResponseDto create(CurationCreateRequestDto createRequestDto, MultipartFile file, User user) throws IOException {
-        if(createRequestDto.getTitle().length()>40)
+    public CurationCreateResponseDto create(CurationCreateRequestDto createRequestDto, MultipartFile file, ModugardenUser user) throws IOException {
+        if (createRequestDto.getTitle().length() > 40)
             throw new IOException(new BusinessException(ErrorMessage.WRONT_CURATION_TITLE));
 
         // 현재 해당하는 user 정보 가져와서 curation 저장
-        createRequestDto.setUser(user);
         // 사진 입력
-        String projectPath = "C:\\";
-        //UUID uuid = UUID.randomUUID();
-        String fileName = "_" + file.getOriginalFilename();
-        File saveFile = new File(projectPath, fileName);
-        //위에 파일객체의 경로와 리네임으로 실제 업로드 하기위해 transferTo()메서드 사용
-        file.transferTo(saveFile);
-        //db에 파일 저장하기
-        createRequestDto.setPreviewImage(fileName);
+//        String projectPath = "C:\\";
+//        //UUID uuid = UUID.randomUUID();
+//        String fileName = "_" + file.getOriginalFilename();
+//        File saveFile = new File(projectPath, fileName);
+//        //위에 파일객체의 경로와 리네임으로 실제 업로드 하기위해 transferTo()메서드 사용
+//        file.transferTo(saveFile);
+//        //db에 파일 저장하기
+//        createRequestDto.setPreviewImage(fileName);
         // 파일 저장
-        Curation curation = createRequestDto.toEntity();
+
+        Curation curation = Curation.builder()
+                .title(createRequestDto.getTitle())
+                .link(createRequestDto.getLink())
+                .previewImage(createRequestDto.getPreviewImage())
+                .user(user.getUser())
+                .likeNum((long) 0)
+                .category(createRequestDto.getCategory())
+                .build();
 
         return new CurationCreateResponseDto(curationRepository.save(curation).getId());
     }
 
     //큐레이션 좋아요 달기
     @Transactional
-    public CurationLikeResponseDto createLikes(Long curation_id, User user){
+    public CurationLikeResponseDto createLikes(Long curation_id, ModugardenUser user) {
         Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
-        User users = userRepository.findById(user.getId()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+        User users = userRepository.findById(user.getUserId()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
 
         boolean isAlreadyLike = likeRepository.findByUserAndCuration(users, curation).isPresent();
 
         if (!isAlreadyLike) {
-            Curation modifyCuration = new Curation(curation.getId(),curation.getTitle(),curation.getLink(),curation.getPreviewImage(),curation.getLikeNum()+1,curation.getUser(),curation.getCategory());
-            CurationLikeRequestDto curationLikeRequestDto = new CurationLikeRequestDto(users,modifyCuration);
+            Curation modifyCuration = new Curation(curation.getId(), curation.getTitle(), curation.getLink(), curation.getPreviewImage(), curation.getLikeNum() + 1, curation.getUser(), curation.getCategory());
+            CurationLikeRequestDto curationLikeRequestDto = new CurationLikeRequestDto(users, modifyCuration);
 
             likeRepository.save(curationLikeRequestDto.toEntity());
             curationRepository.save(modifyCuration);
         }
-        return new CurationLikeResponseDto(curation.getId(),curation.getLikeNum());
+        return new CurationLikeResponseDto(curation.getId(), curation.getLikeNum());
     }
 
     //큐레이션 하나 조회 api
@@ -78,23 +85,23 @@ public class CurationService {
     //회원 큐레이션 조회
     public Page<CurationUserGetResponseDto> getUser(long user_id, Pageable pageable) {
         Page<Curation> userCurationList = curationRepository.findAllByUser_Id(user_id, pageable);
-        if(userCurationList.isEmpty())
+        if (userCurationList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
         return userCurationList.map(CurationUserGetResponseDto::new);
     }
 
     //카테고리, 제목별 큐레이션 검색
-    public Slice<CurationSearchResponseDto> search(InterestCategory category, String title, Pageable pageable){
-        Slice<Curation> SearchCurationList = curationRepository.findAllByCategoryAndTitleLikeOrderByCreatedDateDesc(category,'%'+title+'%', pageable);
-        if(SearchCurationList.isEmpty())
+    public Slice<CurationSearchResponseDto> search(InterestCategory category, String title, Pageable pageable) {
+        Slice<Curation> SearchCurationList = curationRepository.findAllByCategoryAndTitleLikeOrderByCreatedDateDesc(category, '%' + title + '%', pageable);
+        if (SearchCurationList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
         return SearchCurationList.map(CurationSearchResponseDto::new);
     }
 
     //카테고리,날짜별 큐레이션 조회
-    public Slice<CurationSearchResponseDto> getFeed(InterestCategory category, Pageable pageable){
+    public Slice<CurationSearchResponseDto> getFeed(InterestCategory category, Pageable pageable) {
         Slice<Curation> getFeedCurationList = curationRepository.findAllByCategoryOrderByCreatedDateDesc(category, pageable);
-        if(getFeedCurationList.isEmpty())
+        if (getFeedCurationList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
         return getFeedCurationList.map(CurationSearchResponseDto::new);
     }
@@ -102,31 +109,33 @@ public class CurationService {
     //큐레이션 좋아요 개수 조회
     public CurationLikeResponseDto getLike(long id) {
         Curation curation = curationRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
-        return new CurationLikeResponseDto(curation.getId(),curation.getLikeNum());
+        return new CurationLikeResponseDto(curation.getId(), curation.getLikeNum());
     }
 
     //큐레이션 삭제
     @Transactional
-    public CurationDeleteResponseDto delete(long id){
+    public CurationDeleteResponseDto delete(long id, ModugardenUser user) {
         Curation curation = curationRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION_DELETE));
-        curationRepository.delete(curation);
+        if (curation.getUser().getId() == user.getUserId()) {
+            likeRepository.deleteAllByCuration_Id(curation.getId());
+            curationRepository.delete(curation);
+        }
         return new CurationDeleteResponseDto(curation.getId());
     }
 
     //큐레이션 좋아요 취소
     @Transactional
-    public CurationLikeResponseDto createUnlikes(Long curation_id, User user){
+    public CurationLikeResponseDto createUnlikes(Long curation_id, ModugardenUser user) {
         Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
-        User users = userRepository.findById(user.getId()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+        User users = userRepository.findById(user.getUserId()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
 
         likeRepository.findByUserAndCuration(users, curation)
                 .ifPresent(it -> {
-                    Curation modifyCuration = new Curation(curation.getId(),curation.getTitle(),curation.getLink(),curation.getPreviewImage(),curation.getLikeNum()-1,curation.getUser(),curation.getCategory());
-                    CurationLikeRequestDto curationLikeRequestDto = new CurationLikeRequestDto(users,modifyCuration);
-                    likeRepository.delete(curationLikeRequestDto.toEntity());
+                    Curation modifyCuration = new Curation(curation.getId(), curation.getTitle(), curation.getLink(), curation.getPreviewImage(), curation.getLikeNum() - 1, curation.getUser(), curation.getCategory());
+                    likeRepository.delete(it);
                     curationRepository.save(modifyCuration);
                 });
 
-        return new CurationLikeResponseDto(curation.getId(),curation.getLikeNum());
+        return new CurationLikeResponseDto(curation.getId(), curation.getLikeNum());
     }
 }
