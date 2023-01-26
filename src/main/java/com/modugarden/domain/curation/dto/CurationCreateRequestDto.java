@@ -15,12 +15,12 @@ public class CurationCreateRequestDto {
     private String title; // 제목
     private String link; // 링크
     private String previewImage; // 미리보기
-    private Long likeNum;
+    private Long likeNum; // 좋아요
     private User user; // 유저
     private InterestCategory category; //카테고리
 
     public Curation toEntity() {
-        Curation curation = Curation.builder()
+        return Curation.builder()
                 .title(title)
                 .link(link)
                 .previewImage(previewImage)
@@ -28,7 +28,6 @@ public class CurationCreateRequestDto {
                 .likeNum((long)0)
                 .category(category)
                 .build();
-        return curation;
     }
 }
 
