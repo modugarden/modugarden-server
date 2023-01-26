@@ -8,7 +8,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class UserInfoResponseDto {
+public class CurrentUserInfoResponseDto {
     private Long id;
     private String nickname;
     private UserAuthority userAuthority;
@@ -16,5 +16,4 @@ public class UserInfoResponseDto {
     private int followerCount;
     private int postCount;
     private List<String> categories;
-    private boolean isFollow;
 }
