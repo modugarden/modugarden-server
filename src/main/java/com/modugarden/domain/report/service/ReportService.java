@@ -8,18 +8,20 @@ import com.modugarden.domain.report.repository.ReportUserRepository;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class ReportService {
 
     private final ReportUserRepository reportUserRepository;
     private final UserRepository userRepository;
 
-    @Transactional
+
     public ReportUserResponseDto reportUser(User user, Long reportUserId) {
         User reportUser = userRepository.findById(reportUserId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
         UserReport userReport = new UserReport(user, reportUser);
