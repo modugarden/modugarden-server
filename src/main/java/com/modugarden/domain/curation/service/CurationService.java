@@ -99,6 +99,12 @@ public class CurationService {
         return getFeedCurationList.map(CurationSearchResponseDto::new);
     }
 
+    //큐레이션 좋아요 개수 조회
+    public CurationLikeResponseDto getLike(long id) {
+        Curation curation = curationRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+        return new CurationLikeResponseDto(curation.getId(),curation.getLikeNum());
+    }
+
     //큐레이션 삭제
     @Transactional
     public CurationDeleteResponseDto delete(long id){
