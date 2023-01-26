@@ -3,6 +3,7 @@ package com.modugarden.domain.block.entity;
 import com.modugarden.common.entity.BaseTimeEntity;
 import com.modugarden.domain.user.entity.User;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,4 +25,10 @@ public class UserBlock extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "block_user_id")
     private User blockUser;
+
+    @Builder
+    public UserBlock(User user, User blockUser) {
+        this.user = user;
+        this.blockUser = blockUser;
+    }
 }
