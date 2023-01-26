@@ -3,6 +3,7 @@ package com.modugarden.domain.block.service;
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.domain.block.dto.response.BlockUserResponseDto;
+import com.modugarden.domain.block.dto.response.UnBlockUserResponseDto;
 import com.modugarden.domain.block.entity.UserBlock;
 import com.modugarden.domain.block.repository.BlockRepository;
 import com.modugarden.domain.user.entity.User;
@@ -24,5 +25,12 @@ public class BlockService {
         UserBlock userBlock = new UserBlock(user, blockUser);
         blockRepository.save(userBlock);
         return new BlockUserResponseDto(userBlock.getUser().getId(), userBlock.getBlockUser().getId());
+    }
+
+    public UnBlockUserResponseDto unBlockUser(User user, Long unBlockUserId) {
+        User unBlockUser = userRepository.findById(unBlockUserId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+        UserBlock userBlock = blockRepository.findByUserAndBlockUser(user, unBlockUser).orElseThrow(() -> new BusinessException(ErrorMessage.BLOCKUSER_NOT_FOUND));
+        blockRepository.delete(userBlock);
+        return new UnBlockUserResponseDto(userBlock.getUser().getId(), userBlock.getBlockUser().getId());
     }
 }
