@@ -1,8 +1,9 @@
 spring:
   profiles:
     active: local, security
-
-
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
 
 logging.level:
   org.hibernate.SQL: debug
@@ -17,3 +18,4 @@ logging:
       amazonaws:
         util:
           EC2MetadataUtils: ERROR
+
