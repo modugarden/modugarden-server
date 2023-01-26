@@ -1,6 +1,6 @@
 package com.modugarden.domain.curation.dto;
 
-import com.modugarden.domain.category.entity.InterestCategory;
+import com.modugarden.domain.category.repository.entity.InterestCategory;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.user.entity.User;
 import lombok.Data;
