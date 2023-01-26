@@ -5,8 +5,8 @@ import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.domain.auth.dto.IsEmailDuplicatedRequestDto;
 import com.modugarden.domain.auth.dto.IsEmailDuplicatedResponseDto;
 import com.modugarden.domain.auth.dto.TokenDto;
-import com.modugarden.domain.category.repository.entity.InterestCategory;
-import com.modugarden.domain.category.repository.entity.UserInterestCategory;
+import com.modugarden.domain.category.entity.InterestCategory;
+import com.modugarden.domain.category.entity.UserInterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 import com.modugarden.domain.category.repository.UserInterestCategoryRepository;
 import com.modugarden.domain.user.dto.request.LoginRequestDto;
@@ -29,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.lang.Boolean.TRUE;
 @Slf4j
