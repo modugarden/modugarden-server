@@ -11,6 +11,4 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     //댓글 조회
     Slice<Comment> findByBoardId(Long boardId, Pageable pageable);
-    //댓글 삭제
-    void deleteBy(Comment comment);
 }
