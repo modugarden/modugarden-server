@@ -5,10 +5,7 @@ import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.common.s3.FileService;
 import com.modugarden.domain.follow.repository.FollowRepository;
 import com.modugarden.domain.user.dto.request.UserNicknameRequestDto;
-import com.modugarden.domain.user.dto.response.UserInfoResponseDto;
-import com.modugarden.domain.user.dto.response.UserNicknameFindResponseDto;
-import com.modugarden.domain.user.dto.response.UserNicknameResponseDto;
-import com.modugarden.domain.user.dto.response.UserProfileImgResponseDto;
+import com.modugarden.domain.user.dto.response.*;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +37,7 @@ public class UserService {
     }
 
     public UserInfoResponseDto readUserInfo(Long userId) {
-        User user = userRepository.readUserInfo(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
         List<String> categories = userRepository.readUserInterestCategory(userId);
         if (categories.isEmpty()) throw new BusinessException(ErrorMessage.CATEGORY_NOT_FOUND);
         return new UserInfoResponseDto(user.getEmail(), user.getNickname(), user.getBirth(), user.getAuthority(), user.getProfileImg(), categories);
@@ -59,5 +56,12 @@ public class UserService {
         String profileImageUrl = fileService.uploadFile(file, userId, "profileImage");
         user.updateProfileImage(profileImageUrl);
         return new UserProfileImgResponseDto(user.getProfileImg());
+    }
+
+    public UserSettingInfoResponseDto readUserSettingInfo(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+        List<String> categories = userRepository.readUserInterestCategory(userId);
+        if (categories.isEmpty()) throw new BusinessException(ErrorMessage.CATEGORY_NOT_FOUND);
+        return new UserSettingInfoResponseDto(user.getId(), user.getEmail(), user.getNickname(), user.getBirth(), user.getAuthority(), user.getProfileImg(), categories);
     }
 }

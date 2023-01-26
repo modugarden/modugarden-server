@@ -21,14 +21,6 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Optional<User> readUserInfo(Long userId) {
-        return Optional.ofNullable(jpaQueryFactory
-                .selectFrom(user)
-                .where(user.id.eq(userId))
-                .fetchOne());
-    }
-
-    @Override
     public List<String> readUserInterestCategory(Long userId) {
         List<String> categories = jpaQueryFactory
                 .select(interestCategory.category)
