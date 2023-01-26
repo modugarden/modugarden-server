@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -36,9 +35,7 @@ public class UserService {
         Slice<UserNicknameFindResponseDto> result = findUsers
                 .map(u -> new UserNicknameFindResponseDto(u.getId(), u.getNickname()
                         , userRepository.readUserInterestCategory((u.getId()))
-                        , true));
-//        Slice<String> categories = userRepository.readUserInterestCategory(findUsers.stream().map(u -> u.getId()));
-//        Slice<UserNicknameFindResponseDto> result = findUsers.map(u -> new UserNicknameFindResponseDto(u.getId()));
+                        , followRepository.exists(userId, u.getId())));
         return result;
     }
 
