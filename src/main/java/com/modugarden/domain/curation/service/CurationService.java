@@ -106,4 +106,21 @@ public class CurationService {
         curationRepository.delete(curation);
         return new CurationDeleteResponseDto(curation.getId());
     }
+
+    //큐레이션 좋아요 취소
+    @Transactional
+    public CurationLikeResponseDto createUnlikes(Long curation_id, User user){
+        Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+        User users = userRepository.findById(user.getId()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+
+        likeRepository.findByUserAndCuration(users, curation)
+                .ifPresent(it -> {
+                    Curation modifyCuration = new Curation(curation.getId(),curation.getTitle(),curation.getLink(),curation.getPreviewImage(),curation.getLikeNum()-1,curation.getUser(),curation.getCategory());
+                    CurationLikeRequestDto curationLikeRequestDto = new CurationLikeRequestDto(users,modifyCuration);
+                    likeRepository.delete(curationLikeRequestDto.toEntity());
+                    curationRepository.save(modifyCuration);
+                });
+
+        return new CurationLikeResponseDto(curation.getId(),curation.getLikeNum());
+    }
 }
