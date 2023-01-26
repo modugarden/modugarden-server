@@ -5,6 +5,7 @@ import com.modugarden.domain.comment.entity.Comment;
 import com.modugarden.domain.report.entity.enums.ReportType;
 import com.modugarden.domain.user.entity.User;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,9 +26,15 @@ public class CommentReport extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", nullable = false)
-    private Comment comment;
+    private Comment reportComment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Builder
+    public CommentReport(User user, Comment reportcomment) {
+        this.user = user;
+        this.reportComment = reportComment;
+    }
 }

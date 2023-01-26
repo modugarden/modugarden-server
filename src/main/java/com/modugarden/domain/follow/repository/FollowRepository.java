@@ -1,6 +1,7 @@
 package com.modugarden.domain.follow.repository;
 
 import com.modugarden.domain.follow.entity.Follow;
+import com.modugarden.domain.user.entity.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +19,6 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, CustomFol
     Slice<Follow> findByFollowingUser(Long fromUserId, Pageable pageable);
 
     Slice<Follow> findByUser(Long toUserId, Pageable pageable);
+    //프로필에서 팔로워 수 알기
+    Long CountByUser_Id(Long user_id);
 }

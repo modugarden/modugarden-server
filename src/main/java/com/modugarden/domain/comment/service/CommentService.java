@@ -43,12 +43,4 @@ public class CommentService {
         commentRepository.delete(deleteComment);
         return new CommentCreateResponseDto(deleteComment.getCommentId());
     }
-    //댓글 신고
-    @Transactional
-    public CommentCreateResponseDto report(User user, CommentCreateRequestDto req) {
-        CommentCreateRequestDto dto = new CommentCreateRequestDto();
-        Comment deleteComment = commentRepository.findById(dto.getBoardId()).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_POST));
-        commentRepository.delete(deleteComment);
-        return new CommentCreateResponseDto(deleteComment.getCommentId());
-    }
 }
