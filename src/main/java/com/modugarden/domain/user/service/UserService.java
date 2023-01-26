@@ -2,22 +2,24 @@ package com.modugarden.domain.user.service;
 
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
+import com.modugarden.common.s3.FileService;
+import com.modugarden.domain.follow.repository.FollowRepository;
+import com.modugarden.domain.user.dto.request.UserNicknameRequestDto;
 import com.modugarden.domain.user.dto.response.UserInfoResponseDto;
 import com.modugarden.domain.user.dto.response.UserNicknameFindResponseDto;
 import com.modugarden.domain.user.dto.response.UserNicknameResponseDto;
 import com.modugarden.domain.user.dto.response.UserProfileImgResponseDto;
-import com.modugarden.domain.user.dto.request.UserNicknameRequestDto;
-import com.modugarden.domain.user.dto.request.UserProfileImgRequestDto;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,11 +28,17 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final FollowRepository followRepository;
+    private final FileService fileService;
 
-
-    public Slice<UserNicknameFindResponseDto> findByNickname(String nickname, Pageable pageable) {
+    public Slice<UserNicknameFindResponseDto> findByNickname(Long userId, String nickname, Pageable pageable) {
         Slice<User> findUsers = userRepository.findByNicknameLike('%' + nickname + '%', pageable);
-        Slice<UserNicknameFindResponseDto> result = findUsers.map(u -> new UserNicknameFindResponseDto(u.getId()));
+        Slice<UserNicknameFindResponseDto> result = findUsers
+                .map(u -> new UserNicknameFindResponseDto(u.getId(), u.getNickname()
+                        , userRepository.readUserInterestCategory((u.getId()))
+                        , true));
+//        Slice<String> categories = userRepository.readUserInterestCategory(findUsers.stream().map(u -> u.getId()));
+//        Slice<UserNicknameFindResponseDto> result = findUsers.map(u -> new UserNicknameFindResponseDto(u.getId()));
         return result;
     }
 
@@ -49,9 +57,10 @@ public class UserService {
     }
 
     @Transactional
-    public UserProfileImgResponseDto updateProfileImg(Long userId, UserProfileImgRequestDto userProfileImgRequestDto) {
+    public UserProfileImgResponseDto updateProfileImg(Long userId, MultipartFile file) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
-        user.updateProfileImage(userProfileImgRequestDto.getProfileImg());
+        String profileImageUrl = fileService.uploadFile(file, userId, "profileImage");
+        user.updateProfileImage(profileImageUrl);
         return new UserProfileImgResponseDto(user.getProfileImg());
     }
 }
