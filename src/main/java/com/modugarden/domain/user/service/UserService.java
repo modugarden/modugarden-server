@@ -33,7 +33,7 @@ public class UserService {
     public Slice<UserNicknameFindResponseDto> findByNickname(Long userId, String nickname, Pageable pageable) {
         Slice<User> findUsers = userRepository.findByNicknameLike('%' + nickname + '%', pageable);
         Slice<UserNicknameFindResponseDto> result = findUsers
-                .map(u -> new UserNicknameFindResponseDto(u.getId(), u.getNickname()
+                .map(u -> new UserNicknameFindResponseDto(u.getId(), u.getNickname(), u.getProfileImg()
                         , userRepository.readUserInterestCategory((u.getId()))
                         , followRepository.exists(userId, u.getId())));
         return result;

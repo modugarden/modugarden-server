@@ -10,6 +10,7 @@ import java.util.List;
 public class UserNicknameFindResponseDto {
     private Long userId;
     private String nickname;
+    private String profileImage;
     private List<String> categories;
     private boolean isFollow;
 }
