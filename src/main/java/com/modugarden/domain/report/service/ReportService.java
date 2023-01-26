@@ -15,13 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class ReportService {
 
     private final ReportUserRepository reportUserRepository;
     private final UserRepository userRepository;
 
-    @Transactional
+
     public ReportUserResponseDto reportUser(User user, Long reportUserId) {
         User reportUser = userRepository.findById(reportUserId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
         UserReport userReport = new UserReport(user, reportUser);
