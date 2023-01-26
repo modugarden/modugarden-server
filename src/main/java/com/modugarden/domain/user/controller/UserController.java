@@ -5,10 +5,7 @@ import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.user.dto.request.UserNicknameRequestDto;
 import com.modugarden.domain.user.dto.request.UserProfileImgRequestDto;
-import com.modugarden.domain.user.dto.response.UserInfoResponseDto;
-import com.modugarden.domain.user.dto.response.UserNicknameFindResponseDto;
-import com.modugarden.domain.user.dto.response.UserNicknameResponseDto;
-import com.modugarden.domain.user.dto.response.UserProfileImgResponseDto;
+import com.modugarden.domain.user.dto.response.*;
 import com.modugarden.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -38,9 +35,14 @@ public class UserController {
         return new BaseResponseDto<>(userService.readUserInfo(userId));
     }
 
-    @PatchMapping("/me/nickname")
-    public BaseResponseDto<UserNicknameResponseDto> updateUserNickname(@RequestBody @Valid UserNicknameRequestDto userNicknameRequestDto, @AuthenticationPrincipal ModugardenUser user) {
-        return new BaseResponseDto<>(userService.updateUserNickname(user.getUserId(), userNicknameRequestDto));
+    @GetMapping("/me/info")
+    public BaseResponseDto<UserInfoResponseDto> currentUserInfo(@AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(userService.readUserInfo(user.getUserId()));
+    }
+
+    @GetMapping("/me/setting-info")
+    public BaseResponseDto<UserSettingInfoResponseDto> readUserInfo(@AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(userService.readUserSettingInfo(user.getUserId()));
     }
 
     @PatchMapping(value = "/me/profileImg", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -48,9 +50,9 @@ public class UserController {
         return new BaseResponseDto<>(userService.updateProfileImg(user.getUserId(), file));
     }
 
-    @GetMapping("/me/info")
-    public BaseResponseDto<UserInfoResponseDto> currentUserInfo(@AuthenticationPrincipal ModugardenUser user) {
-        return new BaseResponseDto<>(userService.readUserInfo(user.getUserId()));
+    @PatchMapping("/me/nickname")
+    public BaseResponseDto<UserNicknameResponseDto> updateUserNickname(@RequestBody @Valid UserNicknameRequestDto userNicknameRequestDto, @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(userService.updateUserNickname(user.getUserId(), userNicknameRequestDto));
     }
 
 //    @GetMapping("/blocked-list/{userId}")
