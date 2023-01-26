@@ -39,7 +39,7 @@ public class CurationController {
 
     //큐레이션 좋아요 달기 api
     @PostMapping("/curations/{curation_id}/like")
-    public BaseResponseDto<CurationLikeResponseDto> createCuration(@PathVariable Long curation_id,
+    public BaseResponseDto<CurationLikeResponseDto> createLikeCuration(@PathVariable Long curation_id,
                                                                    @AuthenticationPrincipal User user) {
         CurationLikeResponseDto curationLikeResponse = curationService.createLikes(curation_id, user);
         return new BaseResponseDto<>(curationLikeResponse);
@@ -75,5 +75,13 @@ public class CurationController {
     public BaseResponseDto<CurationDeleteResponseDto> deleteCuration(@PathVariable Long curation_id) {
         CurationDeleteResponseDto curationDeleteResponse = curationService.delete(curation_id);
         return new BaseResponseDto<>(curationDeleteResponse);
+    }
+
+    //큐레이션 좋아요 취소 api
+    @DeleteMapping("/curations/{curation_id}/unlike")
+    public BaseResponseDto<CurationLikeResponseDto> createUnlikeCuration(@PathVariable Long curation_id,
+                                                                       @AuthenticationPrincipal User user) {
+        CurationLikeResponseDto curationLikeResponse = curationService.createUnlikes(curation_id, user);
+        return new BaseResponseDto<>(curationLikeResponse);
     }
 }
