@@ -40,9 +40,11 @@ public class CommentController {
         return new BaseResponseDto<>(commentService.delete(modugardenUser.getUser()));
     }
     // 댓글 신고
+    // 일단 신고하면 삭제되게 다른 방법 뭐 있을지 물어보고 추가
     @PostMapping("/{board_id}/comments/report/{comment_id}")
-    public BaseResponseDto<CommentCreateResponseDto>report(@PathVariable Long commentId, @AuthenticationPrincipal ModugardenUser modugardenUser){
+    public BaseResponseDto<CommentCreateResponseDto>report(@PathVariable Long commentId, @AuthenticationPrincipal ModugardenUser modugardenUser, CommentCreateRequestDto commentCreateRequestDto){
+        commentService.delete(modugardenUser.getUser()); //일단 신고하면 댓글도 삭제되어야 하겠지?
+        return new BaseResponseDto<>(commentService.delete(modugardenUser.getUser()));
     }
     //대댓글 작성
-
 }

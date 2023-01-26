@@ -9,17 +9,23 @@ import com.modugarden.domain.comment.dto.CommentCreateResponseDto;
 import com.modugarden.domain.comment.entity.Comment;
 import com.modugarden.domain.comment.repository.CommentRepository;
 import com.modugarden.domain.user.entity.User;
+import com.modugarden.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
     private final BoardRepository boardRepository;
 
     //댓글 조회
@@ -36,6 +42,14 @@ public class CommentService {
     }
     //댓글 삭제
     public CommentCreateResponseDto delete(User user){
+        CommentCreateRequestDto dto = new CommentCreateRequestDto();
+        Comment deleteComment = commentRepository.findById(dto.getBoardId()).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_POST));
+        commentRepository.delete(deleteComment);
+        return new CommentCreateResponseDto(deleteComment.getCommentId());
+    }
+    //댓글 신고
+    @Transactional
+    public CommentCreateResponseDto report(User user, CommentCreateRequestDto req) {
         CommentCreateRequestDto dto = new CommentCreateRequestDto();
         Comment deleteComment = commentRepository.findById(dto.getBoardId()).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_POST));
         commentRepository.delete(deleteComment);
