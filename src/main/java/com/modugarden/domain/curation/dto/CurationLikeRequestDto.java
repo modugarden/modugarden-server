@@ -1,6 +1,5 @@
 package com.modugarden.domain.curation.dto;
 
-import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.like.entity.LikeCuration;
 import com.modugarden.domain.user.entity.User;
@@ -16,13 +15,12 @@ import lombok.NoArgsConstructor;
 public class CurationLikeRequestDto {
 
     private User user; // 유저
-    private Curation curation; //카테고리
+    private Curation curation; // 카테고리
 
     public LikeCuration toEntity() {
-        LikeCuration likeCuration = LikeCuration.builder()
+        return LikeCuration.builder()
                 .user(user)
                 .curation(curation)
                 .build();
-        return likeCuration;
     }
 }

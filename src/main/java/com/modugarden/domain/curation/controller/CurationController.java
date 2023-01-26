@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.MediaType;
-//import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,21 +30,19 @@ public class CurationController {
     //큐레이션 생성 api
     @PostMapping(value = "/curations", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public BaseResponseDto<CurationCreateResponseDto> createCuration(@RequestPart CurationCreateRequestDto curationCreateRequest,
-                                                                     //@AuthenticationPrincipal User user,
+                                                                     @AuthenticationPrincipal User user,
                                                                      @RequestPart MultipartFile file) throws IOException {
-        //AuthenticationPrincipal을 테스트 못함. 추후 테스트 예정
-        CurationCreateResponseDto curationCreateResponse = curationService.save(curationCreateRequest, file);
+        CurationCreateResponseDto curationCreateResponse = curationService.create(curationCreateRequest, file,user);
         return new BaseResponseDto<>(curationCreateResponse);
     }
 
     //큐레이션 좋아요 달기 api
     @PostMapping("/curations/{curation_id}/like")
-    public BaseResponseDto<CurationLikeResponseDto> createCuration(@PathVariable Long curation_id,
-                                                                    @AuthenticationPrincipal User user){
-        CurationLikeResponseDto curationLikeResponse = curationService.createLikes(curation_id, user.getId());
+    public BaseResponseDto<CurationLikeResponseDto> createLikeCuration(@PathVariable Long curation_id,
+                                                                   @AuthenticationPrincipal User user) {
+        CurationLikeResponseDto curationLikeResponse = curationService.createLikes(curation_id, user);
         return new BaseResponseDto<>(curationLikeResponse);
     }
-
 
     //큐레이션 하나 조회 api
     @GetMapping("/curations/{curation_id}")
@@ -58,26 +55,32 @@ public class CurationController {
     public PageResponseDto<CurationUserGetResponseDto> getUserCuration(@PathVariable Long user_id, Pageable pageable) {
         return new PageResponseDto<>(curationService.getUser(user_id, pageable));
     }
+
     //카테고리, 제목별 큐레이션 검색 api
     @GetMapping("/curations/search")
-    public SliceResponseDto<CurationSearchResponseDto> searchCuration(@RequestParam @Valid InterestCategory category, @RequestParam @Valid String title, Pageable pageable){
-        return new SliceResponseDto<>(curationService.search(category,title, pageable));
+    public SliceResponseDto<CurationSearchResponseDto> searchCuration(@RequestParam @Valid InterestCategory category, @RequestParam @Valid String title, Pageable pageable) {
+        return new SliceResponseDto<>(curationService.search(category, title, pageable));
     }
 
     //카테고리,날짜별 큐레이션 조회 api
     @GetMapping("/curations")
-    public SliceResponseDto<CurationSearchResponseDto> getFeedCuration(@RequestParam @Valid InterestCategory category, Pageable pageable){
+    public SliceResponseDto<CurationSearchResponseDto> getFeedCuration(@RequestParam @Valid InterestCategory category, Pageable pageable) {
         return new SliceResponseDto<>(curationService.getFeed(category, pageable));
     }
 
-
-
-    //큐레이션 삭제
-    @DeleteMapping("/curations/{curation_id}") //me로 수정 필요
+    //큐레이션 삭제 api
+    //권한을 어떻게 처리해야할지..
+    @DeleteMapping("/curations/{curation_id}")
     public BaseResponseDto<CurationDeleteResponseDto> deleteCuration(@PathVariable Long curation_id) {
         CurationDeleteResponseDto curationDeleteResponse = curationService.delete(curation_id);
         return new BaseResponseDto<>(curationDeleteResponse);
     }
 
-
+    //큐레이션 좋아요 취소 api
+    @DeleteMapping("/curations/{curation_id}/unlike")
+    public BaseResponseDto<CurationLikeResponseDto> createUnlikeCuration(@PathVariable Long curation_id,
+                                                                       @AuthenticationPrincipal User user) {
+        CurationLikeResponseDto curationLikeResponse = curationService.createUnlikes(curation_id, user);
+        return new BaseResponseDto<>(curationLikeResponse);
+    }
 }

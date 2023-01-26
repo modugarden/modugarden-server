@@ -28,6 +28,9 @@ public class Curation extends BaseTimeEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String previewImage;
 
+    @Column
+    private Long likeNum;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -37,11 +40,12 @@ public class Curation extends BaseTimeEntity {
     private InterestCategory category;
 
     @Builder
-    public Curation(Long id, String title, String link, String previewImage, User user, InterestCategory category) {
+    public Curation(Long id, String title, String link, String previewImage,Long likeNum, User user, InterestCategory category) {
         this.id = id;
         this.title = title;
         this.link = link;
         this.previewImage = previewImage;
+        this.likeNum = likeNum;
         this.user = user;
         this.category = category;
     }
