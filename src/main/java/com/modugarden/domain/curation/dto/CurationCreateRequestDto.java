@@ -15,6 +15,7 @@ public class CurationCreateRequestDto {
     private String title; // 제목
     private String link; // 링크
     private String previewImage; // 미리보기
+    private Long likeNum;
     private User user; // 유저
     private InterestCategory category; //카테고리
 
@@ -24,6 +25,7 @@ public class CurationCreateRequestDto {
                 .link(link)
                 .previewImage(previewImage)
                 .user(user)
+                .likeNum((long)0)
                 .category(category)
                 .build();
         return curation;

@@ -61,10 +61,12 @@ public class CurationService {
         boolean isAlreadyLike = likeRepository.findByUserAndCuration(user, curation).isPresent();
 
         if (!isAlreadyLike) {
-            CurationLikeRequestDto curationLikeRequestDto = new CurationLikeRequestDto(user,curation);
+            Curation modifyCuration = new Curation(curation.getId(),curation.getTitle(),curation.getLink(),curation.getPreviewImage(),curation.getLikeNum()+1,curation.getUser(),curation.getCategory());
+            CurationLikeRequestDto curationLikeRequestDto = new CurationLikeRequestDto(user,modifyCuration);
             likeRepository.save(curationLikeRequestDto.toEntity());
+            curationRepository.save(modifyCuration);
         }
-        return new CurationLikeResponseDto(curation.getId());
+        return new CurationLikeResponseDto(curation.getId(),curation.getLikeNum());
     }
 
     public CurationGetResponseDto get(long id) {
@@ -98,6 +100,4 @@ public class CurationService {
         curationRepository.delete(curation);
         return new CurationDeleteResponseDto(curation.getId());
     }
-
-
 }
