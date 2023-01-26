@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/reports")
@@ -21,8 +19,7 @@ public class ReportController {
     private final ReportService reportService;
 
     @PostMapping("/users/{userId}")
-    public BaseResponseDto<ReportUserResponseDto> reportUser(@PathVariable Long userId,
-                                                             @AuthenticationPrincipal ModugardenUser user) {
+    public BaseResponseDto<ReportUserResponseDto> reportUser(@PathVariable Long userId, @AuthenticationPrincipal ModugardenUser user) {
         return new BaseResponseDto<>(reportService.reportUser(user.getUser(), userId));
     }
 }
