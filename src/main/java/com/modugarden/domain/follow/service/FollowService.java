@@ -59,12 +59,12 @@ public class FollowService {
 
 
     //팔로우 유무 체크
-    public int profile(Long id, ModugardenUser user) {
+    public isFollowedResponseDto profile(Long id, ModugardenUser user) {
 
         User oToUser = userRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND));  //예외처리
         //User 대신 user 객체가 와야 함
-        int followcheck = followRepository.countByUserAndFollowingUser(user.getUserId(), oToUser.getId());
-        return followcheck;
+        boolean followcheck = followRepository.exists(user.getUserId(),id);
+        return new isFollowedResponseDto(followcheck);
     }
 
     //user가 following user을 following 함
