@@ -19,6 +19,6 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, CustomFol
     Slice<Follow> findByFollowingUser(Long fromUserId, Pageable pageable);
 
     Slice<Follow> findByUser(Long toUserId, Pageable pageable);
-    //프로필에서 팔로워 수 알기
-    Long CountByUser_Id(Long user_id);
+    //유저아이디로 팔로워 수 알기
+    Long countByUser_Id(Long user_id);
 }

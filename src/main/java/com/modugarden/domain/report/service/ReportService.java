@@ -8,6 +8,7 @@ import com.modugarden.domain.report.dto.response.ReportCommentResponseDto;
 import com.modugarden.domain.report.dto.response.ReportUserResponseDto;
 import com.modugarden.domain.report.entity.CommentReport;
 import com.modugarden.domain.report.entity.UserReport;
+import com.modugarden.domain.report.entity.enums.ReportType;
 import com.modugarden.domain.report.repository.ReportCommentRepository;
 import com.modugarden.domain.report.repository.ReportUserRepository;
 import com.modugarden.domain.user.entity.User;
@@ -37,7 +38,7 @@ public class ReportService {
         reportUserRepository.save(userReport);
         return new ReportUserResponseDto(userReport.getUser().getId(), userReport.getReportUser().getId());
     }
-    public ReportCommentResponseDto reportComment(User user, Long reportCommentId) {
+    public ReportCommentResponseDto reportComment(User user, Long reportCommentId, ReportType report) {
         Comment reportComment = commentRepository.findById(reportCommentId).orElseThrow(() -> new BusinessException(ErrorMessage.COMMENT_NOT_FOUND));
         CommentReport commentReport = new CommentReport(user, reportComment);
         reportCommentRepository.save(commentReport);
