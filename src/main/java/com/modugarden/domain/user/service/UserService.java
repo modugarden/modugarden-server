@@ -3,6 +3,8 @@ package com.modugarden.domain.user.service;
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.common.s3.FileService;
+import com.modugarden.domain.board.repository.BoardRepository;
+import com.modugarden.domain.curation.repository.CurationRepository;
 import com.modugarden.domain.follow.repository.FollowRepository;
 import com.modugarden.domain.user.dto.request.UserNicknameRequestDto;
 import com.modugarden.domain.user.dto.response.*;
@@ -26,6 +28,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
     private final FileService fileService;
+    private final BoardRepository boardRepository;
+    private final CurationRepository curationRepository;
 
     public Slice<UserNicknameFindResponseDto> findByNickname(Long userId, String nickname, Pageable pageable) {
         Slice<User> findUsers = userRepository.findByNicknameLike('%' + nickname + '%', pageable);
@@ -40,7 +44,9 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
         List<String> categories = userRepository.readUserInterestCategory(userId);
         if (categories.isEmpty()) throw new BusinessException(ErrorMessage.CATEGORY_NOT_FOUND);
-        return new CurrentUserInfoResponseDto(user.getId(), user.getNickname(), user.getAuthority(), user.getProfileImg(), 0, 0, categories);
+        return new CurrentUserInfoResponseDto(user.getId(), user.getNickname(), user.getAuthority(), user.getProfileImg(),
+                followRepository.countByUser_Id(userId),
+                boardRepository.countByUser_Id(userId) + curationRepository.countByUser_Id(userId), categories);
     }
 
     @Transactional
@@ -69,6 +75,9 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
         List<String> categories = userRepository.readUserInterestCategory(userId);
         if (categories.isEmpty()) throw new BusinessException(ErrorMessage.CATEGORY_NOT_FOUND);
-        return new UserInfoResponseDto(user.getId(), user.getNickname(), user.getAuthority(), user.getProfileImg(), 0, 0, categories, followRepository.exists(loginUserId, userId));
+        return new UserInfoResponseDto(user.getId(), user.getNickname(), user.getAuthority(), user.getProfileImg(),
+                followRepository.countByUser_Id(userId),
+                boardRepository.countByUser_Id(userId) + curationRepository.countByUser_Id(userId),
+                categories, followRepository.exists(loginUserId, userId));
     }
 }

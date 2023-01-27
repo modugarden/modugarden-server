@@ -14,7 +14,6 @@ public class CurationCreateRequestDto {
 
     private String title; // 제목
     private String link; // 링크
-    private String previewImage; // 미리보기
     private InterestCategory category; //카테고리
 }
 

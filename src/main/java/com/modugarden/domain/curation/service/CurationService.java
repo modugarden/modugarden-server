@@ -2,6 +2,7 @@ package com.modugarden.domain.curation.service;
 
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
+import com.modugarden.common.s3.FileService;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.curation.dto.*;
@@ -27,6 +28,7 @@ public class CurationService {
     private final CurationRepository curationRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
+    private final FileService fileService;
 
     //큐레이션 생성
     @Transactional
@@ -34,22 +36,12 @@ public class CurationService {
         if (createRequestDto.getTitle().length() > 40)
             throw new IOException(new BusinessException(ErrorMessage.WRONT_CURATION_TITLE));
 
-        // 현재 해당하는 user 정보 가져와서 curation 저장
-        // 사진 입력
-//        String projectPath = "C:\\";
-//        //UUID uuid = UUID.randomUUID();
-//        String fileName = "_" + file.getOriginalFilename();
-//        File saveFile = new File(projectPath, fileName);
-//        //위에 파일객체의 경로와 리네임으로 실제 업로드 하기위해 transferTo()메서드 사용
-//        file.transferTo(saveFile);
-//        //db에 파일 저장하기
-//        createRequestDto.setPreviewImage(fileName);
-        // 파일 저장
+        String profileImageUrl = fileService.uploadFile(file, user.getUserId(), "profileImage");
 
         Curation curation = Curation.builder()
                 .title(createRequestDto.getTitle())
                 .link(createRequestDto.getLink())
-                .previewImage(createRequestDto.getPreviewImage())
+                .previewImage(profileImageUrl)
                 .user(user.getUser())
                 .likeNum((long) 0)
                 .category(createRequestDto.getCategory())

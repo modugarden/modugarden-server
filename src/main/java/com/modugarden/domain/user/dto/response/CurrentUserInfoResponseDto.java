@@ -13,7 +13,7 @@ public class CurrentUserInfoResponseDto {
     private String nickname;
     private UserAuthority userAuthority;
     private String profileImage;
-    private int followerCount;
-    private int postCount;
+    private Long followerCount;
+    private Long postCount;
     private List<String> categories;
 }
