@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.modugarden.domain.category.repository.entity.QInterestCategory.interestCategory;
-import static com.modugarden.domain.category.repository.entity.QUserInterestCategory.userInterestCategory;
+import static com.modugarden.domain.category.entity.QInterestCategory.interestCategory;
+import static com.modugarden.domain.category.entity.QUserInterestCategory.userInterestCategory;
 
 @Repository
 @RequiredArgsConstructor
