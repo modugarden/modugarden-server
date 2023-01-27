@@ -4,7 +4,6 @@ import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.user.dto.request.UserNicknameRequestDto;
-import com.modugarden.domain.user.dto.request.UserProfileImgRequestDto;
 import com.modugarden.domain.user.dto.response.*;
 import com.modugarden.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -31,13 +29,13 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/info")
-    public BaseResponseDto<UserInfoResponseDto> readUserInfo(@PathVariable Long userId) {
-        return new BaseResponseDto<>(userService.readUserInfo(userId));
+    public BaseResponseDto<UserInfoResponseDto> readUserInfo(@AuthenticationPrincipal ModugardenUser user, @PathVariable Long userId) {
+        return new BaseResponseDto<>(userService.readUserInfo(user.getUserId(), userId));
     }
 
     @GetMapping("/me/info")
-    public BaseResponseDto<UserInfoResponseDto> currentUserInfo(@AuthenticationPrincipal ModugardenUser user) {
-        return new BaseResponseDto<>(userService.readUserInfo(user.getUserId()));
+    public BaseResponseDto<CurrentUserInfoResponseDto> currentUserInfo(@AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(userService.readCurrentUserInfo(user.getUserId()));
     }
 
     @GetMapping("/me/setting-info")
