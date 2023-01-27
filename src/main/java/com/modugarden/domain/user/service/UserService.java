@@ -36,11 +36,11 @@ public class UserService {
         return result;
     }
 
-    public UserInfoResponseDto readUserInfo(Long userId) {
+    public CurrentUserInfoResponseDto readCurrentUserInfo(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
         List<String> categories = userRepository.readUserInterestCategory(userId);
         if (categories.isEmpty()) throw new BusinessException(ErrorMessage.CATEGORY_NOT_FOUND);
-        return new UserInfoResponseDto(user.getEmail(), user.getNickname(), user.getBirth(), user.getAuthority(), user.getProfileImg(), categories);
+        return new CurrentUserInfoResponseDto(user.getId(), user.getNickname(), user.getAuthority(), user.getProfileImg(), 0, 0, categories);
     }
 
     @Transactional
@@ -63,5 +63,12 @@ public class UserService {
         List<String> categories = userRepository.readUserInterestCategory(userId);
         if (categories.isEmpty()) throw new BusinessException(ErrorMessage.CATEGORY_NOT_FOUND);
         return new UserSettingInfoResponseDto(user.getId(), user.getEmail(), user.getNickname(), user.getBirth(), user.getAuthority(), user.getProfileImg(), categories);
+    }
+
+    public UserInfoResponseDto readUserInfo(Long loginUserId, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+        List<String> categories = userRepository.readUserInterestCategory(userId);
+        if (categories.isEmpty()) throw new BusinessException(ErrorMessage.CATEGORY_NOT_FOUND);
+        return new UserInfoResponseDto(user.getId(), user.getNickname(), user.getAuthority(), user.getProfileImg(), 0, 0, categories, followRepository.exists(loginUserId, userId));
     }
 }
