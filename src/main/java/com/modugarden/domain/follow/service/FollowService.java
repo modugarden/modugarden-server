@@ -27,48 +27,43 @@ public class FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository; //@autoWired 대신에 private final로 사용
 
-
-    public BaseResponseDto<isFollowedResponseDto> follow(ModugardenUser user, Long id) {
+    @Transactional
+    public isFollowedResponseDto follow(ModugardenUser user, Long id) {
         // user가 아닌 dto를 써줘야 함
         // 원래는 UserService말고 객체가 와야 함
         // User fromUser = userDetail.getUser();
-        Optional<User> oToUser = userRepository.findById(id);
-        oToUser.orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND)); //예외처리
+        User oToUser = userRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND)); //예외처리
         Long fromUser = user.getUserId();
-        User toUser = oToUser.get();
 
         //access를 private에서 public으로 바꿈
         //setter을 쓰는 게 안 좋음
-        Follow follow = new Follow(user.getUser(), toUser);  //getUser로 쓰는 게 맞는 건가,,,
+        Follow follow = new Follow(user.getUser(), oToUser);  //getUser로 쓰는 게 맞는 건가,,,
         followRepository.save(follow);
 
-        return new BaseResponseDto(new BaseResponseDto<>(ErrorMessage.SUCCESS));
+        return new isFollowedResponseDto(true);
     }
 
     @Transactional
     //변화가 필요할 때 transactional 사용
-    public BaseResponseDto<isFollowedResponseDto> unFollow(ModugardenUser user, Long id) {
+    public isFollowedResponseDto unFollow(ModugardenUser user, Long id) {
         // 원래는 UserService말고 객체가 와야 함
         // User fromUser = userDetail.getUser();
-        Optional<User> oToUser = userRepository.findById(id);
-        oToUser.orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND));  //예외처리
+        User oToUser = userRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND));  //예외처리
         //User 대신 user 객체가 와야 함
         Long fromUser = user.getUserId();
-        User toUser = oToUser.get();
 
-        followRepository.deleteByFollowingUserAndUser(user.getUserId(), oToUser.get().getId());
+        followRepository.deleteByUser_IdAndFollowingUser_Id(user.getUserId(), oToUser.getId());
         //리턴을 dto로 해야 한다.
-        return new BaseResponseDto(new BaseResponseDto<>(ErrorMessage.SUCCESS));
+        return new isFollowedResponseDto(true);
     }
 
 
     //팔로우 유무 체크
     public int profile(Long id, ModugardenUser user) {
 
-        Optional<User> oToUser = userRepository.findById(id);
-        oToUser.orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND));  //예외처리
+        User oToUser = userRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND));  //예외처리
         //User 대신 user 객체가 와야 함
-        int followcheck = followRepository.countByUserAndFollowingUser(user.getUserId(), oToUser.get().getId());
+        int followcheck = followRepository.countByUserAndFollowingUser(user.getUserId(), oToUser.getId());
         return followcheck;
     }
 

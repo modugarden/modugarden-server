@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 // 컨트롤러에서 서비스 호출, 서비스에서 레퍼지토리를 호출
 @RestController
-@RequestMapping(value = "/folllow")
+@RequestMapping(value = "/follow")
 public class FollowController {
     @Autowired
     private FollowService followService;
@@ -22,13 +22,13 @@ public class FollowController {
     //팔로우 추가
     @PostMapping("/{following_id}") //인자랑 이거 Path {} 안에 들어가는 거랑 똑같아야 함
     public BaseResponseDto<isFollowedResponseDto> follow(@AuthenticationPrincipal ModugardenUser user, @PathVariable Long following_id) {
-        return new BaseResponseDto(new BaseResponseDto<>(ErrorMessage.SUCCESS));
+        return new BaseResponseDto<isFollowedResponseDto>(followService.follow(user, following_id));
     }
 
     // 팔로우 삭제
     @DeleteMapping("/{following_id}")
     public BaseResponseDto<isFollowedResponseDto> unFollow(@AuthenticationPrincipal ModugardenUser user, @PathVariable Long following_id) {
-        return new BaseResponseDto(new BaseResponseDto<>(ErrorMessage.SUCCESS));
+        return new BaseResponseDto<isFollowedResponseDto>(followService.unFollow(user, following_id));
     }
 
 

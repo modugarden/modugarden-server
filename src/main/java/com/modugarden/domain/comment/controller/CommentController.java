@@ -40,4 +40,7 @@ public class CommentController {
         return new BaseResponseDto<>(commentService.delete(modugardenUser.getUser()));
     }
     //대댓글 작성
+//    @PostMapping("/{board_id}/comments/{parent_comment_id}")
+//    public BaseReposponseDto<CommentCreateResponseDto>children(@AuthenticationPrincipal ModugardenUser modugardenUser, Long parentCommentId, @RequestBody CommentCreateRequestDto dto){
+//    }
 }

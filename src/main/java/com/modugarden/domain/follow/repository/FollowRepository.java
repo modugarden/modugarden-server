@@ -14,7 +14,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, CustomFol
     int countByUserAndFollowingUser(Long fromUserId, Long toUserId); // 팔로우 되어있는지 count하는 메서드
 
     //팔로워 삭제
-    int deleteByFollowingUserAndUser(Long fromUserId, Long toUserId); // 언팔로우 메서드
+    int deleteByUser_IdAndFollowingUser_Id(Long fromUserId, Long toUserId); // 언팔로우 메서드
     //팔로잉 하고 있는 정보가 존재하는지 여부 체크
     Slice<Follow> findByFollowingUser(Long fromUserId, Pageable pageable);
 
