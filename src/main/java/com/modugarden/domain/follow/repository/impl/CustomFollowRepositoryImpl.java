@@ -16,4 +16,8 @@ public class CustomFollowRepositoryImpl implements CustomFollowRepository {
         Integer fetchOne = queryFactory.selectOne().from(follow).where((follow.user.id.eq(userId)).and(follow.followingUser.id.eq(followingUserId))).fetchFirst();
         return fetchOne != null;
     }
+    public boolean existsFollowing(Long userId, Long followerUserId) {
+        Integer fetchOne = queryFactory.selectOne().from(follow).where((follow.user.id.eq(userId)).and(follow.followerUser.id.eq(followerUserId))).fetchFirst();
+        return fetchOne != null;
+    }
 }

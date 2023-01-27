@@ -7,13 +7,14 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface FollowRepository extends JpaRepository<Follow, Long>, CustomFollowRepository{
+public interface FollowRepository extends JpaRepository<Follow, Long>, CustomFollowRepository {
     //팔로워 삭제
     int deleteByUser_IdAndFollowingUser_Id(Long fromUserId, Long toUserId); // 언팔로우 메서드
     //팔로잉 하고 있는 정보가 존재하는지 여부 체크
-    Slice<Follow> findByFollowingUser(Long fromUserId, Pageable pageable);
-
-    Slice<Follow> findByUser(Long toUserId, Pageable pageable);
+    @Query(value = "select f.user from Follow f where f.followingUser.id =: userId")
+    Slice<User> findByFollowerUser_Id(Long userId, Pageable pageable);
+    @Query(value = "select f.user from Follow f where f.followerUser.id =: userId")
+    Slice<User> findByFollowingUser_Id(Long userId, Pageable pageable);
     //유저아이디로 팔로워 수 알기
     Long countByUser_Id(Long user_id);
 }

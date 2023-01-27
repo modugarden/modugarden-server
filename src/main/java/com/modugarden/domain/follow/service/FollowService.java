@@ -2,9 +2,9 @@ package com.modugarden.domain.follow.service;
 
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
-import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
-import com.modugarden.domain.follow.dto.FollowResponseDto;
+import com.modugarden.domain.follow.dto.FollowersResponseDto;
+import com.modugarden.domain.follow.dto.FollowingsResponseDto;
 import com.modugarden.domain.follow.dto.isFollowedResponseDto;
 import com.modugarden.domain.follow.entity.Follow;
 import com.modugarden.domain.follow.repository.FollowRepository;
@@ -15,8 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 //여기서는 인자에 @ 사용 안함
 
 
@@ -69,38 +67,23 @@ public class FollowService {
 
     //user가 following user을 following 함
     //following user을 user가 follower 함
-    //pathvariable 부분만 넣고 postman에서 잘 돌아가는지 확인하기
 
-    public Slice<FollowResponseDto> followerList(Long id, ModugardenUser user, Pageable pageable) {
-        Slice<Follow> followerList = followRepository.findByFollowingUser(id, pageable);
-        Slice<Follow> pricipalFollowerLists = followRepository.findByFollowingUser(user.getUserId(), pageable);
-
-        for (Follow f1 : followerList) {
-            for (Follow f2 : pricipalFollowerLists) {
-                if (f1.getFollowingUser().getId() == f2.getFollowingUser().getId()) {
-                    f1.setMatpal(true);
-                }
-            }
-        }
-        // list대신에 slice 형식으로 리턴
-        return followerList(id, user, pageable);
+    //팔로잉 명단 조회
+    public Slice<FollowersResponseDto> followerList(Long id, Pageable pageable) {
+        Slice<User> followers = followRepository.findByFollowerUser_Id(id, pageable);
+        Slice<FollowersResponseDto> result = followers
+                .map(u -> new FollowersResponseDto(u.getId(), u.getNickname(), u.getProfileImg()
+                        , userRepository.readUserInterestCategory((u.getId()))
+                        , followRepository.exists(id, u.getId())));
+        return result;
     }
 
-
-    public Slice<FollowResponseDto> followingList(Long id, ModugardenUser user, Pageable pageable) {
-        Slice<Follow> followingList = followRepository.findByUser(id, pageable);  //팔로워 리스트
-        Slice<Follow> pricipalFollowingLists = followRepository.findByFollowingUser(user.getUserId(), pageable);  //팔로우 리스트
-        for (Follow f1 : followingList) {
-            for (Follow f2 : pricipalFollowingLists) {
-                if (f1.getUser().getId() == f2.getFollowingUser().getId()) {
-                    f1.setMatpal(true);
-                }
-            }
-        }
-        return followingList(id, user, pageable);
-    }
-
-    public Slice<Follow> findByFollowingId(Long id, Pageable pageable) {
-        return followRepository.findByUser(id, pageable);
+    public Slice<FollowingsResponseDto> followingList(Long id, Pageable pageable) {
+        Slice<User> followings = followRepository.findByFollowingUser_Id(id, pageable);
+        Slice<FollowingsResponseDto> result = followings
+                .map(u -> new FollowingsResponseDto(u.getId(), u.getNickname(), u.getProfileImg()
+                        , userRepository.readUserInterestCategory((u.getId()))
+                        , followRepository.existsFollowing(id, u.getId())));
+        return result;
     }
 }

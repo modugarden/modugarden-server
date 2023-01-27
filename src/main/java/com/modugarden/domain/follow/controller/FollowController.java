@@ -1,10 +1,10 @@
 package com.modugarden.domain.follow.controller;
 
-import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
-import com.modugarden.domain.follow.dto.FollowResponseDto;
+import com.modugarden.domain.follow.dto.FollowingsResponseDto;
+import com.modugarden.domain.follow.dto.FollowersResponseDto;
 import com.modugarden.domain.follow.dto.isFollowedResponseDto;
 import com.modugarden.domain.follow.service.FollowService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,16 +41,14 @@ public class FollowController {
 
     //user가 following user을 following 함
     //following user을 user가 follower 함
-
+    //팔로잉 명단조회 -> 팔로잉하는 사람들 가져 오기
     @GetMapping("/follower/{id}")
-    public SliceResponseDto<FollowResponseDto> followerList(@PathVariable Long id, @AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
-        return new SliceResponseDto<>(followService.followerList(id, user, pageable));
-        //리턴을 리스트로
+    public SliceResponseDto<FollowersResponseDto> followerList(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+        return new SliceResponseDto<>(followService.followerList(user.getUserId(), pageable));
     }
-
+    //팔로워 명단조회
     @GetMapping("/following/{id}")
-    public SliceResponseDto<FollowResponseDto> followingList(@PathVariable Long id, @AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
-        return new SliceResponseDto<>(followService.followingList(id, user, pageable));
-        // 리턴을 팔로우 리스트를 해줘야 함
+    public SliceResponseDto<FollowingsResponseDto> followingList( @AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+        return new SliceResponseDto<>(followService.followingList(user.getUserId(), pageable));
     }
 }
