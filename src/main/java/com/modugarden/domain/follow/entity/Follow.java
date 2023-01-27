@@ -18,6 +18,7 @@ public class Follow extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JoinColumn(name="user_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,6 +28,7 @@ public class Follow extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "following_id")
     private User followingUser;
+
 
     @Transient
     //엔티티 객체의 데이터와 테이블의 칼럼과 매핑하고 있는 관계를 제외하기 위해서 사용한다.
