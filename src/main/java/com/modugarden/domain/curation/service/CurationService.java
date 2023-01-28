@@ -75,6 +75,7 @@ public class CurationService {
         return new CurationLikeResponseDto(curation.getId(), curation.getLikeNum());
     }
 
+    //큐레이션 보관
     public CurationStorageResponseDto storeCuration(ModugardenUser user, Long curation_id) {
         Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
         if(curationStorageRepository.findByUserAndCuration(user.getUser(),curation).isPresent())
@@ -165,5 +166,16 @@ public class CurationService {
                 });
 
         return new CurationLikeResponseDto(curation.getId(), curation.getLikeNum());
+    }
+
+    //큐레이션 보관 취소
+    public CurationStorageResponseDto storeCancelCuration(ModugardenUser user, Long curation_id) {
+        Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+        curationStorageRepository.findByUserAndCuration(user.getUser(),curation).ifPresent(
+                it->{
+                    curationStorageRepository.delete(it);
+                }
+        );
+        return new CurationStorageResponseDto(curation.getUser().getId(), curation.getId());
     }
 }
