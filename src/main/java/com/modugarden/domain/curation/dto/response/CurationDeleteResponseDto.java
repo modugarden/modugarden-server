@@ -1,4 +1,4 @@
-package com.modugarden.domain.curation.dto;
+package com.modugarden.domain.curation.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

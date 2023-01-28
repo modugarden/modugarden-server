@@ -1,4 +1,4 @@
-package com.modugarden.domain.curation.dto;
+package com.modugarden.domain.curation.dto.request;
 
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.like.entity.LikeCuration;

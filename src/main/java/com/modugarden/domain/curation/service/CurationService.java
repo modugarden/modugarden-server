@@ -5,7 +5,9 @@ import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.common.s3.FileService;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.auth.entity.ModugardenUser;
-import com.modugarden.domain.curation.dto.*;
+import com.modugarden.domain.curation.dto.request.CurationCreateRequestDto;
+import com.modugarden.domain.curation.dto.request.CurationLikeRequestDto;
+import com.modugarden.domain.curation.dto.response.*;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.curation.repository.CurationRepository;
 import com.modugarden.domain.like.repository.LikeRepository;
@@ -34,9 +36,9 @@ public class CurationService {
     @Transactional
     public CurationCreateResponseDto create(CurationCreateRequestDto createRequestDto, MultipartFile file, ModugardenUser user) throws IOException {
         if (createRequestDto.getTitle().length() > 40)
-            throw new IOException(new BusinessException(ErrorMessage.WRONT_CURATION_TITLE));
+            throw new IOException(new BusinessException(ErrorMessage.WRONG_CURATION_TITLE));
 
-        String profileImageUrl = fileService.uploadFile(file, user.getUserId(), "profileImage");
+        String profileImageUrl = fileService.uploadFile(file, user.getUserId(), "curationImage");
 
         Curation curation = Curation.builder()
                 .title(createRequestDto.getTitle())
@@ -104,14 +106,24 @@ public class CurationService {
         return new CurationLikeResponseDto(curation.getId(), curation.getLikeNum());
     }
 
+    //내 프로필 큐레이션 조회 api
+    public Page<CurationUserGetResponseDto> getMyCuration(long user_id, Pageable pageable) {
+        Page<Curation> myCurationList = curationRepository.findAllByUser_Id(user_id, pageable);
+        if (myCurationList.isEmpty())
+            throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
+        return myCurationList.map(CurationUserGetResponseDto::new);
+    }
+
     //큐레이션 삭제
     @Transactional
     public CurationDeleteResponseDto delete(long id, ModugardenUser user) {
         Curation curation = curationRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION_DELETE));
-        if (curation.getUser().getId() == user.getUserId()) {
+        if (curation.getUser().getId().equals(user.getUserId())) {
             likeRepository.deleteAllByCuration_Id(curation.getId());
             curationRepository.delete(curation);
         }
+        else
+            throw new BusinessException(ErrorMessage.WRONG_CURATION_DELETE);
         return new CurationDeleteResponseDto(curation.getId());
     }
 

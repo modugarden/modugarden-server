@@ -6,10 +6,12 @@ import com.modugarden.common.response.PageResponseDto;
 import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.auth.entity.ModugardenUser;
-import com.modugarden.domain.curation.dto.*;
+import com.modugarden.domain.curation.dto.request.CurationCreateRequestDto;
+import com.modugarden.domain.curation.dto.response.*;
 import com.modugarden.domain.curation.service.CurationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -40,7 +42,7 @@ public class CurationController {
     //큐레이션 좋아요 달기 api
     @PostMapping("/curations/{curation_id}/like")
     public BaseResponseDto<CurationLikeResponseDto> createLikeCuration(@PathVariable Long curation_id,
-                                                                   @AuthenticationPrincipal ModugardenUser user) {
+                                                                       @AuthenticationPrincipal ModugardenUser user) {
         CurationLikeResponseDto curationLikeResponse = curationService.createLikes(curation_id, user);
         return new BaseResponseDto<>(curationLikeResponse);
     }
@@ -75,11 +77,17 @@ public class CurationController {
         return curationService.getLike(curation_id);
     }
 
+    //내 프로필 큐레이션 조회 api
+    @GetMapping("/curations/me")
+    public PageResponseDto<CurationUserGetResponseDto> getMyCuration(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+        return new PageResponseDto<>(curationService.getMyCuration(user.getUserId(), pageable));
+
+    }
+
     //큐레이션 삭제 api
-    //권한을 어떻게 처리해야할지..
     @DeleteMapping("/curations/{curation_id}")
     public BaseResponseDto<CurationDeleteResponseDto> deleteCuration(@PathVariable Long curation_id,
-                                                                    @AuthenticationPrincipal ModugardenUser user) {
+                                                                     @AuthenticationPrincipal ModugardenUser user) {
         CurationDeleteResponseDto curationDeleteResponse = curationService.delete(curation_id,user);
         return new BaseResponseDto<>(curationDeleteResponse);
     }
