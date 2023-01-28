@@ -3,6 +3,7 @@ package com.modugarden.domain.user.controller;
 import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
+import com.modugarden.domain.user.dto.request.UpdateUserCategoryRequestDto;
 import com.modugarden.domain.user.dto.request.UserNicknameRequestDto;
 import com.modugarden.domain.user.dto.response.*;
 import com.modugarden.domain.user.service.UserService;
@@ -53,8 +54,9 @@ public class UserController {
         return new BaseResponseDto<>(userService.updateUserNickname(user.getUserId(), userNicknameRequestDto));
     }
 
-//    @GetMapping("/blocked-list/{userId}")
-//    public SliceResponseDto<UserBlockResponseDto> readBlockUser(@PathVariable Long userId, Pageable pageable) {
-//        return new SliceResponseDto<>(userService.readBlockUser(userId, pageable));
-//    }
+    @PatchMapping("/me/category")
+    public BaseResponseDto<UpdateUserCategoryResponseDto> updateUserCategory(@RequestBody @Valid UpdateUserCategoryRequestDto updateUserCategoryRequestDto
+                                                                            , @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(userService.updateUserCategory(user.getUser(), updateUserCategoryRequestDto));
+    }
 }

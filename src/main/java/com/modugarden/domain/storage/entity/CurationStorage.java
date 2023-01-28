@@ -4,6 +4,7 @@ import com.modugarden.common.entity.BaseTimeEntity;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.user.entity.User;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,4 +26,10 @@ public class CurationStorage extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "curation_id", nullable = false)
     private Curation curation;
+
+    @Builder
+    public CurationStorage(User user, Curation curation) {
+        this.user = user;
+        this.curation = curation;
+    }
 }

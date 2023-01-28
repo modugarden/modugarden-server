@@ -21,7 +21,7 @@ public class UserController2 {
     private final UserService2 userService2;
 
     @PostMapping("/sign-up")
-    public BaseResponseDto<SignUpResponseDto> signUp(@RequestBody SignUpRequestDto signUpRequestDto){
+        public BaseResponseDto<SignUpResponseDto> signUp(@RequestBody SignUpRequestDto signUpRequestDto){
         Long userId = userService2.SignupUser(signUpRequestDto);
         return new BaseResponseDto(new SignUpResponseDto(userId));
     }
