@@ -10,8 +10,6 @@ import com.modugarden.domain.curation.dto.request.CurationCreateRequestDto;
 import com.modugarden.domain.curation.dto.response.*;
 import com.modugarden.domain.curation.service.CurationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,8 +25,7 @@ import java.io.IOException;
 @EnableJpaAuditing
 public class CurationController {
 
-    @Autowired
-    private CurationService curationService;
+    private final CurationService curationService;
 
     //큐레이션 생성 api
     @PostMapping(value = "/curations", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -45,6 +42,12 @@ public class CurationController {
                                                                        @AuthenticationPrincipal ModugardenUser user) {
         CurationLikeResponseDto curationLikeResponse = curationService.createLikes(curation_id, user);
         return new BaseResponseDto<>(curationLikeResponse);
+    }
+
+    //큐레이션 보관 api
+    @PostMapping("/curations/{curation_id}/storage")
+    public BaseResponseDto<CurationStorageResponseDto> storeCuration(@PathVariable Long curation_id, @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(curationService.storeCuration(user, curation_id));
     }
 
     //큐레이션 하나 조회 api
@@ -81,7 +84,13 @@ public class CurationController {
     @GetMapping("/curations/me")
     public PageResponseDto<CurationUserGetResponseDto> getMyCuration(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
         return new PageResponseDto<>(curationService.getMyCuration(user.getUserId(), pageable));
+    }
 
+    //내 프로필 큐레이션 좋아요 여부 조회
+    @GetMapping("/curations/me/like/{curation_id}")
+    public CurationGetMyLikeResponseDto getMyLikeCuration(@PathVariable Long curation_id,
+                                                          @AuthenticationPrincipal ModugardenUser user) {
+        return curationService.getMyLikeCuration(curation_id, user);
     }
 
     //큐레이션 삭제 api
