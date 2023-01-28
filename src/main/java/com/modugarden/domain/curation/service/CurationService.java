@@ -11,8 +11,6 @@ import com.modugarden.domain.curation.dto.response.*;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.curation.repository.CurationRepository;
 import com.modugarden.domain.like.repository.LikeRepository;
-import com.modugarden.domain.report.dto.response.ReportUserResponseDto;
-import com.modugarden.domain.report.entity.UserReport;
 import com.modugarden.domain.storage.entity.CurationStorage;
 import com.modugarden.domain.storage.entity.repository.CurationStorageRepository;
 import com.modugarden.domain.user.entity.User;
@@ -137,6 +135,16 @@ public class CurationService {
             return new CurationGetMyLikeResponseDto(users.getUserId(),curation.getId(), true);
 
         return new CurationGetMyLikeResponseDto(users.getUserId(),curation.getId(), false);
+    }
+    
+    //내 프로필 저장한 큐레이션 조회
+    public Page<CurationGetStorageResponseDto> getStorageCuration(long user_id, Pageable pageable) {
+        Page<CurationGetStorageResponseDto> myCurationStorageList = curationRepository.QueryfindAllByUser_Id(user_id, pageable);
+
+        if (myCurationStorageList.isEmpty())
+            throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
+
+        return myCurationStorageList;
     }
 
     //큐레이션 삭제

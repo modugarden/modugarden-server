@@ -8,6 +8,7 @@ import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.curation.dto.request.CurationCreateRequestDto;
 import com.modugarden.domain.curation.dto.response.*;
+import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.curation.service.CurationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -91,6 +92,12 @@ public class CurationController {
     public CurationGetMyLikeResponseDto getMyLikeCuration(@PathVariable Long curation_id,
                                                           @AuthenticationPrincipal ModugardenUser user) {
         return curationService.getMyLikeCuration(curation_id, user);
+    }
+
+    //내 프로필 저장한 큐레이션 조회
+    @GetMapping("curations/me/storage")
+    public PageResponseDto<CurationGetStorageResponseDto> getStorageCuration(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+        return new PageResponseDto<>(curationService.getStorageCuration(user.getUserId(), pageable));
     }
 
     //큐레이션 삭제 api
