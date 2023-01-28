@@ -4,17 +4,21 @@ import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
+import com.modugarden.domain.follow.dto.FollowRecommendResponseDto;
 import com.modugarden.domain.follow.dto.FollowResponseDto;
 import com.modugarden.domain.follow.dto.isFollowedResponseDto;
 import com.modugarden.domain.follow.service.FollowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 // 컨트롤러에서 서비스 호출, 서비스에서 레퍼지토리를 호출
 @RestController
-@RequestMapping(value = "/folllow")
+@RequestMapping(value = "/follow")
 public class FollowController {
     @Autowired
     private FollowService followService;
@@ -58,5 +62,11 @@ public class FollowController {
     public SliceResponseDto<FollowResponseDto> followingList(@PathVariable Long id, @AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
         return new SliceResponseDto<>(followService.followingList(id, user, pageable));
         // 리턴을 팔로우 리스트를 해줘야 함
+    }
+
+    @GetMapping("/recommendation")
+    public BaseResponseDto<List<FollowRecommendResponseDto>> recommendation(@AuthenticationPrincipal ModugardenUser user, @PageableDefault(size=3) Pageable pageable){
+        List<FollowRecommendResponseDto> responseDto = followService.recommendFollowingList(user.getUser(), pageable);
+        return new BaseResponseDto<>(responseDto);
     }
 }
