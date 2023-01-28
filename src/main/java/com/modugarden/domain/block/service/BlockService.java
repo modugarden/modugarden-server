@@ -2,6 +2,7 @@ package com.modugarden.domain.block.service;
 
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
+import com.modugarden.domain.block.dto.response.BlockUserListResponseDto;
 import com.modugarden.domain.block.dto.response.BlockUserResponseDto;
 import com.modugarden.domain.block.dto.response.UnBlockUserResponseDto;
 import com.modugarden.domain.block.entity.UserBlock;
@@ -10,6 +11,8 @@ import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,5 +39,13 @@ public class BlockService {
         UserBlock userBlock = blockRepository.findByUserAndBlockUser(user, unBlockUser).orElseThrow(() -> new BusinessException(ErrorMessage.BLOCKUSER_NOT_FOUND));
         blockRepository.delete(userBlock);
         return new UnBlockUserResponseDto(userBlock.getUser().getId(), userBlock.getBlockUser().getId());
+    }
+
+    public Slice<BlockUserListResponseDto> readBlockUser(User user, Pageable pageable) {
+        Slice<UserBlock> findUserBlocks = blockRepository.findByUser_Id(user.getId(), pageable);
+        Slice<BlockUserListResponseDto> result = findUserBlocks
+                .map(b -> new BlockUserListResponseDto(b.getBlockUser().getId(), b.getBlockUser().getNickname()
+                        ,b.getBlockUser().getProfileImg(), userRepository.readUserInterestCategory(b.getId())));
+        return result;
     }
 }

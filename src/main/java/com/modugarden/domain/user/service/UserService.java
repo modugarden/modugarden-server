@@ -4,8 +4,13 @@ import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.common.s3.FileService;
 import com.modugarden.domain.board.repository.BoardRepository;
+import com.modugarden.domain.category.entity.InterestCategory;
+import com.modugarden.domain.category.entity.UserInterestCategory;
+import com.modugarden.domain.category.repository.InterestCategoryRepository;
+import com.modugarden.domain.category.repository.UserInterestCategoryRepository;
 import com.modugarden.domain.curation.repository.CurationRepository;
 import com.modugarden.domain.follow.repository.FollowRepository;
+import com.modugarden.domain.user.dto.request.UpdateUserCategoryRequestDto;
 import com.modugarden.domain.user.dto.request.UserNicknameRequestDto;
 import com.modugarden.domain.user.dto.response.*;
 import com.modugarden.domain.user.entity.User;
@@ -18,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -30,6 +36,8 @@ public class UserService {
     private final FileService fileService;
     private final BoardRepository boardRepository;
     private final CurationRepository curationRepository;
+    private final UserInterestCategoryRepository userInterestCategoryRepository;
+    private final InterestCategoryRepository interestCategoryRepository;
 
     public Slice<UserNicknameFindResponseDto> findByNickname(Long userId, String nickname, Pageable pageable) {
         Slice<User> findUsers = userRepository.findByNicknameLike('%' + nickname + '%', pageable);
@@ -79,5 +87,21 @@ public class UserService {
                 followRepository.countByUser_Id(userId),
                 boardRepository.countByUser_Id(userId) + curationRepository.countByUser_Id(userId),
                 categories, followRepository.exists(loginUserId, userId));
+    }
+
+    @Transactional
+    public UpdateUserCategoryResponseDto updateUserCategory(User user, UpdateUserCategoryRequestDto updateUserCategoryRequestDto) {
+        userInterestCategoryRepository.deleteAllByUser(user);
+        List<String> categories = new ArrayList<>();
+        for (String category: updateUserCategoryRequestDto.getCategories()) {
+            InterestCategory interestCategory = interestCategoryRepository.findByCategory(category).get();
+            UserInterestCategory userInterestCategory = UserInterestCategory.builder()
+                    .user(user)
+                    .category(interestCategory)
+                    .build();
+            categories.add(category);
+            userInterestCategoryRepository.save(userInterestCategory);
+        }
+        return new UpdateUserCategoryResponseDto(user.getId(), categories);
     }
 }
