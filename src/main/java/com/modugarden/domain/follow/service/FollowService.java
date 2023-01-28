@@ -1,9 +1,9 @@
 package com.modugarden.domain.follow.service;
 
-import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
+import com.modugarden.domain.follow.dto.FollowRecommendResponseDto;
 import com.modugarden.domain.follow.dto.FollowResponseDto;
 import com.modugarden.domain.follow.dto.isFollowedResponseDto;
 import com.modugarden.domain.follow.entity.Follow;
@@ -16,7 +16,11 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+
+import static com.modugarden.common.error.enums.ErrorMessage.*;
 //여기서는 인자에 @ 사용 안함
 
 
@@ -33,7 +37,7 @@ public class FollowService {
         // 원래는 UserService말고 객체가 와야 함
         // User fromUser = userDetail.getUser();
         Optional<User> oToUser = userRepository.findById(id);
-        oToUser.orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND)); //예외처리
+        oToUser.orElseThrow(() -> new BusinessException(FOLLOW_NOT_FOUND)); //예외처리
         Long fromUser = user.getUserId();
         User toUser = oToUser.get();
 
@@ -42,7 +46,7 @@ public class FollowService {
         Follow follow = new Follow(user.getUser(), toUser);  //getUser로 쓰는 게 맞는 건가,,,
         followRepository.save(follow);
 
-        return new BaseResponseDto(new BaseResponseDto<>(ErrorMessage.SUCCESS));
+        return new BaseResponseDto(new BaseResponseDto<>(SUCCESS));
     }
 
     @Transactional
@@ -51,14 +55,14 @@ public class FollowService {
         // 원래는 UserService말고 객체가 와야 함
         // User fromUser = userDetail.getUser();
         Optional<User> oToUser = userRepository.findById(id);
-        oToUser.orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND));  //예외처리
+        oToUser.orElseThrow(() -> new BusinessException(FOLLOW_NOT_FOUND));  //예외처리
         //User 대신 user 객체가 와야 함
         Long fromUser = user.getUserId();
         User toUser = oToUser.get();
 
         followRepository.deleteByFollowingUserAndUser(user.getUserId(), oToUser.get().getId());
         //리턴을 dto로 해야 한다.
-        return new BaseResponseDto(new BaseResponseDto<>(ErrorMessage.SUCCESS));
+        return new BaseResponseDto(new BaseResponseDto<>(SUCCESS));
     }
 
 
@@ -66,7 +70,7 @@ public class FollowService {
     public int profile(Long id, ModugardenUser user) {
 
         Optional<User> oToUser = userRepository.findById(id);
-        oToUser.orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND));  //예외처리
+        oToUser.orElseThrow(() -> new BusinessException(FOLLOW_NOT_FOUND));  //예외처리
         //User 대신 user 객체가 와야 함
         int followcheck = followRepository.countByUserAndFollowingUser(user.getUserId(), oToUser.get().getId());
         return followcheck;
@@ -105,7 +109,22 @@ public class FollowService {
         return followingList(id, user, pageable);
     }
 
+    // 팔로우할 유저 추천
     public Slice<Follow> findByFollowingId(Long id, Pageable pageable) {
         return followRepository.findByUser(id, pageable);
+    }
+
+    public List<FollowRecommendResponseDto> recommendFollowingList(User user, Pageable pageable){
+        List<FollowRecommendResponseDto> responseDto = new ArrayList<>();
+
+        List<Long> recommendUserIds = followRepository.recommend3FollowingId(user, pageable.getOffset(), pageable.getPageSize());
+        for (Long recommendUserId : recommendUserIds) {
+            User recommendUser = userRepository.findById(recommendUserId).orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
+            List<String> interestCategoryList = userRepository.readUserInterestCategory(recommendUserId);
+
+            responseDto.add(new FollowRecommendResponseDto(recommendUser.getNickname(), recommendUser.getProfileImg(), interestCategoryList));
+        }
+
+        return responseDto;
     }
 }
