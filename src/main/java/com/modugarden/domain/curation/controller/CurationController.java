@@ -52,8 +52,8 @@ public class CurationController {
 
     //큐레이션 하나 조회 api
     @GetMapping("/curations/{curation_id}")
-    public CurationGetResponseDto getCuration(@PathVariable Long curation_id) {
-        return curationService.get(curation_id);
+    public BaseResponseDto<CurationGetResponseDto> getCuration(@PathVariable Long curation_id) {
+        return new BaseResponseDto<>(curationService.get(curation_id));
     }
 
     //회원 큐레이션 조회 api
@@ -76,8 +76,8 @@ public class CurationController {
 
     //큐레이션 좋아요 개수 조회 api
     @GetMapping("/curations/like/{curation_id}")
-    public CurationLikeResponseDto getLikeCuration(@PathVariable Long curation_id) {
-        return curationService.getLike(curation_id);
+    public BaseResponseDto<CurationLikeResponseDto> getLikeCuration(@PathVariable Long curation_id) {
+        return new BaseResponseDto<>(curationService.getLike(curation_id));
     }
 
     //내 프로필 큐레이션 조회 api
@@ -107,5 +107,11 @@ public class CurationController {
                                                                        @AuthenticationPrincipal ModugardenUser user) {
         CurationLikeResponseDto curationLikeResponse = curationService.createUnlikes(curation_id, user);
         return new BaseResponseDto<>(curationLikeResponse);
+    }
+
+    //큐레이션 보관 취소 api
+    @DeleteMapping("/curations/{curation_id}/storage")
+    public BaseResponseDto<CurationStorageResponseDto> storeCancelCuration(@PathVariable Long curation_id, @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(curationService.storeCancelCuration(user, curation_id));
     }
 }
