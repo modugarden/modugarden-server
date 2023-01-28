@@ -36,4 +36,11 @@ public class UserNotification extends BaseTimeEntity {
         this.serviceOnOff = serviceOnOff;
         this.marketingOnOff = marketingOnOff;
     }
+
+    public void updateNotification(Boolean commentOnOff, Boolean followOnOff, Boolean serviceOnOff, Boolean marketingOnOff) {
+        this.commentOnOff = commentOnOff;
+        this.followOnOff = followOnOff;
+        this.serviceOnOff = serviceOnOff;
+        this.marketingOnOff = marketingOnOff;
+    }
 }
