@@ -114,6 +114,15 @@ public class CurationService {
         return myCurationList.map(CurationUserGetResponseDto::new);
     }
 
+    //내 프로필 큐레이션 좋아요 조회 api
+    public CurationGetMyLikeResponseDto getMyLikeCuration(long curation_id,ModugardenUser users) {
+        Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+        if(likeRepository.findByUserAndCuration(users.getUser(), curation).isPresent())
+            return new CurationGetMyLikeResponseDto(users.getUserId(),curation.getId(), true);
+
+        return new CurationGetMyLikeResponseDto(users.getUserId(),curation.getId(), false);
+    }
+
     //큐레이션 삭제
     @Transactional
     public CurationDeleteResponseDto delete(long id, ModugardenUser user) {

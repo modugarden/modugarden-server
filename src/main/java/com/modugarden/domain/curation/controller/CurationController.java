@@ -81,7 +81,13 @@ public class CurationController {
     @GetMapping("/curations/me")
     public PageResponseDto<CurationUserGetResponseDto> getMyCuration(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
         return new PageResponseDto<>(curationService.getMyCuration(user.getUserId(), pageable));
+    }
 
+    //내 프로필 큐레이션 좋아요 여부 조회
+    @GetMapping("/curations/me/like/{curation_id}")
+    public CurationGetMyLikeResponseDto getMyLikeCuration(@PathVariable Long curation_id,
+                                                          @AuthenticationPrincipal ModugardenUser user) {
+        return curationService.getMyLikeCuration(curation_id, user);
     }
 
     //큐레이션 삭제 api
