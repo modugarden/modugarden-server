@@ -11,6 +11,10 @@ import com.modugarden.domain.curation.dto.response.*;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.curation.repository.CurationRepository;
 import com.modugarden.domain.like.repository.LikeRepository;
+import com.modugarden.domain.report.dto.response.ReportUserResponseDto;
+import com.modugarden.domain.report.entity.UserReport;
+import com.modugarden.domain.storage.entity.CurationStorage;
+import com.modugarden.domain.storage.entity.repository.CurationStorageRepository;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +35,7 @@ public class CurationService {
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
     private final FileService fileService;
+    private final CurationStorageRepository curationStorageRepository;
 
     //큐레이션 생성
     @Transactional
@@ -68,6 +73,16 @@ public class CurationService {
             curationRepository.save(modifyCuration);
         }
         return new CurationLikeResponseDto(curation.getId(), curation.getLikeNum());
+    }
+
+    public CurationStorageResponseDto storeCuration(ModugardenUser user, Long curation_id) {
+        Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+        if(curationStorageRepository.findByUserAndCuration(user.getUser(),curation).isPresent())
+            throw new BusinessException(ErrorMessage.WRONG_CURATION_STORAGE);
+
+        CurationStorage curationStorage = new CurationStorage(user.getUser(), curation);
+        curationStorageRepository.save(curationStorage);
+        return new CurationStorageResponseDto(curationStorage.getUser().getId(),curationStorage.getCuration().getId());
     }
 
     //큐레이션 하나 조회 api
