@@ -3,6 +3,7 @@ package com.modugarden.domain.user.controller;
 import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
+import com.modugarden.domain.user.dto.request.UpdateNotificationRequestDto;
 import com.modugarden.domain.user.dto.request.UpdateUserCategoryRequestDto;
 import com.modugarden.domain.user.dto.request.UserNicknameRequestDto;
 import com.modugarden.domain.user.dto.response.*;
@@ -58,5 +59,11 @@ public class UserController {
     public BaseResponseDto<UpdateUserCategoryResponseDto> updateUserCategory(@RequestBody @Valid UpdateUserCategoryRequestDto updateUserCategoryRequestDto
                                                                             , @AuthenticationPrincipal ModugardenUser user) {
         return new BaseResponseDto<>(userService.updateUserCategory(user.getUser(), updateUserCategoryRequestDto));
+    }
+
+    @PatchMapping("/me/notification")
+    public BaseResponseDto<UpdateNotificationResponseDto> updateNotification(@RequestBody @Valid UpdateNotificationRequestDto updateNotificationRequestDto
+                                                                            , @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(userService.updateNotification(user.getUser(), updateNotificationRequestDto));
     }
 }
