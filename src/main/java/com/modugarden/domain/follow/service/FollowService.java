@@ -68,22 +68,40 @@ public class FollowService {
     //user가 following user을 following 함
     //following user을 user가 follower 함
 
-    //팔로잉 명단 조회
-    public Slice<FollowersResponseDto> followerList(Long id, Pageable pageable) {
-        Slice<User> followers = followRepository.findByFollowerUser_Id(id, pageable);
+    //내 팔로워 명단조회
+    public Slice<FollowersResponseDto> meFollowerList(Long id, Pageable pageable) {
+        Slice<User> followers = followRepository.findByFollowingUser_Id(id, pageable);
         Slice<FollowersResponseDto> result = followers
                 .map(u -> new FollowersResponseDto(u.getId(), u.getNickname(), u.getProfileImg()
                         , userRepository.readUserInterestCategory((u.getId()))
                         , followRepository.exists(id, u.getId())));
         return result;
     }
-
-    public Slice<FollowingsResponseDto> followingList(Long id, Pageable pageable) {
-        Slice<User> followings = followRepository.findByFollowingUser_Id(id, pageable);
+    //내 팔로잉 명단조회
+    public Slice<FollowingsResponseDto> meFollowingList(Long id, Pageable pageable) {
+        Slice<User> followings = followRepository.findByUser_Id(id, pageable);
         Slice<FollowingsResponseDto> result = followings
                 .map(u -> new FollowingsResponseDto(u.getId(), u.getNickname(), u.getProfileImg()
                         , userRepository.readUserInterestCategory((u.getId()))
-                        , followRepository.existsFollowing(id, u.getId())));
+                        , followRepository.exists(id, u.getId())));
+        return result;
+    }
+    //타인 팔로워 명단조회
+    public Slice<FollowersResponseDto> othersFollowerList(Long id, Long otherId, Pageable pageable) {
+        Slice<User> followers = followRepository.findByFollowingUser_Id(otherId, pageable);
+        Slice<FollowersResponseDto> result = followers
+                .map(u -> new FollowersResponseDto(u.getId(), u.getNickname(), u.getProfileImg()
+                        , userRepository.readUserInterestCategory((u.getId()))
+                        , followRepository.exists(otherId, u.getId())));
+        return result;
+    }
+    //타인 팔로잉 명단조회
+    public Slice<FollowingsResponseDto> othersFollowingList(Long id, Long otherId, Pageable pageable) {
+        Slice<User> followings = followRepository.findByUser_Id(otherId, pageable);
+        Slice<FollowingsResponseDto> result = followings
+                .map(u -> new FollowingsResponseDto(u.getId(), u.getNickname(), u.getProfileImg()
+                        , userRepository.readUserInterestCategory((u.getId()))
+                        , followRepository.exists(otherId, u.getId())));
         return result;
     }
 }

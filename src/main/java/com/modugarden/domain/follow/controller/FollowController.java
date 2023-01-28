@@ -38,17 +38,28 @@ public class FollowController {
         //if으로 return이 두 개일 경우 밑과 같이 받아옴
         return new BaseResponseDto<isFollowedResponseDto>(followService.profile(id,user));
     }
-
     //user가 following user을 following 함
     //following user을 user가 follower 함
-    //팔로잉 명단조회 -> 팔로잉하는 사람들 가져 오기
-    @GetMapping("/follower/{id}")
-    public SliceResponseDto<FollowersResponseDto> followerList(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
-        return new SliceResponseDto<>(followService.followerList(user.getUserId(), pageable));
-    }
+
     //팔로워 명단조회
-    @GetMapping("/following/{id}")
-    public SliceResponseDto<FollowingsResponseDto> followingList( @AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
-        return new SliceResponseDto<>(followService.followingList(user.getUserId(), pageable));
+    @GetMapping("/me/follower")
+    public SliceResponseDto<FollowersResponseDto> meFollowerList(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+        return new SliceResponseDto<>(followService.meFollowerList(user.getUserId(), pageable));
     }
+    //팔로잉 명단조회
+    @GetMapping("/me/following")
+    public SliceResponseDto<FollowingsResponseDto> meFollowingList( @AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+        return new SliceResponseDto<>(followService.meFollowingList(user.getUserId(), pageable));
+    }
+    //타인 프로필을 봤을 때 타인의 팔로워 명단조회
+    @GetMapping("/{user_id}/follower")
+    public SliceResponseDto<FollowersResponseDto> otherFollowerList(@AuthenticationPrincipal ModugardenUser user, @PathVariable Long userId, Pageable pageable){
+        return new SliceResponseDto<>(followService.othersFollowerList(userId,user.getUserId(),pageable));
+    }
+    //타인 프로필을 봤을 때 타인의 팔로잉 명단조회
+    @GetMapping("/{user_id}/following")
+    public SliceResponseDto<FollowingsResponseDto> otherFollowingList(@AuthenticationPrincipal ModugardenUser user, @PathVariable Long userId, Pageable pageable){
+        return new SliceResponseDto<>(followService.othersFollowingList(userId,user.getUserId(),pageable));
+    }
+
 }
