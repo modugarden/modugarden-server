@@ -33,7 +33,7 @@ public class TokenProvider {
     @Value("${spring.security.jwt.secret}")
     private String secretKey;
 
-    private long ACCESS_TOKEN_EXPIRE_TIME = Duration.ofMinutes(1).toMillis(); // 만료시간 30분
+    private long ACCESS_TOKEN_EXPIRE_TIME = Duration.ofMinutes(30).toMillis(); // 만료시간 30분
 
     private long REFRESH_TOKEN_EXPIRE_TIME = Duration.ofDays(14).toMillis(); // 만료시간 2주
 
@@ -105,7 +105,7 @@ public class TokenProvider {
      * @param accessToken
      * @return 토큰 파싱 후 클레임 반환
      */
-    private Claims parseClaims(String accessToken) {
+    public Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder().setSigningKey(getSigninKey()).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) { // 만료된 토큰이더라도 일단 파싱을 함
@@ -142,9 +142,6 @@ public class TokenProvider {
      * @return 토큰의 유효성 + 만료일자 확인
      */
     public boolean validateToken(String token) {
-        if (token == null){
-            throw new BusinessException(ErrorMessage.TOKEN_IS_NULL);
-        }
         try {
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(getSigninKey()).build().parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
