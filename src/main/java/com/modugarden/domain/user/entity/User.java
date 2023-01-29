@@ -66,4 +66,8 @@ public class User extends BaseTimeEntity {
     public void encodePassword(PasswordEncoder passwordEncoder){
         this.password = passwordEncoder.encode(password);
     }
+
+    public void setOriginalPasswordOfSocialLoginUser(String originalPassword){
+        this.password = originalPassword;
+    }
 }

@@ -4,6 +4,7 @@ import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.domain.auth.dto.*;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.user.dto.request.LoginRequestDto;
+import com.modugarden.domain.user.dto.request.SocialLoginRequestDto;
 import com.modugarden.domain.user.dto.response.DeleteUserResponseDto;
 import com.modugarden.domain.user.service.UserService2;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class AuthController {
 
     @PostMapping("/log-in")
     public BaseResponseDto<TokenDto> login(@RequestBody LoginRequestDto loginRequestDto){
-        TokenDto tokenDto = userService2.login(loginRequestDto);
+        TokenDto tokenDto = userService2.generalLogin(loginRequestDto);
         return new BaseResponseDto<>(tokenDto);
     }
 
@@ -37,4 +38,11 @@ public class AuthController {
     public BaseResponseDto<EmailAuthResponseDto> mailConfirm(@RequestBody EmailAuthRequestDto requestDto){
         return new BaseResponseDto<>(emailService.sendEmail(requestDto));
     }
+
+    @PostMapping("/log-in/social")
+    public BaseResponseDto<TokenDto> googleLogin(@RequestBody SocialLoginRequestDto requestDto){
+        TokenDto tokenDto = userService2.socialLogin(requestDto);
+        return new BaseResponseDto<>(tokenDto);
+    }
+
 }

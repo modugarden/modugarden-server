@@ -6,7 +6,6 @@ import com.modugarden.domain.user.dto.request.SignUpRequestDto;
 import com.modugarden.domain.user.dto.response.NicknameIsDuplicatedResponseDto;
 import com.modugarden.domain.user.dto.response.SignUpResponseDto;
 import com.modugarden.domain.user.service.UserService2;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +24,7 @@ public class UserController2 {
 
     @PostMapping("/sign-up")
     public BaseResponseDto<SignUpResponseDto> signUp(@RequestBody @Valid SignUpRequestDto signUpRequestDto){
-        Long userId = userService2.SignupUser(signUpRequestDto);
+        Long userId = userService2.signupUser(signUpRequestDto);
         return new BaseResponseDto(new SignUpResponseDto(userId));
     }
 
@@ -33,4 +32,5 @@ public class UserController2 {
     public BaseResponseDto<NicknameIsDuplicatedResponseDto> isNicknameDuplicated(@RequestBody NicknameIsDuplicatedRequestDto requestDto){
         return new BaseResponseDto<>(userService2.isNicknameDuplicate(requestDto));
     }
+
 }
