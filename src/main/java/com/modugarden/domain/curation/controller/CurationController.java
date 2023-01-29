@@ -8,8 +8,8 @@ import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.curation.dto.request.CurationCreateRequestDto;
 import com.modugarden.domain.curation.dto.response.*;
-import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.curation.service.CurationService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.MediaType;
@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Pageable;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -28,12 +29,13 @@ public class CurationController {
 
     private final CurationService curationService;
 
-    //큐레이션 생성 api
+    //큐레이션 작성 api
+    @ApiOperation(value = "업로드 페이지 - 큐레이션 작성", notes = "사용자가 큐레이션을 사진과 함께 작성한다.")
     @PostMapping(value = "/curations", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public BaseResponseDto<CurationCreateResponseDto> createCuration(@RequestPart CurationCreateRequestDto curationCreateRequest,
+    public BaseResponseDto<CurationCreateResponseDto> createCuration(@RequestPart @Valid CurationCreateRequestDto curationCreateRequest,
                                                                      @AuthenticationPrincipal ModugardenUser user,
                                                                      @RequestPart MultipartFile file) throws IOException {
-        CurationCreateResponseDto curationCreateResponse = curationService.create(curationCreateRequest, file, user);
+        CurationCreateResponseDto curationCreateResponse = curationService.createCuration(curationCreateRequest, file, user);
         return new BaseResponseDto<>(curationCreateResponse);
     }
 
@@ -52,21 +54,24 @@ public class CurationController {
     }
 
     //큐레이션 하나 조회 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 하나 조회", notes = "특정 큐레이션 한개를 조회 한다.")
     @GetMapping("/curations/{curation_id}")
     public BaseResponseDto<CurationGetResponseDto> getCuration(@PathVariable Long curation_id) {
-        return new BaseResponseDto<>(curationService.get(curation_id));
+        return new BaseResponseDto<>(curationService.getCuration(curation_id));
     }
 
     //회원 큐레이션 조회 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 회원 큐레이션 조회", notes = "특정 회원의 모든 큐레이션을 조회 한다.")
     @GetMapping("/curations/users/{user_id}")
-    public PageResponseDto<CurationUserGetResponseDto> getUserCuration(@PathVariable Long user_id, Pageable pageable) {
-        return new PageResponseDto<>(curationService.getUser(user_id, pageable));
+    public SliceResponseDto<CurationUserGetResponseDto> getUserCuration(@PathVariable Long user_id, Pageable pageable) {
+        return new SliceResponseDto<>(curationService.getUserCuration(user_id, pageable));
     }
 
-    //카테고리, 제목별 큐레이션 검색 api
+    //제목 큐레이션 검색 api
+    @ApiOperation(value = "탐색 피드 - 제목 큐레이션 검색", notes = "제목 으로 큐레이션 검색")
     @GetMapping("/curations/search")
-    public SliceResponseDto<CurationSearchResponseDto> searchCuration(@RequestParam @Valid InterestCategory category, @RequestParam @Valid String title, Pageable pageable) {
-        return new SliceResponseDto<>(curationService.search(category, title, pageable));
+    public SliceResponseDto<CurationSearchResponseDto> searchCuration(@RequestParam @Size(max=50) String title, Pageable pageable) {
+        return new SliceResponseDto<>(curationService.searchCuration(title, pageable));
     }
 
     //카테고리,날짜별 큐레이션 조회 api
@@ -101,6 +106,7 @@ public class CurationController {
     }
 
     //큐레이션 삭제 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 삭제", notes = "사용자의 큐레이션을 삭제한다.")
     @DeleteMapping("/curations/{curation_id}")
     public BaseResponseDto<CurationDeleteResponseDto> deleteCuration(@PathVariable Long curation_id,
                                                                      @AuthenticationPrincipal ModugardenUser user) {
