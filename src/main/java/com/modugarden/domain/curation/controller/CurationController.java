@@ -4,7 +4,6 @@ import com.modugarden.common.response.BaseResponseDto;
 
 import com.modugarden.common.response.PageResponseDto;
 import com.modugarden.common.response.SliceResponseDto;
-import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.curation.dto.request.CurationCreateRequestDto;
 import com.modugarden.domain.curation.dto.response.*;
@@ -40,10 +39,11 @@ public class CurationController {
     }
 
     //큐레이션 좋아요 달기 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 좋아요 달기", notes = "특정 큐레이션에 좋아요 누른다.")
     @PostMapping("/curations/{curation_id}/like")
     public BaseResponseDto<CurationLikeResponseDto> createLikeCuration(@PathVariable Long curation_id,
                                                                        @AuthenticationPrincipal ModugardenUser user) {
-        CurationLikeResponseDto curationLikeResponse = curationService.createLikes(curation_id, user);
+        CurationLikeResponseDto curationLikeResponse = curationService.createLikeCuration(curation_id, user);
         return new BaseResponseDto<>(curationLikeResponse);
     }
 
@@ -75,15 +75,17 @@ public class CurationController {
     }
 
     //카테고리,날짜별 큐레이션 조회 api
+    @ApiOperation(value = "탐색 피드 - 카테고리 별 큐레이션 검색", notes = "카테고리별로 큐레이션 검색")
     @GetMapping("/curations")
-    public SliceResponseDto<CurationSearchResponseDto> getFeedCuration(@RequestParam @Valid InterestCategory category, Pageable pageable) {
+    public SliceResponseDto<CurationSearchResponseDto> getFeedCuration(@RequestParam String category, Pageable pageable) {
         return new SliceResponseDto<>(curationService.getFeed(category, pageable));
     }
 
     //큐레이션 좋아요 개수 조회 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 좋아요 조회", notes = "특정 큐레이션에 좋아요 조회한다.")
     @GetMapping("/curations/like/{curation_id}")
     public BaseResponseDto<CurationLikeResponseDto> getLikeCuration(@PathVariable Long curation_id) {
-        return new BaseResponseDto<>(curationService.getLike(curation_id));
+        return new BaseResponseDto<>(curationService.getLikeCuration(curation_id));
     }
 
     //내 프로필 큐레이션 조회 api
@@ -115,10 +117,11 @@ public class CurationController {
     }
 
     //큐레이션 좋아요 취소 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 좋아요 취소", notes = "특정 큐레이션에 좋아요 취소한다.")
     @DeleteMapping("/curations/{curation_id}/unlike")
     public BaseResponseDto<CurationLikeResponseDto> createUnlikeCuration(@PathVariable Long curation_id,
                                                                        @AuthenticationPrincipal ModugardenUser user) {
-        CurationLikeResponseDto curationLikeResponse = curationService.createUnlikes(curation_id, user);
+        CurationLikeResponseDto curationLikeResponse = curationService.createUnlikeCuration(curation_id, user);
         return new BaseResponseDto<>(curationLikeResponse);
     }
 

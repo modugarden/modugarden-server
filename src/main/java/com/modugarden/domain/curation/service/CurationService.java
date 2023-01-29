@@ -61,13 +61,11 @@ public class CurationService {
 
     //큐레이션 좋아요 달기
     @Transactional
-    public CurationLikeResponseDto createLikes(Long curation_id, ModugardenUser user) {
+    public CurationLikeResponseDto createLikeCuration(Long curation_id, ModugardenUser user) {
         Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
         User users = userRepository.findById(user.getUserId()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
 
-        boolean isAlreadyLike = likeRepository.findByUserAndCuration(users, curation).isPresent();
-
-        if (!isAlreadyLike) {
+        if (likeRepository.findByUserAndCuration(users, curation).isEmpty()) {
             Curation modifyCuration = new Curation(curation.getId(), curation.getTitle(), curation.getLink(), curation.getPreviewImage(), curation.getLikeNum() + 1, curation.getUser(), curation.getCategory());
             CurationLikeRequestDto curationLikeRequestDto = new CurationLikeRequestDto(users, modifyCuration);
 
@@ -110,15 +108,18 @@ public class CurationService {
     }
 
     //카테고리,날짜별 큐레이션 조회
-    public Slice<CurationSearchResponseDto> getFeed(InterestCategory category, Pageable pageable) {
-        Slice<Curation> getFeedCurationList = curationRepository.findAllByCategoryOrderByCreatedDateDesc(category, pageable);
+    public Slice<CurationSearchResponseDto> getFeed(String category, Pageable pageable) {
+        InterestCategory interestCategory = interestCategoryRepository.findByCategory(category).get();
+        Slice<Curation> getFeedCurationList = curationRepository.findAllByCategoryOrderByCreatedDateDesc(interestCategory, pageable);
+
         if (getFeedCurationList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
+
         return getFeedCurationList.map(CurationSearchResponseDto::new);
     }
 
     //큐레이션 좋아요 개수 조회
-    public CurationLikeResponseDto getLike(long id) {
+    public CurationLikeResponseDto getLikeCuration(long id) {
         Curation curation = curationRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
         return new CurationLikeResponseDto(curation.getId(), curation.getLikeNum());
     }
@@ -134,6 +135,7 @@ public class CurationService {
     //내 프로필 큐레이션 좋아요 조회 api
     public CurationGetMyLikeResponseDto getMyLikeCuration(long curation_id,ModugardenUser users) {
         Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+
         if(likeRepository.findByUserAndCuration(users.getUser(), curation).isPresent())
             return new CurationGetMyLikeResponseDto(users.getUserId(),curation.getId(), true);
 
@@ -170,7 +172,7 @@ public class CurationService {
 
     //큐레이션 좋아요 취소
     @Transactional
-    public CurationLikeResponseDto createUnlikes(Long curation_id, ModugardenUser user) {
+    public CurationLikeResponseDto createUnlikeCuration(Long curation_id, ModugardenUser user) {
         Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
         User users = userRepository.findById(user.getUserId()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
 
