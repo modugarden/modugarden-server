@@ -44,9 +44,10 @@ public class ReportService {
         return new ReportUserResponseDto(userReport.getUser().getId(), userReport.getReportUser().getId());
     }
 
-    public ReportCommentResponseDto reportComment(User user, Long reportCommentId, ReportType report) {
+    public ReportCommentResponseDto reportComment(User user, Long reportCommentId, String type) {
         Comment reportComment = commentRepository.findById(reportCommentId).orElseThrow(() -> new BusinessException(ErrorMessage.COMMENT_NOT_FOUND));
-        CommentReport commentReport = new CommentReport(user, reportComment);
+        ReportType reportType = ReportType.from(type);
+        CommentReport commentReport = new CommentReport(reportType, reportComment, user);
         reportCommentRepository.save(commentReport);
         return new ReportCommentResponseDto(commentReport.getUser().getId(), commentReport.getReportComment().getCommentId());
     }
