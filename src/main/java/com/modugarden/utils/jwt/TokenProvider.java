@@ -142,9 +142,6 @@ public class TokenProvider {
      * @return 토큰의 유효성 + 만료일자 확인
      */
     public boolean validateToken(String token) {
-        if (token == null){
-            throw new BusinessException(ErrorMessage.TOKEN_IS_NULL);
-        }
         try {
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(getSigninKey()).build().parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
