@@ -82,9 +82,10 @@ public class CurationController {
     }
 
     //큐레이션 좋아요 개수 조회 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 좋아요 조회", notes = "특정 큐레이션에 좋아요 조회한다.")
     @GetMapping("/curations/like/{curation_id}")
     public BaseResponseDto<CurationLikeResponseDto> getLikeCuration(@PathVariable Long curation_id) {
-        return new BaseResponseDto<>(curationService.getLike(curation_id));
+        return new BaseResponseDto<>(curationService.getLikeCuration(curation_id));
     }
 
     //내 프로필 큐레이션 조회 api
@@ -116,10 +117,11 @@ public class CurationController {
     }
 
     //큐레이션 좋아요 취소 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 좋아요 취소", notes = "특정 큐레이션에 좋아요 취소한다.")
     @DeleteMapping("/curations/{curation_id}/unlike")
     public BaseResponseDto<CurationLikeResponseDto> createUnlikeCuration(@PathVariable Long curation_id,
                                                                        @AuthenticationPrincipal ModugardenUser user) {
-        CurationLikeResponseDto curationLikeResponse = curationService.createUnlikes(curation_id, user);
+        CurationLikeResponseDto curationLikeResponse = curationService.createUnlikeCuration(curation_id, user);
         return new BaseResponseDto<>(curationLikeResponse);
     }
 
