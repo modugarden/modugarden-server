@@ -22,10 +22,10 @@ public class CommentController {
 
     // 댓글 조회
     // 이걸 보통 보드컨트롤러에서 같이 하던데,,흠
-//    @GetMapping("/{board_id}/comments")
-//    public SliceResponseDto<CommentListResponseDto> commentList(@PathVariable Long boardId, @AuthenticationPrincipal ModugardenUser modugardenUser, Pageable pageable) {
-//        return new SliceResponseDto<>(commentService.commentList(boardId, modugardenUser.getUser(), pageable));
-//    }
+    @GetMapping("/{board_id}/comments")
+    public SliceResponseDto<CommentListResponseDto> commentList(@PathVariable Long boardId, @AuthenticationPrincipal ModugardenUser modugardenUser, Pageable pageable) {
+        return new SliceResponseDto<>(commentService.commentList(boardId, modugardenUser.getUser(), pageable));
+    }
 
     // 댓글 작성
     @PostMapping("/{board_id}/comments")
@@ -36,8 +36,7 @@ public class CommentController {
     // 댓글 삭제
     @PatchMapping("/{board_id}/comments/{comment_id}")
     public BaseResponseDto<CommentCreateResponseDto> delete(@AuthenticationPrincipal ModugardenUser modugardenUser) {
-        commentService.delete(modugardenUser.getUser());
-        return new BaseResponseDto<>(commentService.delete(modugardenUser.getUser()));
+        return new BaseResponseDto<>(commentService.delete2(modugardenUser.getUser()));
     }
     //대댓글 작성
 //    @PostMapping("/{board_id}/comments/{parent_comment_id}")

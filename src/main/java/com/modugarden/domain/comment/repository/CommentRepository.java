@@ -5,11 +5,12 @@ import com.modugarden.domain.user.entity.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> , CustomCommentRepository {
     //댓글 조회
-//    Slice<User> findByBoard_Id(Long boardId, Pageable pageable);
+    Slice<Comment> findByBoard_Id(@Param("boardId")Long boardId, Pageable pageable);
 }
