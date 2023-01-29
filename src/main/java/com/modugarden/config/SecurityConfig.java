@@ -31,7 +31,7 @@ public class SecurityConfig {
     private final CustomUserDetailService customUserDetailService;
 
     // swagger - permit url
-    private static final String[] PERMIT_URL_ARRAY = {
+    private static final String[] SWAGGER_PERMIT_URL_ARRAY = {
             /* swagger v2 */
             "/v2/api-docs",
             "/swagger-resources",
@@ -47,6 +47,10 @@ public class SecurityConfig {
             "/swagger-ui/**"
     };
 
+    private static final String[] LOGIN_PERMIT_URL_ARRAY = {
+            "/users/log-in/**",
+            "/users/sign-up/**"
+    };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -58,14 +62,14 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(PERMIT_URL_ARRAY).permitAll() // swagger setting
+                .antMatchers(SWAGGER_PERMIT_URL_ARRAY).permitAll() // swagger setting
                 // 원하는 부분 주석 해제하면 로그인 하지 않고 이용가능하도록 설정 가능
                 //.antMatchers("/users/**").permitAll()
                 //.antMatchers("/follow/**").permitAll()
                 //.antMatchers("/boards/**").permitAll()
                 .antMatchers("/curations/**").permitAll()
                 .antMatchers("/h2/**").permitAll()
-                .antMatchers("/users/log-in", "/users/sign-up/**").permitAll() // 하위 계층의 구체적인 url 정보가 먼저 작성되어야함
+                .antMatchers(LOGIN_PERMIT_URL_ARRAY).permitAll() // 하위 계층의 구체적인 url 정보가 먼저 작성되어야함
                 //.antMatchers("/users/**").hasAnyRole("GENERAL", "CURATOR")
                 .anyRequest().authenticated()
                 .and()

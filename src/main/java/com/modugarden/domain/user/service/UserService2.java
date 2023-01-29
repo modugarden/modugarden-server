@@ -12,6 +12,7 @@ import com.modugarden.domain.category.repository.UserInterestCategoryRepository;
 import com.modugarden.domain.user.dto.request.LoginRequestDto;
 import com.modugarden.domain.user.dto.request.NicknameIsDuplicatedRequestDto;
 import com.modugarden.domain.user.dto.request.SignUpRequestDto;
+import com.modugarden.domain.user.dto.request.SocialLoginRequestDto;
 import com.modugarden.domain.user.dto.response.DeleteUserResponseDto;
 import com.modugarden.domain.user.dto.response.NicknameIsDuplicatedResponseDto;
 import com.modugarden.domain.user.entity.User;
@@ -48,7 +49,9 @@ public class UserService2 {
     private final TokenProvider tokenProvider;
 
     // 회원가입
-    public Long SignupUser(SignUpRequestDto signUpRequestDto){
+    // 소셜 로그인 유저도 해당 회원가입 함수를 사용, 비번은 프론트에서 랜덤비번을 생성해서 줌.
+    public Long signupUser(SignUpRequestDto signUpRequestDto){
+
         // 이메일 중복 체크
         if(userRepository2.existsByEmail(signUpRequestDto.getEmail())){
             // 에러 처리 필요
@@ -73,9 +76,13 @@ public class UserService2 {
                 .authority(UserAuthority.ROLE_GENERAL)
                 .notification(userNotification)
                 .build();
-        
-        signUpUser.encodePassword(passwordEncoder); // 비밀번호 암호화
-        
+
+        // 소셜로그인인 경우에는 비밀번호 암호화하지 않음
+        if(!signUpRequestDto.getIsSocialLogin()){
+            System.out.println("소셜로그인 아님");
+            signUpUser.encodePassword(passwordEncoder); // 비밀번호 암호화
+        }
+
         userRepository2.save(signUpUser);
 
         // 카테고리-유저 생성, 저장
@@ -93,7 +100,8 @@ public class UserService2 {
         return signUpUser.getId();
     }
 
-    public TokenDto login(LoginRequestDto loginRequestDto){
+
+    public TokenDto generalLogin(LoginRequestDto loginRequestDto){
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(), loginRequestDto.getPassword());
@@ -140,5 +148,36 @@ public class UserService2 {
         String userNickname = requestDto.getNickname().toLowerCase(); // 소문자 변환
         Boolean isDuplicate = userRepository2.existsByNickname(userNickname);
         return new NicknameIsDuplicatedResponseDto(isDuplicate, userNickname);
+    }
+
+    public TokenDto socialLogin(SocialLoginRequestDto requestDto){
+        // 이미 소셜로그인은 성공한 상태로 호출됨
+        User socialLoginUser = userRepository2.findByEmail(requestDto.getEmail()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+
+        // 암호화하기 전의 비번
+        String password = socialLoginUser.getPassword();
+
+        // 비번 잠시 암호화했다가 나중에 다시 해제
+        socialLoginUser.encodePassword(passwordEncoder);
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(requestDto.getEmail(), password); // 이미 인증되었기 때문에 DB에 저장된 password 넣어줌
+
+        try{
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);// 비번 검증
+
+            socialLoginUser.setOriginalPasswordOfSocialLoginUser(password); // 다시 비번 회복
+
+            String accessToken = tokenProvider.createAccessToken(authentication);
+            String refreshToken = tokenProvider.createRefreshToken(authentication);
+
+            return TokenDto.builder()
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .build();
+
+        }catch (BadCredentialsException e){
+            System.out.println(e.getMessage());
+            throw new BusinessException(ErrorMessage.WRONG_PASSWORD);
+        }
     }
 }
