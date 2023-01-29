@@ -3,10 +3,6 @@ package com.modugarden.common.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.modugarden.common.error.enums.ErrorMessage;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -43,17 +39,6 @@ public class BaseResponseDto<T> {
         this.code = code;
         this.isSuccess = isSuccess;
         this.message = errorMessage;
-    }
-
-    public String convertToJson() throws JsonProcessingException {
-        if (this == null) {
-            return null;
-        }
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        return mapper.writeValueAsString(this);
     }
 
 }
