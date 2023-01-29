@@ -2,10 +2,13 @@ package com.modugarden.domain.curation.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @Getter
-public class CurationStorageResponseDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class CurationGetMyStorageResponseDto {
     private Long user_id;
     private Long curation_id;
+    private boolean check;
 }

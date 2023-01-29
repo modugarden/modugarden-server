@@ -5,6 +5,7 @@ import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.comment.dto.CommentCreateRequestDto;
 import com.modugarden.domain.comment.dto.CommentCreateResponseDto;
 import com.modugarden.domain.report.dto.response.ReportCommentResponseDto;
+import com.modugarden.domain.report.dto.response.ReportCurationResponseDto;
 import com.modugarden.domain.report.dto.response.ReportUserResponseDto;
 import com.modugarden.domain.report.entity.enums.ReportType;
 import com.modugarden.domain.report.service.ReportService;
@@ -29,5 +30,11 @@ public class ReportController {
     @PostMapping("/comments/{commentId}")
     public BaseResponseDto<ReportCommentResponseDto> reportComment(@PathVariable Long commentId, @RequestParam("report") ReportType report, @AuthenticationPrincipal ModugardenUser user) {
         return new BaseResponseDto<>(reportService.reportComment(user.getUser(), commentId, report));
+    }
+
+    @PostMapping("/curations/{curationId}")
+    public BaseResponseDto<ReportCurationResponseDto> reportCuration(@PathVariable Long curationId, @RequestParam("type") String type
+                                                                    , @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(reportService.reportCuration(user.getUser(), curationId, type));
     }
 }
