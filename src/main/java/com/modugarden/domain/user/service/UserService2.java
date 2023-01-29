@@ -12,7 +12,6 @@ import com.modugarden.domain.category.repository.UserInterestCategoryRepository;
 import com.modugarden.domain.user.dto.request.LoginRequestDto;
 import com.modugarden.domain.user.dto.request.NicknameIsDuplicatedRequestDto;
 import com.modugarden.domain.user.dto.request.SignUpRequestDto;
-import com.modugarden.domain.user.dto.request.SocialLoginRequestDto;
 import com.modugarden.domain.user.dto.response.DeleteUserResponseDto;
 import com.modugarden.domain.user.dto.response.NicknameIsDuplicatedResponseDto;
 import com.modugarden.domain.user.entity.User;
