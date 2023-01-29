@@ -28,8 +28,9 @@ public class ReportController {
     }
     //댓글 신고
     @PostMapping("/comments/{commentId}")
-    public BaseResponseDto<ReportCommentResponseDto> reportComment(@PathVariable Long commentId, @RequestParam("report") ReportType report, @AuthenticationPrincipal ModugardenUser user) {
-        return new BaseResponseDto<>(reportService.reportComment(user.getUser(), commentId, report));
+    public BaseResponseDto<ReportCommentResponseDto> reportComment(@PathVariable Long commentId, @RequestParam("type") String type
+                                                                    , @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(reportService.reportComment(user.getUser(), commentId, type));
     }
 
     @PostMapping("/curations/{curationId}")
