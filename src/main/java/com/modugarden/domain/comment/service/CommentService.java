@@ -27,14 +27,15 @@ public class CommentService {
 
     //댓글 조회
     //부모 댓글로 조회후 부모댓글이 같다면 시간순으로 조회
-    public Slice<CommentListResponseDto> commentList(Long boardId, User user, Pageable pageable){
-        Slice<Comment> comments = commentRepository.findByBoard_Id(boardId, pageable);
+    public Slice<CommentListResponseDto> commentList(Long boardId, Long commentId, User user, Pageable pageable){
+        Board board = boardRepository.findById()
+        Slice<Comment> comments = commentRepository.findAllByCommentIdOrderByCreatedDateDesc(commentId, pageable);
         Slice<CommentListResponseDto> result = comments
                 .map(c -> new CommentListResponseDto(c.getUser().getId(), c.getUser().getNickname(), c.getUser().getProfileImg()
                 ,commentRepository.readComment(c.getCommentId())));
         return result;
     }
-    //댓글 작성
+    //댓글, 대댓글 작성
     public CommentCreateResponseDto write(User user, CommentCreateRequestDto dto){
         Board board = boardRepository.findById(dto.getBoardId()).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_POST));
         Comment newComment = new Comment(dto.getContent(), dto.getParentId(), board, user);

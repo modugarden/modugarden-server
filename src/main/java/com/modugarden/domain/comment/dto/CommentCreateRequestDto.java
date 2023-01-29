@@ -9,9 +9,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentCreateRequestDto {
-    private String commentId;
+    private Long commentId;
     private String content;
-    //validation 할 때 글자 수 제한 물어보기
     private Long parentId;
     private Long boardId;
 }
