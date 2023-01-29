@@ -5,6 +5,7 @@ import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.comment.dto.CommentCreateRequestDto;
 import com.modugarden.domain.comment.dto.CommentCreateResponseDto;
+import com.modugarden.domain.comment.dto.CommentListResponseDto;
 import com.modugarden.domain.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -21,16 +22,15 @@ public class CommentController {
 
     // 댓글 조회
     // 이걸 보통 보드컨트롤러에서 같이 하던데,,흠
-    @GetMapping("/{board_id}/comments")
-    public SliceResponseDto<CommentCreateResponseDto> commentList(@PathVariable Long boardId, @AuthenticationPrincipal ModugardenUser modugardenUser, Pageable pageable) {
-        return new SliceResponseDto<>(commentService.commentList(boardId, modugardenUser.getUser(), pageable));
-    }
+//    @GetMapping("/{board_id}/comments")
+//    public SliceResponseDto<CommentListResponseDto> commentList(@PathVariable Long boardId, @AuthenticationPrincipal ModugardenUser modugardenUser, Pageable pageable) {
+//        return new SliceResponseDto<>(commentService.commentList(boardId, modugardenUser.getUser(), pageable));
+//    }
 
     // 댓글 작성
     @PostMapping("/{board_id}/comments")
     public BaseResponseDto<CommentCreateResponseDto> write(@AuthenticationPrincipal ModugardenUser modugardenUser, @RequestBody CommentCreateRequestDto dto) {
-        CommentCreateResponseDto responseDto = commentService.write(modugardenUser.getUser(), dto);
-        return new BaseResponseDto<>(responseDto);
+        return new BaseResponseDto<>(commentService.write(modugardenUser.getUser(), dto));
     }
 
     // 댓글 삭제
@@ -40,4 +40,7 @@ public class CommentController {
         return new BaseResponseDto<>(commentService.delete(modugardenUser.getUser()));
     }
     //대댓글 작성
+//    @PostMapping("/{board_id}/comments/{parent_comment_id}")
+//    public BaseReposponseDto<CommentCreateResponseDto>children(@AuthenticationPrincipal ModugardenUser modugardenUser, Long parentCommentId, @RequestBody CommentCreateRequestDto dto){
+//    }
 }

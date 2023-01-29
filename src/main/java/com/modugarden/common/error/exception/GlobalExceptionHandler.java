@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
         String errorMsg = String.join(" | ", errorList);
         System.out.println("errorMsg = " + errorMsg);
 
-        log.warn("MethodArgumentNotValidExceptionException : {}", errorMsg);
+        log.warn("MethodArgumen:tNotValidExceptionException : {}", errorMsg);
 
         return new BaseResponseDto(HttpStatus.BAD_REQUEST.value(), false, firstErrorMessage);
     }
