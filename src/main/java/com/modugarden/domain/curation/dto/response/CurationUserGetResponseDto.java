@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,7 +15,8 @@ public class CurationUserGetResponseDto {
     private String title;
     private String link;
     private String preview_image;
-    private Long likeNum;
+    private Long like_num;
+    private LocalDateTime created_date;
     private Long user_id;
     private String user_nickname;
     private String user_profile_image;
@@ -25,7 +28,8 @@ public class CurationUserGetResponseDto {
         this.title = curation.getTitle();
         this.link = curation.getLink();
         this.preview_image = curation.getPreviewImage();
-        this.likeNum=curation.getLikeNum();
+        this.like_num =curation.getLikeNum();
+        this.created_date=curation.getCreatedDate();
         this.user_id = curation.getUser().getId();
         this.user_nickname = curation.getUser().getNickname();
         this.user_profile_image = curation.getUser().getProfileImg();

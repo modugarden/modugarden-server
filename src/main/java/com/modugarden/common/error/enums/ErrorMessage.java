@@ -19,8 +19,8 @@ public enum ErrorMessage {
     WRONG_JWT_TOKEN(NOT_FOUND, false, "JWT 토큰이 잘못되었습니다."),
     WRONG_CURATION(NOT_FOUND,false,"해당 큐레이션을 찾을 수 없습니다."),
     WRONG_CURATION_LIST(NOT_FOUND,false,"해당 큐레이션 리스트를 찾을 수 없습니다."),
+    WRONG_CURATION_FILE(NOT_FOUND,false,"큐레이션 이미지 파일을 찾을 수 없습니다."),
     WRONG_CURATION_DELETE(NOT_FOUND,false,"해당 큐레이션을 삭제할 수 없습니다."),
-    WRONG_CURATION_TITLE(NOT_FOUND,false,"큐레이션 Title 길이는 최대 40자 입니다."),
     WRONG_CURATION_STORAGE(NOT_FOUND,false,"이미 큐레이션이 저장되어 있습니다."),
     WRONG_POST(NOT_FOUND,false,"해당 포스트를 찾을 수 없습니다."),
     FOLLOW_NOT_FOUND(NOT_FOUND, false, "팔로잉을 찾을 수 없습니다."),
@@ -29,7 +29,10 @@ public enum ErrorMessage {
     BLOCKUSER_NOT_FOUND(NOT_FOUND, false, "해당 차단 목록을 찾을 수 없습니다."),
     INVALID_FILE_UPLOAD(BAD_REQUEST, false, "파일 업로드에 실패하였습니다."),
     INVALID_FORMAT(BAD_REQUEST, false, "형식에 맞지 않습니다."),
-    ALREADY_SIGNUPED_EMAIL_USER(BAD_REQUEST, false, "이미 회원가입한 유저입니다.");
+    ALREADY_SIGNUPED_EMAIL_USER(BAD_REQUEST, false, "이미 회원가입한 유저입니다."),
+    UNAUTHORIZED_USER(UNAUTHORIZED, false, "인증되지 않은 유저입니다."),
+    FORBIDDEN_USER(FORBIDDEN, false ,"접근 권한이 없습니다."),
+    TOKEN_IS_NULL(BAD_REQUEST, false, "토큰이 없습니다." );
 
     private final int code;
     private final boolean isSuccess;

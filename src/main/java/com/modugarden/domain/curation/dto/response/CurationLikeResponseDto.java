@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CurationLikeResponseDto {
     private Long id;
-    private Long likeNum;
+    private Long like_num;
 }
