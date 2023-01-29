@@ -34,4 +34,10 @@ public class BaseResponseDto<T> {
         this.isSuccess = errorMessage.isSuccess();
         this.message = errorMessage.getMessage();
     }
+
+    public BaseResponseDto(int code, Boolean isSuccess, String errorMessage){
+        this.code = code;
+        this.isSuccess = isSuccess;
+        this.message = errorMessage;
+    }
 }
