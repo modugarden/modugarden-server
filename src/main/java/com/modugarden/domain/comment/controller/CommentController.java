@@ -22,8 +22,8 @@ public class CommentController {
 
     // 댓글 조회
     @GetMapping("/{board_id}/comments")
-    public SliceResponseDto<CommentListResponseDto> commentList(@PathVariable Long boardId, @AuthenticationPrincipal ModugardenUser modugardenUser, Pageable pageable) {
-        return new SliceResponseDto<>(commentService.commentList(boardId, modugardenUser.getUser(), pageable));
+    public SliceResponseDto<CommentListResponseDto> commentList(@PathVariable Long boardId, @PathVariable Long commentId,  @AuthenticationPrincipal ModugardenUser modugardenUser, Pageable pageable) {
+        return new SliceResponseDto<>(commentService.commentList(boardId, commentId, modugardenUser.getUser(), pageable));
     }
 
     // 댓글, 대댓글 작성

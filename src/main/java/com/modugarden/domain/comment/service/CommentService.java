@@ -10,7 +10,6 @@ import com.modugarden.domain.comment.dto.CommentListResponseDto;
 import com.modugarden.domain.comment.entity.Comment;
 import com.modugarden.domain.comment.repository.CommentRepository;
 import com.modugarden.domain.user.entity.User;
-import com.modugarden.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -22,17 +21,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
     private final BoardRepository boardRepository;
 
     //댓글 조회
     //부모 댓글로 조회후 부모댓글이 같다면 시간순으로 조회
     public Slice<CommentListResponseDto> commentList(Long boardId, Long commentId, User user, Pageable pageable){
-        Board board = boardRepository.findById()
+        boardRepository.findById(boardId);
         Slice<Comment> comments = commentRepository.findAllByCommentIdOrderByCreatedDateDesc(commentId, pageable);
         Slice<CommentListResponseDto> result = comments
                 .map(c -> new CommentListResponseDto(c.getUser().getId(), c.getUser().getNickname(), c.getUser().getProfileImg()
-                ,commentRepository.readComment(c.getCommentId())));
+                ,commentRepository.readComment(c.getContent())));  //commentId를 가져와야 하나?
         return result;
     }
     //댓글, 대댓글 작성
