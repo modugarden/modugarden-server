@@ -106,7 +106,7 @@ public class FollowService {
             User recommendUser = userRepository.findById(recommendUserId).orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
             List<String> interestCategoryList = userRepository.readUserInterestCategory(recommendUserId);
 
-            responseDto.add(new FollowRecommendResponseDto(recommendUser.getNickname(), recommendUser.getProfileImg(), interestCategoryList));
+            responseDto.add(new FollowRecommendResponseDto(recommendUserId, recommendUser.getNickname(), recommendUser.getProfileImg(), interestCategoryList));
         }
         return responseDto;
     }

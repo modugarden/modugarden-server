@@ -29,10 +29,10 @@ public class CustomFollowRepositoryImpl implements CustomFollowRepository {
         return fetchOne != null;
     }
 
-    // 팔로우 추천할 id
+    // 팔로우 추천할 id - 3명이하를 팔로잉하고 있을 때
     // 로그인 유저와 같은 카테고리, 팔로워 많은 순
     @Override
-    public List<Long> recommend3FollowingId(User user, long offset, int size){
+    public List<Long> recommend3FollowingId(User loginUser, long offset, int size){
         QFollow follow2 = new QFollow("follow2");
         NumberPath<Long> categoryCount = Expressions.numberPath(Long.class, "categoryCount");
         NumberPath<Long> followingCount = Expressions.numberPath(Long.class, "followingCount");
@@ -42,16 +42,14 @@ public class CustomFollowRepositoryImpl implements CustomFollowRepository {
                 .select(interestCategory.id)
                 .from(userInterestCategory)
                 .join(userInterestCategory.category, interestCategory)
-                .where(userInterestCategory.user.id.eq(user.getId()))
+                .where(userInterestCategory.user.id.eq(loginUser.getId()))
                 .fetch();
-
 
         // 유저가 팔로잉하고 있는 유저 id들 조회
-        List<Long> loginUserFollowingList = queryFactory.select(follow.user.id).distinct()
+        List<Long> loginUserFollowingList = queryFactory.select(follow.followingUser.id).distinct()
                 .from(follow)
-                .where(follow.followingUser.id.eq(user.getId()))
+                .where(follow.user.id.eq(loginUser.getId()))
                 .fetch();
-
 
         // 유저와 같은 카테고리, 팔로워 많은 순
         List<Tuple> recommendTuple = queryFactory
@@ -61,12 +59,11 @@ public class CustomFollowRepositoryImpl implements CustomFollowRepository {
                                 .where(userInterestCategory.user.id.eq(follow.user.id).and(userInterestCategory.category.id.in(loginUserCategoryList))), "categoryCount"),
                         ExpressionUtils.as(JPAExpressions.select(follow.count())
                                 .from(follow2)
-                                .where(follow2.user.id.eq(follow.user.id)), "followingCount")
+                                .where(follow2.followingUser.id.eq(follow.user.id)), "followingCount")
                 )
                 .from(follow)
-                .where(follow.user.id.ne(user.getId()).and(follow.followingUser.id.ne(user.getId())))// 유저는 제외, 유저가 팔로잉하고 있는 사람은 제외
                 .groupBy(follow.user.id)
-                .having(follow.user.id.notIn(loginUserFollowingList))
+                .having(follow.user.id.notIn(loginUserFollowingList).and(follow.user.id.ne(loginUser.getId())))// 유저는 제외, 유저가 팔로잉하고 있는 사람은 제외
                 .orderBy(categoryCount.desc(), followingCount.desc())
                 .offset(offset)
                 .limit(size)
@@ -74,9 +71,8 @@ public class CustomFollowRepositoryImpl implements CustomFollowRepository {
 
 
         List<Long> recommendUserIds = recommendTuple.stream().map(tuple -> tuple.get(follow.user.id)).collect(Collectors.toList());
-
+        
         return recommendUserIds;
-
     }
 
 }
