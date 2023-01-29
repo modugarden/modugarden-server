@@ -152,6 +152,16 @@ public class CurationService {
         return myCurationStorageList;
     }
 
+    //내 프로필 큐레이션 보관 여부 조회 api
+    public CurationGetMyStorageResponseDto getMyStorageCuration(long curation_id,ModugardenUser users) {
+        Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+
+        if(curationStorageRepository.findByUserAndCuration(users.getUser(), curation).isPresent())
+            return new CurationGetMyStorageResponseDto(users.getUserId(),curation.getId(), true);
+
+        return new CurationGetMyStorageResponseDto(users.getUserId(),curation.getId(), false);
+    }
+
     //큐레이션 삭제
     @Transactional
     public CurationDeleteResponseDto delete(long id, ModugardenUser user) {
