@@ -11,6 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 // 컨트롤러에서 서비스 호출, 서비스에서 레퍼지토리를 호출
@@ -44,22 +45,22 @@ public class FollowController {
 
     //팔로워 명단조회
     @GetMapping("/me/follower")
-    public SliceResponseDto<FollowersResponseDto> meFollowerList(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+    public SliceResponseDto<FollowersResponseDto> meFollowerList(@AuthenticationPrincipal @Valid ModugardenUser user, Pageable pageable) {
         return new SliceResponseDto<>(followService.meFollowerList(user.getUserId(), pageable));
     }
     //팔로잉 명단조회
     @GetMapping("/me/following")
-    public SliceResponseDto<FollowingsResponseDto> meFollowingList( @AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+    public SliceResponseDto<FollowingsResponseDto> meFollowingList( @AuthenticationPrincipal @Valid ModugardenUser user, Pageable pageable) {
         return new SliceResponseDto<>(followService.meFollowingList(user.getUserId(), pageable));
     }
     //타인 프로필을 봤을 때 타인의 팔로워 명단조회
     @GetMapping("/{user_id}/follower")
-    public SliceResponseDto<FollowersResponseDto> otherFollowerList(@AuthenticationPrincipal ModugardenUser user, @PathVariable Long userId, Pageable pageable){
+    public SliceResponseDto<FollowersResponseDto> otherFollowerList(@AuthenticationPrincipal @Valid ModugardenUser user, @PathVariable Long userId, Pageable pageable){
         return new SliceResponseDto<>(followService.othersFollowerList(userId,user.getUserId(),pageable));
     }
     //타인 프로필을 봤을 때 타인의 팔로잉 명단조회
     @GetMapping("/{user_id}/following")
-    public SliceResponseDto<FollowingsResponseDto> otherFollowingList(@AuthenticationPrincipal ModugardenUser user, @PathVariable Long userId, Pageable pageable){
+    public SliceResponseDto<FollowingsResponseDto> otherFollowingList(@AuthenticationPrincipal @Valid ModugardenUser user, @PathVariable Long userId, Pageable pageable){
         return new SliceResponseDto<>(followService.othersFollowingList(userId,user.getUserId(),pageable));
     }
 

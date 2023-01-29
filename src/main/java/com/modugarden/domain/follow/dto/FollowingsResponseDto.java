@@ -2,6 +2,7 @@ package com.modugarden.domain.follow.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
 import java.util.List;
 @AllArgsConstructor
 @Getter
