@@ -3,14 +3,15 @@ package com.modugarden.domain.follow.controller;
 import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
-import com.modugarden.domain.follow.dto.FollowingsResponseDto;
-import com.modugarden.domain.follow.dto.FollowersResponseDto;
-import com.modugarden.domain.follow.dto.isFollowedResponseDto;
+import com.modugarden.domain.follow.dto.*;
 import com.modugarden.domain.follow.service.FollowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 // 컨트롤러에서 서비스 호출, 서비스에서 레퍼지토리를 호출
 @RestController
@@ -62,4 +63,9 @@ public class FollowController {
         return new SliceResponseDto<>(followService.othersFollowingList(userId,user.getUserId(),pageable));
     }
 
+    @GetMapping("/recommendation")
+    public BaseResponseDto<List<FollowRecommendResponseDto>> recommendation(@AuthenticationPrincipal ModugardenUser user, @PageableDefault(size=3) Pageable pageable){
+        List<FollowRecommendResponseDto> responseDto = followService.recommendFollowingList(user.getUser(), pageable);
+        return new BaseResponseDto<>(responseDto);
+    }
 }
