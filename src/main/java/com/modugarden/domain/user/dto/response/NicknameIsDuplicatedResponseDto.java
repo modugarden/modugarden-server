@@ -7,4 +7,5 @@ import lombok.Getter;
 @Getter
 public class NicknameIsDuplicatedResponseDto {
     private Boolean isDuplicated;
+    private String nickname;
 }

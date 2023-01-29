@@ -70,7 +70,7 @@ public class UserService2 {
                 .email(signUpRequestDto.getEmail())
                 .password(signUpRequestDto.getPassword())
                 .birth(signUpRequestDto.getBirth())
-                .nickname(signUpRequestDto.getNickname())
+                .nickname(signUpRequestDto.getNickname().toLowerCase())// 대문자 들어와도 소문자로 저장
                 .authority(UserAuthority.ROLE_GENERAL)
                 .notification(userNotification)
                 .providerType(ProviderType.LOCAL)
@@ -139,7 +139,8 @@ public class UserService2 {
     }
 
     public NicknameIsDuplicatedResponseDto isNicknameDuplicate(NicknameIsDuplicatedRequestDto requestDto) {
-        Boolean isDuplicate = userRepository2.existsByNickname(requestDto.getNickname());
-        return new NicknameIsDuplicatedResponseDto(isDuplicate);
+        String userNickname = requestDto.getNickname().toLowerCase(); // 소문자 변환
+        Boolean isDuplicate = userRepository2.existsByNickname(userNickname);
+        return new NicknameIsDuplicatedResponseDto(isDuplicate, userNickname);
     }
 }
