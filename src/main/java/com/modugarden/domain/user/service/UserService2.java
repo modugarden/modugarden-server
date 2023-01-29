@@ -5,7 +5,6 @@ import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.domain.auth.dto.IsEmailDuplicatedRequestDto;
 import com.modugarden.domain.auth.dto.IsEmailDuplicatedResponseDto;
 import com.modugarden.domain.auth.dto.TokenDto;
-import com.modugarden.domain.auth.oauth.ProviderType;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.entity.UserInterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
@@ -13,6 +12,7 @@ import com.modugarden.domain.category.repository.UserInterestCategoryRepository;
 import com.modugarden.domain.user.dto.request.LoginRequestDto;
 import com.modugarden.domain.user.dto.request.NicknameIsDuplicatedRequestDto;
 import com.modugarden.domain.user.dto.request.SignUpRequestDto;
+import com.modugarden.domain.user.dto.request.SocialLoginRequestDto;
 import com.modugarden.domain.user.dto.response.DeleteUserResponseDto;
 import com.modugarden.domain.user.dto.response.NicknameIsDuplicatedResponseDto;
 import com.modugarden.domain.user.entity.User;
@@ -73,7 +73,6 @@ public class UserService2 {
                 .nickname(signUpRequestDto.getNickname().toLowerCase())// 대문자 들어와도 소문자로 저장
                 .authority(UserAuthority.ROLE_GENERAL)
                 .notification(userNotification)
-                .providerType(ProviderType.LOCAL)
                 .build();
         
         signUpUser.encodePassword(passwordEncoder); // 비밀번호 암호화
@@ -95,7 +94,7 @@ public class UserService2 {
         return signUpUser.getId();
     }
 
-    public TokenDto login(LoginRequestDto loginRequestDto){
+    public TokenDto GeneralLogin(LoginRequestDto loginRequestDto){
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(), loginRequestDto.getPassword());
