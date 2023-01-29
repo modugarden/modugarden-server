@@ -8,6 +8,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class FollowRecommendResponseDto {
+    private Long userId;
     private String nickname;
     private String profileImage;
     private List<String> categories;
