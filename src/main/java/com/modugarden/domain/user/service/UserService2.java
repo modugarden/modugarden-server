@@ -12,7 +12,6 @@ import com.modugarden.domain.category.repository.UserInterestCategoryRepository;
 import com.modugarden.domain.user.dto.request.LoginRequestDto;
 import com.modugarden.domain.user.dto.request.NicknameIsDuplicatedRequestDto;
 import com.modugarden.domain.user.dto.request.SignUpRequestDto;
-import com.modugarden.domain.user.dto.request.SocialLoginRequestDto;
 import com.modugarden.domain.user.dto.response.DeleteUserResponseDto;
 import com.modugarden.domain.user.dto.response.NicknameIsDuplicatedResponseDto;
 import com.modugarden.domain.user.entity.User;
@@ -94,7 +93,7 @@ public class UserService2 {
         return signUpUser.getId();
     }
 
-    public TokenDto GeneralLogin(LoginRequestDto loginRequestDto){
+    public TokenDto login(LoginRequestDto loginRequestDto){
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(), loginRequestDto.getPassword());

@@ -42,7 +42,7 @@ public class UserService {
     private final CurationRepository curationRepository;
     private final UserInterestCategoryRepository userInterestCategoryRepository;
     private final InterestCategoryRepository interestCategoryRepository;
-    private final UserNotificationRepository userNotificationRepository;
+
 
     public Slice<UserNicknameFindResponseDto> findByNickname(Long userId, String nickname, Pageable pageable) {
         Slice<User> findUsers = userRepository.findByNicknameLike('%' + nickname + '%', pageable);
@@ -65,7 +65,8 @@ public class UserService {
     @Transactional
     public UserNicknameResponseDto updateUserNickname(Long userId, UserNicknameRequestDto userNicknameRequestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
-        user.updateNickname(userNicknameRequestDto.getNickname());
+        String userNickname = userNicknameRequestDto.getNickname().toLowerCase();
+        user.updateNickname(userNickname);
         return new UserNicknameResponseDto(user.getNickname());
     }
 
