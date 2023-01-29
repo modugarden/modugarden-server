@@ -110,10 +110,13 @@ public class CurationService {
     }
 
     //카테고리,날짜별 큐레이션 조회
-    public Slice<CurationSearchResponseDto> getFeed(InterestCategory category, Pageable pageable) {
-        Slice<Curation> getFeedCurationList = curationRepository.findAllByCategoryOrderByCreatedDateDesc(category, pageable);
+    public Slice<CurationSearchResponseDto> getFeed(String category, Pageable pageable) {
+        InterestCategory interestCategory = interestCategoryRepository.findByCategory(category).get();
+        Slice<Curation> getFeedCurationList = curationRepository.findAllByCategoryOrderByCreatedDateDesc(interestCategory, pageable);
+
         if (getFeedCurationList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
+
         return getFeedCurationList.map(CurationSearchResponseDto::new);
     }
 
