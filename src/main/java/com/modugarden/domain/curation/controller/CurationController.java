@@ -4,7 +4,6 @@ import com.modugarden.common.response.BaseResponseDto;
 
 import com.modugarden.common.response.PageResponseDto;
 import com.modugarden.common.response.SliceResponseDto;
-import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.curation.dto.request.CurationCreateRequestDto;
 import com.modugarden.domain.curation.dto.response.*;
@@ -40,10 +39,11 @@ public class CurationController {
     }
 
     //큐레이션 좋아요 달기 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 좋아요 달기", notes = "특정 큐레이션에 좋아요 누른다.")
     @PostMapping("/curations/{curation_id}/like")
     public BaseResponseDto<CurationLikeResponseDto> createLikeCuration(@PathVariable Long curation_id,
                                                                        @AuthenticationPrincipal ModugardenUser user) {
-        CurationLikeResponseDto curationLikeResponse = curationService.createLikes(curation_id, user);
+        CurationLikeResponseDto curationLikeResponse = curationService.createLikeCuration(curation_id, user);
         return new BaseResponseDto<>(curationLikeResponse);
     }
 

@@ -61,13 +61,11 @@ public class CurationService {
 
     //큐레이션 좋아요 달기
     @Transactional
-    public CurationLikeResponseDto createLikes(Long curation_id, ModugardenUser user) {
+    public CurationLikeResponseDto createLikeCuration(Long curation_id, ModugardenUser user) {
         Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
         User users = userRepository.findById(user.getUserId()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
 
-        boolean isAlreadyLike = likeRepository.findByUserAndCuration(users, curation).isPresent();
-
-        if (!isAlreadyLike) {
+        if (!likeRepository.findByUserAndCuration(users, curation).isPresent()) {
             Curation modifyCuration = new Curation(curation.getId(), curation.getTitle(), curation.getLink(), curation.getPreviewImage(), curation.getLikeNum() + 1, curation.getUser(), curation.getCategory());
             CurationLikeRequestDto curationLikeRequestDto = new CurationLikeRequestDto(users, modifyCuration);
 
