@@ -5,13 +5,16 @@ import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.domain.auth.dto.IsEmailDuplicatedRequestDto;
 import com.modugarden.domain.auth.dto.IsEmailDuplicatedResponseDto;
 import com.modugarden.domain.auth.dto.TokenDto;
+import com.modugarden.domain.auth.oauth.ProviderType;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.entity.UserInterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 import com.modugarden.domain.category.repository.UserInterestCategoryRepository;
 import com.modugarden.domain.user.dto.request.LoginRequestDto;
+import com.modugarden.domain.user.dto.request.NicknameIsDuplicatedRequestDto;
 import com.modugarden.domain.user.dto.request.SignUpRequestDto;
 import com.modugarden.domain.user.dto.response.DeleteUserResponseDto;
+import com.modugarden.domain.user.dto.response.NicknameIsDuplicatedResponseDto;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.entity.UserNotification;
 import com.modugarden.domain.user.entity.enums.UserAuthority;
@@ -70,6 +73,7 @@ public class UserService2 {
                 .nickname(signUpRequestDto.getNickname())
                 .authority(UserAuthority.ROLE_GENERAL)
                 .notification(userNotification)
+                .providerType(ProviderType.LOCAL)
                 .build();
         
         signUpUser.encodePassword(passwordEncoder); // 비밀번호 암호화
@@ -132,5 +136,10 @@ public class UserService2 {
         // 유저 삭제
         userRepository2.deleteById(user.getId());
         return new DeleteUserResponseDto(user.getId());
+    }
+
+    public NicknameIsDuplicatedResponseDto isNicknameDuplicate(NicknameIsDuplicatedRequestDto requestDto) {
+        Boolean isDuplicate = userRepository2.existsByNickname(requestDto.getNickname());
+        return new NicknameIsDuplicatedResponseDto(isDuplicate);
     }
 }
