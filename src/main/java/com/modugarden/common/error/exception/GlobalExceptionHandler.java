@@ -5,6 +5,7 @@ import com.modugarden.common.error.exception.custom.LoginCancelException;
 import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.common.error.enums.ErrorMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,6 +35,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public BaseResponseDto<ErrorMessage> MethodArgumentNotValidExceptionHandle(MethodArgumentNotValidException e) {
         BindingResult bindingResult = e.getBindingResult();
+
+        String firstErrorMessage = bindingResult.getFieldErrors().get(0).getDefaultMessage();
+
+        // 로그에 에러들 출력
         List<String> errorList = bindingResult.getFieldErrors().stream().map(err -> err.getDefaultMessage()).collect(Collectors.toList());
         System.out.println("errorList = " + errorList);
         String errorMsg = String.join(" | ", errorList);
@@ -41,7 +46,6 @@ public class GlobalExceptionHandler {
 
         log.warn("MethodArgumentNotValidExceptionException : {}", errorMsg);
 
-        return new BaseResponseDto(INVALID_FORMAT);
+        return new BaseResponseDto(HttpStatus.BAD_REQUEST.value(), false, firstErrorMessage);
     }
-
 }
