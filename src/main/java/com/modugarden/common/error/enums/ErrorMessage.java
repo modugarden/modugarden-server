@@ -29,7 +29,10 @@ public enum ErrorMessage {
     BLOCKUSER_NOT_FOUND(NOT_FOUND, false, "해당 차단 목록을 찾을 수 없습니다."),
     INVALID_FILE_UPLOAD(BAD_REQUEST, false, "파일 업로드에 실패하였습니다."),
     INVALID_FORMAT(BAD_REQUEST, false, "형식에 맞지 않습니다."),
-    ALREADY_SIGNUPED_EMAIL_USER(BAD_REQUEST, false, "이미 회원가입한 유저입니다.");
+    ALREADY_SIGNUPED_EMAIL_USER(BAD_REQUEST, false, "이미 회원가입한 유저입니다."),
+    UNAUTHORIZED_USER(UNAUTHORIZED, false, "인증되지 않은 유저입니다."),
+    FORBIDDEN_USER(FORBIDDEN, false ,"접근 권한이 없습니다."),
+    TOKEN_IS_NULL(BAD_REQUEST, false, "토큰이 없습니다." );
 
     private final int code;
     private final boolean isSuccess;

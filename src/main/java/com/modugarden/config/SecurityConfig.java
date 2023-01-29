@@ -1,10 +1,7 @@
 package com.modugarden.config;
 
 import com.modugarden.domain.auth.CustomUserDetailService;
-import com.modugarden.utils.jwt.JwtAccessDeniedHandler;
-import com.modugarden.utils.jwt.JwtAuthenticationEntryPoint;
-import com.modugarden.utils.jwt.JwtAuthenticationFilter;
-import com.modugarden.utils.jwt.TokenProvider;
+import com.modugarden.utils.jwt.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +27,10 @@ public class SecurityConfig {
 
     private final CustomUserDetailService customUserDetailService;
 
+    private final ExceptionHandlerFilter exceptionHandlerFilter;
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
     // swagger - permit url
     private static final String[] SWAGGER_PERMIT_URL_ARRAY = {
             /* swagger v2 */
@@ -49,7 +50,8 @@ public class SecurityConfig {
 
     private static final String[] LOGIN_PERMIT_URL_ARRAY = {
             "/users/log-in/**",
-            "/users/sign-up/**"
+            "/users/sign-up/**",
+            "/users/nickname/isDuplicated"
     };
 
     @Bean
@@ -73,7 +75,8 @@ public class SecurityConfig {
                 //.antMatchers("/users/**").hasAnyRole("GENERAL", "CURATOR")
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)// jwt 커스텀 필터 추가
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)// jwt 커스텀 필터 추가
+                .addFilterBefore(exceptionHandlerFilter, JwtAuthenticationFilter.class) // 서블릿 필터 에러 처리 핸들링
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler);
