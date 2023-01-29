@@ -5,7 +5,6 @@ import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.domain.auth.dto.IsEmailDuplicatedRequestDto;
 import com.modugarden.domain.auth.dto.IsEmailDuplicatedResponseDto;
 import com.modugarden.domain.auth.dto.TokenDto;
-import com.modugarden.domain.auth.oauth.ProviderType;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.entity.UserInterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
@@ -70,10 +69,9 @@ public class UserService2 {
                 .email(signUpRequestDto.getEmail())
                 .password(signUpRequestDto.getPassword())
                 .birth(signUpRequestDto.getBirth())
-                .nickname(signUpRequestDto.getNickname())
+                .nickname(signUpRequestDto.getNickname().toLowerCase())// 대문자 들어와도 소문자로 저장
                 .authority(UserAuthority.ROLE_GENERAL)
                 .notification(userNotification)
-                .providerType(ProviderType.LOCAL)
                 .build();
         
         signUpUser.encodePassword(passwordEncoder); // 비밀번호 암호화
@@ -139,7 +137,8 @@ public class UserService2 {
     }
 
     public NicknameIsDuplicatedResponseDto isNicknameDuplicate(NicknameIsDuplicatedRequestDto requestDto) {
-        Boolean isDuplicate = userRepository2.existsByNickname(requestDto.getNickname());
-        return new NicknameIsDuplicatedResponseDto(isDuplicate);
+        String userNickname = requestDto.getNickname().toLowerCase(); // 소문자 변환
+        Boolean isDuplicate = userRepository2.existsByNickname(userNickname);
+        return new NicknameIsDuplicatedResponseDto(isDuplicate, userNickname);
     }
 }
