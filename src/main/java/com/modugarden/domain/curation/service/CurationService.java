@@ -125,8 +125,8 @@ public class CurationService {
     }
 
     //내 프로필 큐레이션 조회 api
-    public Page<CurationUserGetResponseDto> getMyCuration(long user_id, Pageable pageable) {
-        Page<Curation> myCurationList = curationRepository.findAllByUser_Id(user_id, pageable);
+    public Slice<CurationUserGetResponseDto> getMyCuration(long user_id, Pageable pageable) {
+        Slice<Curation> myCurationList = curationRepository.findAllByUser_Id(user_id, pageable);
         if (myCurationList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
         return myCurationList.map(CurationUserGetResponseDto::new);
@@ -143,8 +143,8 @@ public class CurationService {
     }
     
     //내 프로필 저장한 큐레이션 조회
-    public Page<CurationGetStorageResponseDto> getStorageCuration(long user_id, Pageable pageable) {
-        Page<CurationGetStorageResponseDto> myCurationStorageList = curationRepository.QueryfindAllByUser_Id(user_id, pageable);
+    public Slice<CurationGetStorageResponseDto> getStorageCuration(long user_id, Pageable pageable) {
+        Slice<CurationGetStorageResponseDto> myCurationStorageList = curationRepository.QueryfindAllByUser_Id(user_id, pageable);
 
         if (myCurationStorageList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
