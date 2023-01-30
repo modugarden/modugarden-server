@@ -98,6 +98,7 @@ public class BoardService {
         return imageList.map(BoardUserGetResponseDto::new);
     }
 
+    //포스트 삭제
     @Transactional
     public BoardDeleteResponseDto deleteBoard(long id, ModugardenUser user) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION_DELETE));
@@ -115,6 +116,22 @@ public class BoardService {
             throw new BusinessException(ErrorMessage.WRONG_BOARD_DELETE);
 
         return new BoardDeleteResponseDto(board.getId());
+    }
+
+    //큐레이션 좋아요 취소
+    @Transactional
+    public BoardLikeResponseDto createUnlikeBoard(Long board_id, ModugardenUser user) {
+        Board board = boardRepository.findById(board_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
+        User users = userRepository.findById(user.getUserId()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+
+        likeBoardRepository.findByUserAndBoard(users, board)
+                .ifPresent(it -> {
+                    Board modifyBoard = new Board(board.getId(), board.getTitle(), board.getLike_num()-1, board.getLocation(), board.getUser(),board.getCategory());
+                    likeBoardRepository.delete(it);
+                    boardRepository.save(modifyBoard);
+                });
+
+        return new BoardLikeResponseDto(board.getId(), board.getLike_num());
     }
 
 }

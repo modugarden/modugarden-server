@@ -6,7 +6,6 @@ import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
 import com.modugarden.domain.board.dto.response.*;
 import com.modugarden.domain.board.service.BoardService;
-import com.modugarden.domain.curation.dto.response.CurationDeleteResponseDto;
 import com.modugarden.domain.curation.dto.response.CurationLikeResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -41,9 +40,9 @@ public class BoardController {
     //포스트 좋아요 달기 api
     @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 좋아요 달기", notes = "특정 포스트에 좋아요 누른다.")
     @PostMapping("/boards/{board_id}/like")
-    public BaseResponseDto<BoardLikeResponseDto> createLikeBoard(@PathVariable Long board_id,
-                                                                    @AuthenticationPrincipal ModugardenUser user) {
-        BoardLikeResponseDto boardLikeResponse = boardService.createLikeBoard(board_id, user);
+    public BaseResponseDto<com.modugarden.domain.board.dto.response.BoardLikeResponseDto> createLikeBoard(@PathVariable Long board_id,
+                                                                                                          @AuthenticationPrincipal ModugardenUser user) {
+        com.modugarden.domain.board.dto.response.BoardLikeResponseDto boardLikeResponse = boardService.createLikeBoard(board_id, user);
         return new BaseResponseDto<>(boardLikeResponse);
     }
 
@@ -68,6 +67,15 @@ public class BoardController {
                                                                   @AuthenticationPrincipal ModugardenUser user) {
         BoardDeleteResponseDto boardDeleteResponseDto = boardService.deleteBoard(board_id,user);
         return new BaseResponseDto<>(boardDeleteResponseDto);
+    }
+
+    //포스트 좋아요 취소 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 좋아요 취소", notes = "특정 포스트에 좋아요 취소한다.")
+    @DeleteMapping("/boards/{board_id}/unlike")
+    public BaseResponseDto<BoardLikeResponseDto> createUnlikeBoard(@PathVariable Long board_id,
+                                                                      @AuthenticationPrincipal ModugardenUser user) {
+        BoardLikeResponseDto boardLikeResponseDto = boardService.createUnlikeBoard(board_id, user);
+        return new BaseResponseDto<>(boardLikeResponseDto);
     }
 
 }
