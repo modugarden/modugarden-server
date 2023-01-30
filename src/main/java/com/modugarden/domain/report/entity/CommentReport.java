@@ -32,6 +32,7 @@ public class CommentReport extends BaseTimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Builder
     public CommentReport(ReportType type, Comment reportComment, User user) {
         this.type = type;
         this.reportComment = reportComment;

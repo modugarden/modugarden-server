@@ -32,6 +32,7 @@ public class CurationReport {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Builder
     public CurationReport(ReportType reportType, Curation reportCuration, User user) {
         this.reportType = reportType;
         this.reportCuration = reportCuration;
