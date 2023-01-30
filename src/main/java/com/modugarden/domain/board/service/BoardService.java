@@ -7,15 +7,14 @@ import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.dto.request.BoardCreateImageReqeuestDto;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
 import com.modugarden.domain.board.dto.response.BoardCreateResponseDto;
+import com.modugarden.domain.board.dto.response.BoardGetResponseDto;
 import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.board.entity.BoardImage;
 import com.modugarden.domain.board.repository.BoardImageRepository;
 import com.modugarden.domain.board.repository.BoardRepository;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
-import com.modugarden.domain.curation.dto.request.CurationLikeRequestDto;
-import com.modugarden.domain.curation.dto.response.CurationCreateResponseDto;
-import com.modugarden.domain.curation.entity.Curation;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,5 +58,12 @@ public class BoardService {
         }
 
         return new BoardCreateResponseDto(boardRepository.save(board).getId());
+    }
+
+    //포스트 하나 조회 api
+    public BoardGetResponseDto getBoard(long id) {
+        Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+        List<BoardImage> imageList = boardImageRepository.findAllByBoard_Id(id);
+        return new BoardGetResponseDto(board,imageList);
     }
 }
