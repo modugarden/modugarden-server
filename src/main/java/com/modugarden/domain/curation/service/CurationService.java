@@ -17,7 +17,6 @@ import com.modugarden.domain.storage.entity.repository.CurationStorageRepository
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -125,8 +124,8 @@ public class CurationService {
     }
 
     //내 프로필 큐레이션 조회 api
-    public Page<CurationUserGetResponseDto> getMyCuration(long user_id, Pageable pageable) {
-        Page<Curation> myCurationList = curationRepository.findAllByUser_Id(user_id, pageable);
+    public Slice<CurationUserGetResponseDto> getMyCuration(long user_id, Pageable pageable) {
+        Slice<Curation> myCurationList = curationRepository.findAllByUser_Id(user_id, pageable);
         if (myCurationList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
         return myCurationList.map(CurationUserGetResponseDto::new);
@@ -143,13 +142,23 @@ public class CurationService {
     }
     
     //내 프로필 저장한 큐레이션 조회
-    public Page<CurationGetStorageResponseDto> getStorageCuration(long user_id, Pageable pageable) {
-        Page<CurationGetStorageResponseDto> myCurationStorageList = curationRepository.QueryfindAllByUser_Id(user_id, pageable);
+    public Slice<CurationGetStorageResponseDto> getStorageCuration(long user_id, Pageable pageable) {
+        Slice<CurationGetStorageResponseDto> myCurationStorageList = curationRepository.QueryfindAllByUser_Id(user_id, pageable);
 
         if (myCurationStorageList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
 
         return myCurationStorageList;
+    }
+
+    //내 프로필 큐레이션 보관 여부 조회 api
+    public CurationGetMyStorageResponseDto getMyStorageCuration(long curation_id,ModugardenUser users) {
+        Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+
+        if(curationStorageRepository.findByUserAndCuration(users.getUser(), curation).isPresent())
+            return new CurationGetMyStorageResponseDto(users.getUserId(),curation.getId(), true);
+
+        return new CurationGetMyStorageResponseDto(users.getUserId(),curation.getId(), false);
     }
 
     //큐레이션 삭제

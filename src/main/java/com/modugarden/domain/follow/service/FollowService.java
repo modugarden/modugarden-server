@@ -3,6 +3,7 @@ package com.modugarden.domain.follow.service;
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.domain.auth.entity.ModugardenUser;
+import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.follow.dto.FollowRecommendResponseDto;
 import com.modugarden.domain.follow.dto.FollowersResponseDto;
 import com.modugarden.domain.follow.dto.FollowingsResponseDto;
@@ -28,25 +29,27 @@ import static com.modugarden.common.error.enums.ErrorMessage.USER_NOT_FOUND;
 public class FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository; //@autoWired 대신에 private final로 사용
-
+    //팔로우
     @Transactional
     public isFollowedResponseDto follow(ModugardenUser user, Long id) {
         User oToUser = userRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND)); //예외처리
-        Long fromUser = user.getUserId();
-        Follow follow = new Follow(user.getUser(), oToUser);  //getUser로 쓰는 게 맞는 건가,,,
+        Follow follow = new Follow(user.getUser(), oToUser);
         followRepository.save(follow);
         return new isFollowedResponseDto(true);
     }
-
+    //팔로우 취소
     @Transactional
     //변화가 필요할 때 transactional 사용
     public isFollowedResponseDto unFollow(ModugardenUser user, Long id) {
         User oToUser = userRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND));  //예외처리
-        //User 대신 user 객체가 와야 함
-        Long fromUser = user.getUserId();
         followRepository.deleteByUser_IdAndFollowingUser_Id(user.getUserId(), oToUser.getId());
-        //리턴을 dto로 해야 한다.
-        return new isFollowedResponseDto(true);
+        followRepository.findById(id)
+                .ifPresent(it -> {
+                    Follow follow = new Follow(user.getUser(),oToUser);
+                    followRepository.delete(it);
+                    followRepository.save(follow);
+                });
+        return new isFollowedResponseDto(false);
     }
 
 

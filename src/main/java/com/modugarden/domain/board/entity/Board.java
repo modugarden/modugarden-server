@@ -4,6 +4,7 @@ import com.modugarden.common.entity.BaseTimeEntity;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.user.entity.User;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,9 +22,6 @@ public class Board extends BaseTimeEntity {
     @Column(length = 40, nullable = false)
     private String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String boardImage;
-
     private String location;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,4 +31,13 @@ public class Board extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private InterestCategory category;
+
+    @Builder
+    public Board(Long id, String title, String location, User user, InterestCategory category) {
+        this.id = id;
+        this.title = title;
+        this.location = location;
+        this.user = user;
+        this.category = category;
+    }
 }

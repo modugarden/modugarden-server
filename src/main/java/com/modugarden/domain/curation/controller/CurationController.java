@@ -2,7 +2,6 @@ package com.modugarden.domain.curation.controller;
 
 import com.modugarden.common.response.BaseResponseDto;
 
-import com.modugarden.common.response.PageResponseDto;
 import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.curation.dto.request.CurationCreateRequestDto;
@@ -48,6 +47,7 @@ public class CurationController {
     }
 
     //큐레이션 보관 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 보관", notes = "큐레이션을 보관한다.")
     @PostMapping("/curations/{curation_id}/storage")
     public BaseResponseDto<CurationStorageResponseDto> storeCuration(@PathVariable Long curation_id, @AuthenticationPrincipal ModugardenUser user) {
         return new BaseResponseDto<>(curationService.storeCuration(user, curation_id));
@@ -89,22 +89,33 @@ public class CurationController {
     }
 
     //내 프로필 큐레이션 조회 api
+    @ApiOperation(value = "프로필 페이지 - 큐레이션 조회", notes = "로그인한 사용자의 큐레이션을 조회한다.")
     @GetMapping("/curations/me")
-    public PageResponseDto<CurationUserGetResponseDto> getMyCuration(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
-        return new PageResponseDto<>(curationService.getMyCuration(user.getUserId(), pageable));
+    public SliceResponseDto<CurationUserGetResponseDto> getMyCuration(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+        return new SliceResponseDto<>(curationService.getMyCuration(user.getUserId(), pageable));
     }
 
     //내 프로필 큐레이션 좋아요 여부 조회
+    @ApiOperation(value = "프로필 페이지 - 큐레이션 좋아요 여부 조회", notes = "특정 큐레이션 좋아요 여부 조회한다.")
     @GetMapping("/curations/me/like/{curation_id}")
-    public CurationGetMyLikeResponseDto getMyLikeCuration(@PathVariable Long curation_id,
+    public BaseResponseDto<CurationGetMyLikeResponseDto> getMyLikeCuration(@PathVariable Long curation_id,
                                                           @AuthenticationPrincipal ModugardenUser user) {
-        return curationService.getMyLikeCuration(curation_id, user);
+        return new BaseResponseDto<>(curationService.getMyLikeCuration(curation_id, user));
     }
 
     //내 프로필 저장한 큐레이션 조회
+    @ApiOperation(value = "프로필 페이지 - 저장한 큐레이션 조회", notes = "로그인한 사용자의 저장 큐레이션을 조회한다.")
     @GetMapping("curations/me/storage")
-    public PageResponseDto<CurationGetStorageResponseDto> getStorageCuration(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
-        return new PageResponseDto<>(curationService.getStorageCuration(user.getUserId(), pageable));
+    public SliceResponseDto<CurationGetStorageResponseDto> getStorageCuration(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+        return new SliceResponseDto<>(curationService.getStorageCuration(user.getUserId(), pageable));
+    }
+
+    //내 프로필 큐레이션 좋아요 여부 조회
+    @ApiOperation(value = "프로필 페이지 - 큐레이션 보관 여부 조회", notes = "특정 큐레이션 보관 여부 조회한다.")
+    @GetMapping("/curations/me/storage/{curation_id}")
+    public BaseResponseDto<CurationGetMyStorageResponseDto> getMyStorageCuration(@PathVariable Long curation_id,
+                                                                           @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(curationService.getMyStorageCuration(curation_id, user));
     }
 
     //큐레이션 삭제 api
@@ -126,6 +137,7 @@ public class CurationController {
     }
 
     //큐레이션 보관 취소 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 보관 취소", notes = "보관된 큐레이션을 취소한다.")
     @DeleteMapping("/curations/{curation_id}/storage")
     public BaseResponseDto<CurationStorageResponseDto> storeCancelCuration(@PathVariable Long curation_id, @AuthenticationPrincipal ModugardenUser user) {
         return new BaseResponseDto<>(curationService.storeCancelCuration(user, curation_id));

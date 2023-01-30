@@ -28,18 +28,17 @@ public class Comment extends BaseTimeEntity {
     //포스트 id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
-    private Board boardId;
+    private Board board;
     //회원 id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.NO_ACTION)
-    private User userId;
+    private User user;
     @Builder
-    public Comment(String content, Long parentId, Board boardId, User userId) {
+    public Comment(String content, Long parentId, Board board, User user) {
         this.content = content;
         this.parentId = parentId;
-        this.boardId = boardId;
-        this.userId = userId;
+        this.board = board;
+        this.user = user;
     }
 
 }
