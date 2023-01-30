@@ -6,8 +6,7 @@ import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
 import com.modugarden.domain.board.dto.response.*;
 import com.modugarden.domain.board.service.BoardService;
-import com.modugarden.domain.curation.dto.response.CurationDeleteResponseDto;
-import com.modugarden.domain.curation.dto.response.CurationLikeResponseDto;
+import com.modugarden.domain.curation.dto.response.CurationStorageResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -41,10 +40,17 @@ public class BoardController {
     //포스트 좋아요 달기 api
     @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 좋아요 달기", notes = "특정 포스트에 좋아요 누른다.")
     @PostMapping("/boards/{board_id}/like")
-    public BaseResponseDto<BoardLikeResponseDto> createLikeBoard(@PathVariable Long board_id,
-                                                                    @AuthenticationPrincipal ModugardenUser user) {
-        BoardLikeResponseDto boardLikeResponse = boardService.createLikeBoard(board_id, user);
+    public BaseResponseDto<com.modugarden.domain.board.dto.response.BoardLikeResponseDto> createLikeBoard(@PathVariable Long board_id,
+                                                                                                          @AuthenticationPrincipal ModugardenUser user) {
+        com.modugarden.domain.board.dto.response.BoardLikeResponseDto boardLikeResponse = boardService.createLikeBoard(board_id, user);
         return new BaseResponseDto<>(boardLikeResponse);
+    }
+
+    //포스트 보관 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 보관", notes = "큐레이션을 보관한다.")
+    @PostMapping("/boards/{board_id}/storage")
+    public BaseResponseDto<BoardStorageResponseDto> storeBoard(@PathVariable Long board_id, @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(boardService.storeBoard(user, board_id));
     }
 
     //포스트 하나 조회 api
@@ -61,6 +67,13 @@ public class BoardController {
         return new SliceResponseDto<>(boardService.getUserCuration(user_id, pageable));
     }
 
+    //포스트 좋아요 개수 조회 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 좋아요 조회", notes = "특정 포스트의 좋아요 조회한다.")
+    @GetMapping("/boards/like/{boards_id}")
+    public BaseResponseDto<BoardLikeResponseDto> getLikeBoard(@PathVariable Long boards_id) {
+        return new BaseResponseDto<>(boardService.getLikeBoard(boards_id));
+    }
+
     //포스트 삭제 api
     @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 삭제", notes = "사용자의 포스트를 삭제한다.")
     @DeleteMapping("/boards/{board_id}")
@@ -70,4 +83,19 @@ public class BoardController {
         return new BaseResponseDto<>(boardDeleteResponseDto);
     }
 
+    //포스트 좋아요 취소 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 좋아요 취소", notes = "특정 포스트에 좋아요 취소한다.")
+    @DeleteMapping("/boards/{board_id}/unlike")
+    public BaseResponseDto<BoardLikeResponseDto> createUnlikeBoard(@PathVariable Long board_id,
+                                                                      @AuthenticationPrincipal ModugardenUser user) {
+        BoardLikeResponseDto boardLikeResponseDto = boardService.createUnlikeBoard(board_id, user);
+        return new BaseResponseDto<>(boardLikeResponseDto);
+    }
+
+    //포스트 보관 취소 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 보관 취소", notes = "보관된 포스트를 취소한다.")
+    @DeleteMapping("/boards/{board_id}/storage")
+    public BaseResponseDto<BoardStorageResponseDto> storeCancelBoard(@PathVariable Long board_id, @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(boardService.storeCancelBoard(user, board_id));
+    }
 }
