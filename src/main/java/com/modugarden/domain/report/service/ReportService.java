@@ -2,17 +2,22 @@ package com.modugarden.domain.report.service;
 
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
+import com.modugarden.domain.board.entity.Board;
+import com.modugarden.domain.board.repository.BoardRepository;
 import com.modugarden.domain.comment.entity.Comment;
 import com.modugarden.domain.comment.repository.CommentRepository;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.curation.repository.CurationRepository;
+import com.modugarden.domain.report.dto.response.ReportBoardResponseDto;
 import com.modugarden.domain.report.dto.response.ReportCommentResponseDto;
 import com.modugarden.domain.report.dto.response.ReportCurationResponseDto;
 import com.modugarden.domain.report.dto.response.ReportUserResponseDto;
+import com.modugarden.domain.report.entity.BoardReport;
 import com.modugarden.domain.report.entity.CommentReport;
 import com.modugarden.domain.report.entity.CurationReport;
 import com.modugarden.domain.report.entity.UserReport;
 import com.modugarden.domain.report.entity.enums.ReportType;
+import com.modugarden.domain.report.repository.ReportBoardRepository;
 import com.modugarden.domain.report.repository.ReportCommentRepository;
 import com.modugarden.domain.report.repository.ReportCurationRepository;
 import com.modugarden.domain.report.repository.ReportUserRepository;
@@ -35,6 +40,8 @@ public class ReportService {
     private final ReportCommentRepository reportCommentRepository;
     private final CurationRepository curationRepository;
     private final ReportCurationRepository reportCurationRepository;
+    private final BoardRepository boardRepository;
+    private final ReportBoardRepository reportBoardRepository;
 
 
     public ReportUserResponseDto reportUser(User user, Long reportUserId) {
@@ -58,5 +65,13 @@ public class ReportService {
         CurationReport curationReport = new CurationReport(reportType,reportCuration,user);
         reportCurationRepository.save(curationReport);
         return new ReportCurationResponseDto(curationReport.getUser().getId(), curationReport.getReportCuration().getId());
+    }
+
+    public ReportBoardResponseDto reportBoard(User user, Long boardId, String type) {
+        Board reportBoard = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_POST));
+        ReportType reportType = ReportType.from(type);
+        BoardReport boardReport = new BoardReport(reportType, reportBoard, user);
+        reportBoardRepository.save(boardReport);
+        return new ReportBoardResponseDto(boardReport.getUser().getId(), boardReport.getReportBoard().getId());
     }
 }
