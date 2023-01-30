@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 // 컨트롤러에서 서비스 호출, 서비스에서 레퍼지토리를 호출
 @RequiredArgsConstructor
 @RestController
@@ -27,7 +29,7 @@ public class CommentController {
 
     // 댓글, 대댓글 작성
     @PostMapping("/{board_id}/comments")
-    public BaseResponseDto<CommentCreateResponseDto> write(@AuthenticationPrincipal ModugardenUser modugardenUser, @RequestBody CommentCreateRequestDto dto) {
+    public BaseResponseDto<CommentCreateResponseDto> write(@AuthenticationPrincipal ModugardenUser modugardenUser, @RequestBody @Valid CommentCreateRequestDto dto) {
         return new BaseResponseDto<>(commentService.write(modugardenUser.getUser(), dto));
     }
 
