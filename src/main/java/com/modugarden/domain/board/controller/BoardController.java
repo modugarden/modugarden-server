@@ -8,6 +8,7 @@ import com.modugarden.domain.board.dto.response.*;
 import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.board.service.BoardService;
 import com.modugarden.domain.curation.dto.response.CurationLikeResponseDto;
+import com.modugarden.domain.curation.dto.response.CurationStorageResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +46,13 @@ public class BoardController {
                                                                                                           @AuthenticationPrincipal ModugardenUser user) {
         com.modugarden.domain.board.dto.response.BoardLikeResponseDto boardLikeResponse = boardService.createLikeBoard(board_id, user);
         return new BaseResponseDto<>(boardLikeResponse);
+    }
+
+    //포스트 보관 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 보관", notes = "큐레이션을 보관한다.")
+    @PostMapping("/boards/{board_id}/storage")
+    public BaseResponseDto<BoardStorageResponseDto> storeBoard(@PathVariable Long board_id, @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(boardService.storeBoard(user, board_id));
     }
 
     //포스트 하나 조회 api
