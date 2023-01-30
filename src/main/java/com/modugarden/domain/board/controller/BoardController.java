@@ -1,14 +1,18 @@
 package com.modugarden.domain.board.controller;
 
 import com.modugarden.common.response.BaseResponseDto;
+import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
 import com.modugarden.domain.board.dto.response.BoardCreateResponseDto;
 import com.modugarden.domain.board.dto.response.BoardGetResponseDto;
+import com.modugarden.domain.board.dto.response.BoardUserGetResponseDto;
 import com.modugarden.domain.board.service.BoardService;
 import com.modugarden.domain.curation.dto.response.CurationGetResponseDto;
+import com.modugarden.domain.curation.dto.response.CurationUserGetResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -37,9 +41,17 @@ public class BoardController {
     }
 
     //포스트 하나 조회 api
-    @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 하나 조회", notes = "특정 큐레이션 한개를 조회 한다.")
+    @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 하나 조회", notes = "특정 포스트 한개를 조회 한다.")
     @GetMapping("/boards/{curation_id}")
     public BaseResponseDto<BoardGetResponseDto> getBoard(@PathVariable Long curation_id) {
         return new BaseResponseDto<>(boardService.getBoard(curation_id));
     }
+
+    //회원 큐레이션 조회 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 회원 포스트 조회", notes = "특정 회원의 모든 포스트를 조회 한다.")
+    @GetMapping("/boards/users/{user_id}")
+    public SliceResponseDto<BoardUserGetResponseDto> getUserCuration(@PathVariable Long user_id, Pageable pageable) {
+        return new SliceResponseDto<>(boardService.getUserCuration(user_id, pageable));
+    }
+
 }
