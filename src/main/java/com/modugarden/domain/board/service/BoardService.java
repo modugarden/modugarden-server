@@ -45,6 +45,7 @@ public class BoardService {
         Board board = Board.builder()
                 .title(boardCreateRequestDto.getTitle())
                 .location(boardCreateRequestDto.getLocation())
+                .like_num((long) 0)
                 .user(user.getUser())
                 .category(interestCategory)
                 .build();
@@ -66,4 +67,6 @@ public class BoardService {
         List<BoardImage> imageList = boardImageRepository.findAllByBoard_Id(id);
         return new BoardGetResponseDto(board,imageList);
     }
+
+
 }
