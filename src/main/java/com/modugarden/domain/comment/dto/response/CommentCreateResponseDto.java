@@ -10,4 +10,5 @@ import lombok.Getter;
 @Getter
 public class CommentCreateResponseDto {
     private Long commentId;
+    private Long parentId;
 }

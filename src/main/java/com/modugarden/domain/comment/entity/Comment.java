@@ -34,9 +34,8 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     @Builder
-    public Comment(String content, Long parentId, Board board, User user) {
+    public Comment(String content, Board board, User user) {
         this.content = content;
-        this.parentId = parentId;
         this.board = board;
         this.user = user;
     }

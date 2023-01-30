@@ -35,9 +35,9 @@ public class CommentService {
     @Transactional
     public CommentCreateResponseDto write(User user, CommentCreateRequestDto dto){
         Board board = boardRepository.findById(dto.getBoardId()).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_POST));
-        Comment newComment = new Comment(dto.getContent(), dto.getParentId(), board, user);
+        Comment newComment = new Comment(dto.getContent(), board, user);
         commentRepository.save(newComment);
-        return new CommentCreateResponseDto(newComment.getCommentId());
+        return new CommentCreateResponseDto(newComment.getCommentId(), newComment.getParentId());
     }
 //    //댓글 삭제
 //    public CommentCreateResponseDto delete(User user){
@@ -52,8 +52,8 @@ public class CommentService {
     public CommentCreateResponseDto delete2(User user){
         CommentCreateRequestDto dto = new CommentCreateRequestDto();
         Board board = boardRepository.findById(dto.getBoardId()).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_POST));
-        Comment deleteComment = new Comment(dto.getContent(), dto.getParentId(), board, user);
+        Comment deleteComment = new Comment(dto.getContent(), board, user);
         commentRepository.delete(deleteComment);
-        return new CommentCreateResponseDto(deleteComment.getCommentId());
+        return new CommentCreateResponseDto(deleteComment.getCommentId(), deleteComment.getCommentId());
     }
 }

@@ -21,7 +21,7 @@ import javax.validation.Valid;
 public class CommentController {
     private final CommentService commentService;
 
-    // 댓글 조회
+    // 댓글 전체 조회
     @GetMapping("/{board_id}/comments")
     public SliceResponseDto<CommentListResponseDto> commentList(@PathVariable Long boardId, @AuthenticationPrincipal ModugardenUser modugardenUser, Pageable pageable) {
         return new SliceResponseDto<>(commentService.commentList(boardId, modugardenUser.getUser(), pageable));

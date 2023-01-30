@@ -1,10 +1,7 @@
 package com.modugarden.domain.comment.dto.response;
 
-import com.modugarden.domain.comment.entity.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.List;
 
 @AllArgsConstructor
 @Getter
