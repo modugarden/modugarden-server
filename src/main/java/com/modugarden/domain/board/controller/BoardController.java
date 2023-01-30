@@ -5,9 +5,7 @@ import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
 import com.modugarden.domain.board.dto.response.*;
-import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.board.service.BoardService;
-import com.modugarden.domain.curation.dto.response.CurationLikeResponseDto;
 import com.modugarden.domain.curation.dto.response.CurationStorageResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -94,4 +92,10 @@ public class BoardController {
         return new BaseResponseDto<>(boardLikeResponseDto);
     }
 
+    //포스트 보관 취소 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 보관 취소", notes = "보관된 포스트를 취소한다.")
+    @DeleteMapping("/boards/{board_id}/storage")
+    public BaseResponseDto<BoardStorageResponseDto> storeCancelBoard(@PathVariable Long board_id, @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(boardService.storeCancelBoard(user, board_id));
+    }
 }

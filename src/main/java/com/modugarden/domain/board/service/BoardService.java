@@ -2,6 +2,7 @@ package com.modugarden.domain.board.service;
 
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
+import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.common.s3.FileService;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.dto.request.BoardCreateImageReqeuestDto;
@@ -24,10 +25,14 @@ import com.modugarden.domain.storage.entity.CurationStorage;
 import com.modugarden.domain.storage.entity.repository.BoardStorageRepository;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.repository.UserRepository;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
@@ -142,7 +147,7 @@ public class BoardService {
         return new BoardDeleteResponseDto(board.getId());
     }
 
-    //큐레이션 좋아요 취소
+    //포스트 좋아요 취소
     @Transactional
     public BoardLikeResponseDto createUnlikeBoard(Long board_id, ModugardenUser user) {
         Board board = boardRepository.findById(board_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
@@ -156,6 +161,17 @@ public class BoardService {
                 });
 
         return new BoardLikeResponseDto(board.getId(), board.getLike_num());
+    }
+
+    //포스트 보관 취소
+    public BoardStorageResponseDto storeCancelBoard(ModugardenUser user, Long board_id) {
+        Board board = boardRepository.findById(board_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
+
+        boardStorageRepository.findByUserAndBoard(user.getUser(),board).ifPresent(
+                boardStorageRepository::delete
+        );
+
+        return new BoardStorageResponseDto(board.getUser().getId(), board.getId());
     }
 
 }
