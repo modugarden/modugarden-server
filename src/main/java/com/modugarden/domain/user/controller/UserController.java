@@ -75,4 +75,10 @@ public class UserController {
                                                                             , @AuthenticationPrincipal ModugardenUser user) {
         return new BaseResponseDto<>(userService.updateNotification(user.getUser(), updateNotificationRequestDto));
     }
+
+    @ApiOperation(value = "내 프로필 - 알림 설정 - 현재 알림 설정 조회", notes = "내 프로필 - 알림 설정 - 현재 알림 설정을 조회한다.")
+    @GetMapping("/me/notification")
+    public BaseResponseDto<UserNotificationResponseDto> readUserNotification(@AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(userService.readUserNotification(user.getUser()));
+    }
 }

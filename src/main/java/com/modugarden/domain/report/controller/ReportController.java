@@ -27,19 +27,22 @@ public class ReportController {
     public BaseResponseDto<ReportUserResponseDto> reportUser(@PathVariable Long userId, @AuthenticationPrincipal ModugardenUser user) {
         return new BaseResponseDto<>(reportService.reportUser(user.getUser(), userId));
     }
-    //댓글 신고
+
+    @ApiOperation(value = "포스트 상세보기 - 댓글 - 신고", notes = "포스트 상세보기 - 댓글에서 댓글을 신고한다.")
     @PostMapping("/comments/{commentId}")
     public BaseResponseDto<ReportCommentResponseDto> reportComment(@PathVariable Long commentId, @RequestParam("type") String type
                                                                     , @AuthenticationPrincipal ModugardenUser user) {
         return new BaseResponseDto<>(reportService.reportComment(user.getUser(), commentId, type));
     }
 
+    @ApiOperation(value = "큐레이션 상세보기 - 메인 - 신고", notes = "큐레이션 상세보기 - 메인에서 댓글을 신고한다.")
     @PostMapping("/curations/{curationId}")
     public BaseResponseDto<ReportCurationResponseDto> reportCuration(@PathVariable Long curationId, @RequestParam("type") String type
                                                                     , @AuthenticationPrincipal ModugardenUser user) {
         return new BaseResponseDto<>(reportService.reportCuration(user.getUser(), curationId, type));
     }
 
+    @ApiOperation(value = "포스트 상세보기 - 메인 - 신고", notes = "포스트 상세보기 - 메인에서 댓글을 신고한다.")
     @PostMapping("/boards/{boardId")
     public BaseResponseDto<ReportBoardResponseDto> reportBoard(@PathVariable Long boardId, @RequestParam("type") String type
                                                                 , @AuthenticationPrincipal ModugardenUser user) {
