@@ -3,6 +3,7 @@ package com.modugarden.domain.follow.service;
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.domain.auth.entity.ModugardenUser;
+import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.follow.dto.FollowRecommendResponseDto;
 import com.modugarden.domain.follow.dto.FollowersResponseDto;
 import com.modugarden.domain.follow.dto.FollowingsResponseDto;
@@ -42,7 +43,13 @@ public class FollowService {
     public isFollowedResponseDto unFollow(ModugardenUser user, Long id) {
         User oToUser = userRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND));  //예외처리
         followRepository.deleteByUser_IdAndFollowingUser_Id(user.getUserId(), oToUser.getId());
-        return new isFollowedResponseDto(true);
+        followRepository.findById(id)
+                .ifPresent(it -> {
+                    Follow follow = new Follow(user.getUser(),oToUser);
+                    followRepository.delete(it);
+                    followRepository.save(follow);
+                });
+        return new isFollowedResponseDto(false);
     }
 
 
