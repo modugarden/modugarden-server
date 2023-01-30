@@ -16,24 +16,23 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-@Service
 public class CommentService {
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
 
     //댓글 조회
     //부모 댓글로 조회후 부모댓글이 같다면 시간순으로 조회
-    public Slice<CommentListResponseDto> commentList(Long boardId, Long commentId, User user, Pageable pageable){
-        boardRepository.findById(boardId);
-        Slice<Comment> comments = commentRepository.findAllByCommentIdOrderByCreatedDateDesc(commentId, pageable);
+    public Slice<CommentListResponseDto> commentList(Long boardId, User user, Pageable pageable){
+        Slice<Comment> comments = commentRepository.findAllByBoard_IdOrderByCreatedDateDesc(boardId, pageable);
         Slice<CommentListResponseDto> result = comments
-                .map(c -> new CommentListResponseDto(c.getUser().getId(), c.getUser().getNickname(), c.getUser().getProfileImg()
-                ,commentRepository.readComment(c.getContent())));  //commentId를 가져와야 하나?
+                .map(c -> new CommentListResponseDto(c.getUser().getId(), c.getUser().getNickname(), c.getUser().getProfileImg(), c.getContent()));  //commentId를 가져와야 하나?
         return result;
     }
     //댓글, 대댓글 작성
+    @Transactional
     public CommentCreateResponseDto write(User user, CommentCreateRequestDto dto){
         Board board = boardRepository.findById(dto.getBoardId()).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_POST));
         Comment newComment = new Comment(dto.getContent(), dto.getParentId(), board, user);
@@ -49,6 +48,7 @@ public class CommentService {
 //        return new CommentCreateResponseDto(deleteComment.getCommentId());
 //    }
     //댓글 삭제2
+    @Transactional
     public CommentCreateResponseDto delete2(User user){
         CommentCreateRequestDto dto = new CommentCreateRequestDto();
         Board board = boardRepository.findById(dto.getBoardId()).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_POST));

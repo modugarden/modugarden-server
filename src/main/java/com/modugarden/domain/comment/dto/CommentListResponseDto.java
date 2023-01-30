@@ -1,5 +1,6 @@
 package com.modugarden.domain.comment.dto;
 
+import com.modugarden.domain.comment.entity.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,5 +12,5 @@ public class CommentListResponseDto {
     private Long userId;
     private String nickname;
     private String profileImage;
-    private List<String> comments;
+    private String comment;
 }
