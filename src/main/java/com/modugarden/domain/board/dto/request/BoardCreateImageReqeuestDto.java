@@ -18,12 +18,15 @@ public class BoardCreateImageReqeuestDto {
 
     private String content; // 내용
 
+    private Long userid;
+
     private Board board; // 해당하는 포스트
 
     public BoardImage toEntity() {
         return BoardImage.builder()
                 .image(image)
                 .content(content)
+                .userid(userid)
                 .board(board)
                 .build();
     }
