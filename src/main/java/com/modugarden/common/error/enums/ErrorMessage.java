@@ -32,7 +32,9 @@ public enum ErrorMessage {
     ALREADY_SIGNUPED_EMAIL_USER(BAD_REQUEST, false, "이미 회원가입한 유저입니다."),
     UNAUTHORIZED_USER(UNAUTHORIZED, false, "인증되지 않은 유저입니다."),
     FORBIDDEN_USER(FORBIDDEN, false ,"접근 권한이 없습니다."),
-    TOKEN_IS_NULL(BAD_REQUEST, false, "토큰이 없습니다." );
+    TOKEN_IS_NULL(BAD_REQUEST, false, "토큰이 없습니다." ),
+    WRONG_BOARD_DELETE(NOT_FOUND,false,"해당 큐레이션을 삭제할 수 없습니다.");
+
 
     private final int code;
     private final boolean isSuccess;

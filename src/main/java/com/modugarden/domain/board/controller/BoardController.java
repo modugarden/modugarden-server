@@ -5,11 +5,12 @@ import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
 import com.modugarden.domain.board.dto.response.BoardCreateResponseDto;
+import com.modugarden.domain.board.dto.response.BoardDeleteResponseDto;
 import com.modugarden.domain.board.dto.response.BoardGetResponseDto;
 import com.modugarden.domain.board.dto.response.BoardUserGetResponseDto;
 import com.modugarden.domain.board.service.BoardService;
-import com.modugarden.domain.curation.dto.response.CurationGetResponseDto;
-import com.modugarden.domain.curation.dto.response.CurationUserGetResponseDto;
+import com.modugarden.domain.curation.dto.response.CurationDeleteResponseDto;
+import com.modugarden.domain.curation.dto.response.CurationLikeResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -40,18 +41,29 @@ public class BoardController {
         return new BaseResponseDto<>(boardCreateResponseDto);
     }
 
+
+
     //포스트 하나 조회 api
     @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 하나 조회", notes = "특정 포스트 한개를 조회 한다.")
-    @GetMapping("/boards/{curation_id}")
-    public BaseResponseDto<BoardGetResponseDto> getBoard(@PathVariable Long curation_id) {
-        return new BaseResponseDto<>(boardService.getBoard(curation_id));
+    @GetMapping("/boards/{board_id}")
+    public BaseResponseDto<BoardGetResponseDto> getBoard(@PathVariable Long board_id) {
+        return new BaseResponseDto<>(boardService.getBoard(board_id));
     }
 
-    //회원 큐레이션 조회 api
+    //회원 포스트 조회 api
     @ApiOperation(value = "게시물 상세보기 페이지 - 회원 포스트 조회", notes = "특정 회원의 모든 포스트를 조회 한다.")
     @GetMapping("/boards/users/{user_id}")
     public SliceResponseDto<BoardUserGetResponseDto> getUserCuration(@PathVariable Long user_id, Pageable pageable) {
         return new SliceResponseDto<>(boardService.getUserCuration(user_id, pageable));
+    }
+
+    //포스트 삭제 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 삭제", notes = "사용자의 포스트를 삭제한다.")
+    @DeleteMapping("/boards/{board_id}")
+    public BaseResponseDto<BoardDeleteResponseDto> deleteBoard(@PathVariable Long board_id,
+                                                                  @AuthenticationPrincipal ModugardenUser user) {
+        BoardDeleteResponseDto boardDeleteResponseDto = boardService.deleteBoard(board_id,user);
+        return new BaseResponseDto<>(boardDeleteResponseDto);
     }
 
 }

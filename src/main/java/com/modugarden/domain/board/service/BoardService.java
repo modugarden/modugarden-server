@@ -7,6 +7,7 @@ import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.dto.request.BoardCreateImageReqeuestDto;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
 import com.modugarden.domain.board.dto.response.BoardCreateResponseDto;
+import com.modugarden.domain.board.dto.response.BoardDeleteResponseDto;
 import com.modugarden.domain.board.dto.response.BoardGetResponseDto;
 import com.modugarden.domain.board.dto.response.BoardUserGetResponseDto;
 import com.modugarden.domain.board.entity.Board;
@@ -16,6 +17,8 @@ import com.modugarden.domain.board.repository.BoardRepository;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 
+import com.modugarden.domain.curation.dto.response.CurationDeleteResponseDto;
+import com.modugarden.domain.curation.entity.Curation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -78,5 +81,23 @@ public class BoardService {
         return imageList.map(BoardUserGetResponseDto::new);
     }
 
+    @Transactional
+    public BoardDeleteResponseDto deleteBoard(long id, ModugardenUser user) {
+        Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION_DELETE));
+
+        if (board.getUser().getId().equals(user.getUserId())) {
+            //이미지 모두 삭제
+            boardImageRepository.deleteAllByBoard_Id(id);
+            // 보관 모두 삭제
+//            curationStorageRepository.deleteAllByCuration_Id(curation.getId());
+            // 좋아요 모두 삭제
+//            likeRepository.deleteAllByCuration_Id(curation.getId());
+            boardRepository.delete(board);
+        }
+        else
+            throw new BusinessException(ErrorMessage.WRONG_BOARD_DELETE);
+
+        return new BoardDeleteResponseDto(board.getId());
+    }
 
 }
