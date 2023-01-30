@@ -7,5 +7,5 @@ import lombok.Getter;
 @Getter
 public class ReportCurationResponseDto {
     private Long userId;
-    private Long curationId;
+    private Long reportCurationId;
 }
