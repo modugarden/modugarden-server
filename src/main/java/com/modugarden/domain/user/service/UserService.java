@@ -121,4 +121,11 @@ public class UserService {
         , currentUser.getNotification().getFollowOnOff(), currentUser.getNotification().getServiceOnOff()
         , currentUser.getNotification().getMarketingOnOff());
     }
+
+    public UserNotificationResponseDto readUserNotification(User user) {
+        User currentUser = userRepository.findById(user.getId()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+        UserNotification userNotification = currentUser.getNotification();
+        return new UserNotificationResponseDto(currentUser.getId(), userNotification.getCommentOnOff()
+                , userNotification.getFollowOnOff(), userNotification.getServiceOnOff(), userNotification.getMarketingOnOff());
+    }
 }
