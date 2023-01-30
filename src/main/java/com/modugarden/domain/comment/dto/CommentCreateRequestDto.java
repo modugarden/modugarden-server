@@ -11,9 +11,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentCreateRequestDto {
-    private Long commentId;
     @Size(max= 40)
     private String content;
-    private Long parentId;
-    private Long boardId;
+    private Long parentId; // null이면 부모인겨
 }

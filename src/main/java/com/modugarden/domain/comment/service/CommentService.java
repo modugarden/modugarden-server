@@ -16,6 +16,9 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.modugarden.common.error.enums.ErrorMessage.WRONG_PARENT_COMMENT_ID;
+import static com.modugarden.common.error.enums.ErrorMessage.WRONG_POST;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -33,10 +36,20 @@ public class CommentService {
     }
     //댓글, 대댓글 작성
     @Transactional
-    public CommentCreateResponseDto write(User user, CommentCreateRequestDto dto){
-        Board board = boardRepository.findById(dto.getBoardId()).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_POST));
-        Comment newComment = new Comment(dto.getContent(), dto.getParentId(), board, user);
-        commentRepository.save(newComment);
+    public CommentCreateResponseDto write(User user, Long boardId, CommentCreateRequestDto dto){
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException(WRONG_POST));
+        Comment newComment;
+
+        if(dto.getParentId() == null){ // 부모 댓글 작성
+            newComment = new Comment(dto.getContent(), 0L , board, user); // parentId에 일단 아무값이나 채우기(DB에서 not null 조건 있어서)
+            commentRepository.save(newComment);// newComment.getCommentId -> 자동생성된 값이 있음.
+            newComment.updateParentIdOfParentComment();
+        }else{
+            commentRepository.findById(dto.getParentId()).orElseThrow(() -> new BusinessException(WRONG_PARENT_COMMENT_ID));// 존재하는 부모댓글인지 확인
+
+            newComment = new Comment(dto.getContent(), dto.getParentId(), board, user);
+            commentRepository.save(newComment);
+        }
         return new CommentCreateResponseDto(newComment.getCommentId());
     }
 //    //댓글 삭제
@@ -48,12 +61,12 @@ public class CommentService {
 //        return new CommentCreateResponseDto(deleteComment.getCommentId());
 //    }
     //댓글 삭제2
-    @Transactional
+ /*   @Transactional
     public CommentCreateResponseDto delete2(User user){
         CommentCreateRequestDto dto = new CommentCreateRequestDto();
-        Board board = boardRepository.findById(dto.getBoardId()).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_POST));
+        Board board = boardRepository.findById(dto.getBoardId()).orElseThrow(() -> new BusinessException(WRONG_POST));
         Comment deleteComment = new Comment(dto.getContent(), dto.getParentId(), board, user);
         commentRepository.delete(deleteComment);
         return new CommentCreateResponseDto(deleteComment.getCommentId());
-    }
+    }*/
 }

@@ -28,13 +28,13 @@ public class CommentController {
 
     // 댓글, 대댓글 작성
     @PostMapping("/{board_id}/comments")
-    public BaseResponseDto<CommentCreateResponseDto> write(@AuthenticationPrincipal ModugardenUser modugardenUser, @RequestBody CommentCreateRequestDto dto) {
-        return new BaseResponseDto<>(commentService.write(modugardenUser.getUser(), dto));
+    public BaseResponseDto<CommentCreateResponseDto> write(@AuthenticationPrincipal ModugardenUser modugardenUser, @RequestBody CommentCreateRequestDto dto, @PathVariable Long board_id) {
+        return new BaseResponseDto<>(commentService.write(modugardenUser.getUser(), board_id, dto));
     }
 
     // 댓글 삭제
-    @PatchMapping("/{board_id}/comments/{comment_id}")
+/*    @PatchMapping("/{board_id}/comments/{comment_id}")
     public BaseResponseDto<CommentCreateResponseDto> delete(@AuthenticationPrincipal ModugardenUser modugardenUser) {
         return new BaseResponseDto<>(commentService.delete2(modugardenUser.getUser()));
-    }
+    }*/
 }

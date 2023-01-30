@@ -34,7 +34,10 @@ public enum ErrorMessage {
     FORBIDDEN_USER(FORBIDDEN, false ,"접근 권한이 없습니다."),
     TOKEN_IS_NULL(BAD_REQUEST, false, "토큰이 없습니다." ),
     WRONG_BOARD_DELETE(NOT_FOUND,false,"해당 큐레이션을 삭제할 수 없습니다."),
-    WRONG_BOARD(NOT_FOUND,false,"해당 큐레이션을 찾을 수 없습니다.");
+    WRONG_BOARD(NOT_FOUND,false,"해당 큐레이션을 찾을 수 없습니다."),
+    WRONG_REISSUE_TOKEN_ACCESS(BAD_REQUEST, false, "RefreshToken 탈취가 의심됩니다. 재 로그인해주세요."),
+    FCM_TOKEN_NOT_FOUND(BAD_REQUEST, false, "해당 FCM 토큰이 없습니다."),
+    WRONG_PARENT_COMMENT_ID(BAD_REQUEST, false, "올바르지 않은 부모 댓글 입니다.");
 
     private final int code;
     private final boolean isSuccess;
