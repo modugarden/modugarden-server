@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class ReportCurationResponseDto {
+public class ReportBoardResponseDto {
     private Long userId;
-    private Long reportCurationId;
+    private Long reportBoardId;
 }

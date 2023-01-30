@@ -1,7 +1,6 @@
 package com.modugarden.domain.report.entity;
 
-import com.modugarden.domain.comment.entity.Comment;
-import com.modugarden.domain.curation.entity.Curation;
+import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.report.entity.enums.ReportType;
 import com.modugarden.domain.user.entity.User;
 import lombok.AccessLevel;
@@ -14,7 +13,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class CurationReport {
+public class BoardReport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,17 +24,17 @@ public class CurationReport {
     private ReportType reportType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "curation_id", nullable = false)
-    private Curation reportCuration;
+    @JoinColumn(name = "board_id", nullable = false)
+    private Board reportBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Builder
-    public CurationReport(ReportType reportType, Curation reportCuration, User user) {
+    public BoardReport(ReportType reportType, Board reportBoard, User user) {
         this.reportType = reportType;
-        this.reportCuration = reportCuration;
+        this.reportBoard = reportBoard;
         this.user = user;
     }
 }

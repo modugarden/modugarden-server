@@ -33,8 +33,9 @@ public class CommentReport extends BaseTimeEntity {
     private User user;
 
     @Builder
-    public CommentReport(User user, Comment reportcomment) {
-        this.user = user;
+    public CommentReport(ReportType type, Comment reportComment, User user) {
+        this.type = type;
         this.reportComment = reportComment;
+        this.user = user;
     }
 }
