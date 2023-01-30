@@ -15,6 +15,8 @@ import com.modugarden.domain.board.repository.BoardRepository;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 
+import com.modugarden.domain.curation.dto.response.CurationLikeResponseDto;
+import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.like.repository.LikeBoardRepository;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.repository.UserRepository;
@@ -96,6 +98,12 @@ public class BoardService {
         Slice<BoardImage> imageList = boardImageRepository.findAllByUserid(user_id,pageable);
 
         return imageList.map(BoardUserGetResponseDto::new);
+    }
+
+    //포스트 좋아요 개수 조회
+    public BoardLikeResponseDto getLikeBoard(long id) {
+        Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+        return new BoardLikeResponseDto(board.getId(), board.getLike_num());
     }
 
     //포스트 삭제

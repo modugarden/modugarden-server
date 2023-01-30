@@ -5,6 +5,7 @@ import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
 import com.modugarden.domain.board.dto.response.*;
+import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.board.service.BoardService;
 import com.modugarden.domain.curation.dto.response.CurationLikeResponseDto;
 import io.swagger.annotations.ApiOperation;
@@ -58,6 +59,13 @@ public class BoardController {
     @GetMapping("/boards/users/{user_id}")
     public SliceResponseDto<BoardUserGetResponseDto> getUserCuration(@PathVariable Long user_id, Pageable pageable) {
         return new SliceResponseDto<>(boardService.getUserCuration(user_id, pageable));
+    }
+
+    //포스트 좋아요 개수 조회 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 좋아요 조회", notes = "특정 포스트의 좋아요 조회한다.")
+    @GetMapping("/boards/like/{boards_id}")
+    public BaseResponseDto<BoardLikeResponseDto> getLikeBoard(@PathVariable Long boards_id) {
+        return new BaseResponseDto<>(boardService.getLikeBoard(boards_id));
     }
 
     //포스트 삭제 api
