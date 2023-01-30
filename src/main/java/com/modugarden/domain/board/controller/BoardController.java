@@ -4,10 +4,7 @@ import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
-import com.modugarden.domain.board.dto.response.BoardCreateResponseDto;
-import com.modugarden.domain.board.dto.response.BoardDeleteResponseDto;
-import com.modugarden.domain.board.dto.response.BoardGetResponseDto;
-import com.modugarden.domain.board.dto.response.BoardUserGetResponseDto;
+import com.modugarden.domain.board.dto.response.*;
 import com.modugarden.domain.board.service.BoardService;
 import com.modugarden.domain.curation.dto.response.CurationDeleteResponseDto;
 import com.modugarden.domain.curation.dto.response.CurationLikeResponseDto;
@@ -41,7 +38,14 @@ public class BoardController {
         return new BaseResponseDto<>(boardCreateResponseDto);
     }
 
-
+    //포스트 좋아요 달기 api
+    @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 좋아요 달기", notes = "특정 포스트에 좋아요 누른다.")
+    @PostMapping("/boards/{board_id}/like")
+    public BaseResponseDto<BoardLikeResponseDto> createLikeBoard(@PathVariable Long board_id,
+                                                                    @AuthenticationPrincipal ModugardenUser user) {
+        BoardLikeResponseDto boardLikeResponse = boardService.createLikeBoard(board_id, user);
+        return new BaseResponseDto<>(boardLikeResponse);
+    }
 
     //포스트 하나 조회 api
     @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 하나 조회", notes = "특정 포스트 한개를 조회 한다.")
