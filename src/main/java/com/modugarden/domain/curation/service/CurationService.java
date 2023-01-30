@@ -199,9 +199,7 @@ public class CurationService {
     public CurationStorageResponseDto storeCancelCuration(ModugardenUser user, Long curation_id) {
         Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
         curationStorageRepository.findByUserAndCuration(user.getUser(),curation).ifPresent(
-                it->{
-                    curationStorageRepository.delete(it);
-                }
+                curationStorageRepository::delete
         );
         return new CurationStorageResponseDto(curation.getUser().getId(), curation.getId());
     }

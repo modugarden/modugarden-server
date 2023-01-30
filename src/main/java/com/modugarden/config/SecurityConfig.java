@@ -68,7 +68,7 @@ public class SecurityConfig {
                 // 원하는 부분 주석 해제하면 로그인 하지 않고 이용가능하도록 설정 가능
                 //.antMatchers("/users/**").permitAll()
                 //.antMatchers("/follow/**").permitAll()
-                //.antMatchers("/boards/**").permitAll()
+                .antMatchers("/boards/**").permitAll()
                 .antMatchers("/curations/**").permitAll()
                 .antMatchers("/h2/**").permitAll()
                 .antMatchers(LOGIN_PERMIT_URL_ARRAY).permitAll() // 하위 계층의 구체적인 url 정보가 먼저 작성되어야함
