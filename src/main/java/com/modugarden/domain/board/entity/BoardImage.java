@@ -25,6 +25,7 @@ public class BoardImage {
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
+
     @Builder
     public BoardImage(Long id, String image, String content, Board board) {
         this.id = id;
