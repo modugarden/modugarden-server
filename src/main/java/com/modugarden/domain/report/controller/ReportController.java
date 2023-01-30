@@ -2,13 +2,10 @@ package com.modugarden.domain.report.controller;
 
 import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
-import com.modugarden.domain.comment.dto.CommentCreateRequestDto;
-import com.modugarden.domain.comment.dto.CommentCreateResponseDto;
 import com.modugarden.domain.report.dto.response.ReportBoardResponseDto;
 import com.modugarden.domain.report.dto.response.ReportCommentResponseDto;
 import com.modugarden.domain.report.dto.response.ReportCurationResponseDto;
 import com.modugarden.domain.report.dto.response.ReportUserResponseDto;
-import com.modugarden.domain.report.entity.enums.ReportType;
 import com.modugarden.domain.report.service.ReportService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

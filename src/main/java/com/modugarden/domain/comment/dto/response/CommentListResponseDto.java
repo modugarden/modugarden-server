@@ -1,4 +1,4 @@
-package com.modugarden.domain.comment.dto;
+package com.modugarden.domain.comment.dto.response;
 
 import com.modugarden.domain.comment.entity.Comment;
 import lombok.AllArgsConstructor;
