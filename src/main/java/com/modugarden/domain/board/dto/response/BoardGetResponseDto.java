@@ -30,6 +30,7 @@ public class BoardGetResponseDto {
         this.title=board.getTitle();
         this.created_Date=board.getCreatedDate();
         this.image = image;
+        this.like_num = board.getLike_num();
         this.user_id=board.getUser().getId();
         this.user_nickname=board.getUser().getNickname();
         this.user_profile_image=board.getUser().getProfileImg();

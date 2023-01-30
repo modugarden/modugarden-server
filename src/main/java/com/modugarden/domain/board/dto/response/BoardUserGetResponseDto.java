@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BoardUserGetResponseDto {
+    private Long board_id;
     private Long id;
     private String title;
     private Long like_num;
@@ -27,11 +28,13 @@ public class BoardUserGetResponseDto {
 
 
     public BoardUserGetResponseDto(BoardImage boardImage) {
+        this.board_id = boardImage.getBoard().getId();
         this.id=boardImage.getId();
         this.title=boardImage.getBoard().getTitle();
         this.created_Date=boardImage.getBoard().getCreatedDate();
         this.image = boardImage.getImage();
-        this.user_id=boardImage.getBoard().getId();
+        this.like_num = boardImage.getBoard().getLike_num();
+        this.user_id=boardImage.getBoard().getUser().getId();
         this.user_nickname=boardImage.getBoard().getUser().getNickname();
         this.user_profile_image=boardImage.getBoard().getUser().getProfileImg();
         this.category_category=boardImage.getBoard().getCategory().getCategory();

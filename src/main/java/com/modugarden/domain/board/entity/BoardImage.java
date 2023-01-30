@@ -22,17 +22,21 @@ public class BoardImage {
 
     private String content;
 
+    private Long userid;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
 
+
     @Builder
-    public BoardImage(Long id, String image, String content, Board board) {
+    public BoardImage(Long id, String image, String content, Long userid, Board board) {
         this.id = id;
         this.image = image;
         this.content = content;
+        this.userid = userid;
         this.board = board;
     }
 }

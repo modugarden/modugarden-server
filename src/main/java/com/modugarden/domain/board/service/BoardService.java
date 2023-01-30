@@ -8,6 +8,7 @@ import com.modugarden.domain.board.dto.request.BoardCreateImageReqeuestDto;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
 import com.modugarden.domain.board.dto.response.BoardCreateResponseDto;
 import com.modugarden.domain.board.dto.response.BoardGetResponseDto;
+import com.modugarden.domain.board.dto.response.BoardUserGetResponseDto;
 import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.board.entity.BoardImage;
 import com.modugarden.domain.board.repository.BoardImageRepository;
@@ -16,6 +17,8 @@ import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,7 +48,7 @@ public class BoardService {
         Board board = Board.builder()
                 .title(boardCreateRequestDto.getTitle())
                 .location(boardCreateRequestDto.getLocation())
-                .like_num((long) 0)
+                .like_num((long)0)
                 .user(user.getUser())
                 .category(interestCategory)
                 .build();
@@ -54,7 +57,7 @@ public class BoardService {
 
         for(MultipartFile multipartFile : file) {
             String profileImageUrl = fileService.uploadFile(multipartFile, user.getUserId(), "boardImage");
-            BoardCreateImageReqeuestDto boardCreateImageReqeuestDto = new BoardCreateImageReqeuestDto(profileImageUrl, boardCreateRequestDto.getContent().get(file.indexOf(multipartFile)), board);
+            BoardCreateImageReqeuestDto boardCreateImageReqeuestDto = new BoardCreateImageReqeuestDto(profileImageUrl, boardCreateRequestDto.getContent().get(file.indexOf(multipartFile)),user.getUserId(), board);
             boardImageRepository.save(boardCreateImageReqeuestDto.toEntity());
         }
 
@@ -66,6 +69,13 @@ public class BoardService {
         Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
         List<BoardImage> imageList = boardImageRepository.findAllByBoard_Id(id);
         return new BoardGetResponseDto(board,imageList);
+    }
+
+    //회원 포스트 조회
+    public Slice<BoardUserGetResponseDto> getUserCuration(long user_id, Pageable pageable) {
+        Slice<BoardImage> imageList = boardImageRepository.findAllByUserid(user_id,pageable);
+
+        return imageList.map(BoardUserGetResponseDto::new);
     }
 
 
