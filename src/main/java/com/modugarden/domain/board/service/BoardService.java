@@ -16,10 +16,7 @@ import com.modugarden.domain.board.repository.BoardRepository;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 
-import com.modugarden.domain.curation.dto.response.CurationGetStorageResponseDto;
-import com.modugarden.domain.curation.dto.response.CurationLikeResponseDto;
-import com.modugarden.domain.curation.dto.response.CurationStorageResponseDto;
-import com.modugarden.domain.curation.dto.response.CurationUserGetResponseDto;
+import com.modugarden.domain.curation.dto.response.*;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.like.repository.LikeBoardRepository;
 import com.modugarden.domain.storage.entity.BoardStorage;
@@ -157,6 +154,15 @@ public class BoardService {
         return myBoardStorageList;
     }
 
+    //내 프로필 큐레이션 보관 여부 조회 api
+    public BoardGetMyStorageResponseDto getMyStorageBoard(long board_id, ModugardenUser users) {
+        Board board = boardRepository.findById(board_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+
+        if(boardStorageRepository.findByUserAndBoard(users.getUser(), board).isPresent())
+            return new BoardGetMyStorageResponseDto(users.getUserId(),board.getId(), true);
+
+        return new BoardGetMyStorageResponseDto(users.getUserId(),board.getId(), false);
+    }
 
     //포스트 삭제
     @Transactional

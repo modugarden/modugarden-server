@@ -96,6 +96,14 @@ public class BoardController {
         return new SliceResponseDto<>(boardService.getStorageBoard(user.getUserId(), pageable));
     }
 
+    //내 프로필 포스트 보관 여부 조회
+    @ApiOperation(value = "프로필 페이지 - 큐레이션 보관 여부 조회", notes = "특정 큐레이션 보관 여부 조회한다.")
+    @GetMapping("/boards/me/storage/{board_id}")
+    public BaseResponseDto<BoardGetMyStorageResponseDto> getMyStorageBoard(@PathVariable Long board_id,
+                                                                                 @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(boardService.getMyStorageBoard(board_id, user));
+    }
+
     //포스트 삭제 api
     @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 삭제", notes = "사용자의 포스트를 삭제한다.")
     @DeleteMapping("/boards/{board_id}")
