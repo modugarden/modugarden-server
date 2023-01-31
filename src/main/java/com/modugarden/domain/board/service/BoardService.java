@@ -2,7 +2,6 @@ package com.modugarden.domain.board.service;
 
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
-import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.common.s3.FileService;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.dto.request.BoardCreateImageReqeuestDto;
@@ -16,22 +15,15 @@ import com.modugarden.domain.board.repository.BoardRepository;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 
-import com.modugarden.domain.curation.dto.response.*;
-import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.like.repository.LikeBoardRepository;
 import com.modugarden.domain.storage.entity.BoardStorage;
-import com.modugarden.domain.storage.entity.CurationStorage;
 import com.modugarden.domain.storage.entity.repository.BoardStorageRepository;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.repository.UserRepository;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
@@ -60,19 +52,31 @@ public class BoardService {
 
         InterestCategory interestCategory = interestCategoryRepository.findByCategory(boardCreateRequestDto.getCategory()).get();
 
-        Board board = Board.builder()
+
+        boolean index= false;
+        Board board= Board.builder()
                 .title(boardCreateRequestDto.getTitle())
-                .location(boardCreateRequestDto.getLocation())
-                .like_num((long)0)
+                .like_num((long) 0)
+                .preview_img(" ")
                 .user(user.getUser())
                 .category(interestCategory)
                 .build();
 
-        boardRepository.save(board);
-
         for(MultipartFile multipartFile : file) {
             String profileImageUrl = fileService.uploadFile(multipartFile, user.getUserId(), "boardImage");
-            BoardCreateImageReqeuestDto boardCreateImageReqeuestDto = new BoardCreateImageReqeuestDto(profileImageUrl, boardCreateRequestDto.getContent().get(file.indexOf(multipartFile)),user.getUserId(), board);
+            if(!index) {
+                board = Board.builder()
+                        .title(boardCreateRequestDto.getTitle())
+                        .like_num((long) 0)
+                        .preview_img(profileImageUrl)
+                        .user(user.getUser())
+                        .category(interestCategory)
+                        .build();
+
+                boardRepository.save(board);
+                index=true;
+            }
+            BoardCreateImageReqeuestDto boardCreateImageReqeuestDto = new BoardCreateImageReqeuestDto(profileImageUrl, boardCreateRequestDto.getContent().get(file.indexOf(multipartFile)),boardCreateRequestDto.getLocation().get(file.indexOf(multipartFile)),user.getUserId(), board);
             boardImageRepository.save(boardCreateImageReqeuestDto.toEntity());
         }
 
@@ -86,7 +90,7 @@ public class BoardService {
         User users = userRepository.findById(user.getUserId()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
 
         if (likeBoardRepository.findByUserAndBoard(users, board).isEmpty()) {
-            Board modifyBoard = new Board(board.getId(), board.getTitle(), board.getLike_num()+1, board.getLocation(), board.getUser(),board.getCategory());
+            Board modifyBoard = new Board(board.getId(), board.getTitle(), board.getLike_num()+1,board.getPreview_img(),board.getUser(),board.getCategory());
             BoardLikeRequestDto boardLikeRequestDto = new BoardLikeRequestDto(users, modifyBoard);
 
             likeBoardRepository.save(boardLikeRequestDto.toEntity());
@@ -114,10 +118,19 @@ public class BoardService {
     }
 
     //회원 포스트 조회
-    public Slice<BoardUserGetResponseDto> getUserCuration(long user_id, Pageable pageable) {
+    public Slice<BoardUserGetResponseDto> getUserBoard(long user_id, Pageable pageable) {
         Slice<BoardImage> imageList = boardImageRepository.findAllByUserid(user_id,pageable);
 
         return imageList.map(BoardUserGetResponseDto::new);
+    }
+
+    //포스트 조회
+    public Slice<BoardSearchResponseDto> searchBoard(String title, Pageable pageable) {
+        Slice<Board> board = boardRepository.findAllByTitleLikeOrderByCreatedDateDesc('%' + title + '%', pageable);
+        if (board.isEmpty())
+            throw new BusinessException(ErrorMessage.WRONG_BOARD_LIST);
+
+        return board.map(BoardSearchResponseDto::new);
     }
 
     //포스트 좋아요 개수 조회
@@ -192,7 +205,7 @@ public class BoardService {
 
         likeBoardRepository.findByUserAndBoard(users, board)
                 .ifPresent(it -> {
-                    Board modifyBoard = new Board(board.getId(), board.getTitle(), board.getLike_num()-1, board.getLocation(), board.getUser(),board.getCategory());
+                    Board modifyBoard = new Board(board.getId(), board.getTitle(), board.getLike_num()-1,board.getPreview_img(), board.getUser(),board.getCategory());
                     likeBoardRepository.delete(it);
                     boardRepository.save(modifyBoard);
                 });

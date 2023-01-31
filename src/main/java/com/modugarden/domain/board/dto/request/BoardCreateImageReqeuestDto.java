@@ -18,6 +18,8 @@ public class BoardCreateImageReqeuestDto {
 
     private String content; // 내용
 
+    private String location; // 위치 태그
+
     private Long userid;
 
     private Board board; // 해당하는 포스트
@@ -26,6 +28,7 @@ public class BoardCreateImageReqeuestDto {
         return BoardImage.builder()
                 .image(image)
                 .content(content)
+                .location(location)
                 .userid(userid)
                 .board(board)
                 .build();

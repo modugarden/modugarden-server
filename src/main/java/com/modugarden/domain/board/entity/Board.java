@@ -24,7 +24,7 @@ public class Board extends BaseTimeEntity {
 
     private Long like_num;
 
-    private String location;
+    private String preview_img;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -35,11 +35,11 @@ public class Board extends BaseTimeEntity {
     private InterestCategory category;
 
     @Builder
-    public Board(Long id, String title,Long like_num, String location, User user, InterestCategory category) {
+    public Board(Long id, String title,Long like_num,String preview_img, User user, InterestCategory category) {
         this.id = id;
         this.title = title;
+        this.preview_img = preview_img;
         this.like_num = like_num;
-        this.location = location;
         this.user = user;
         this.category = category;
     }
