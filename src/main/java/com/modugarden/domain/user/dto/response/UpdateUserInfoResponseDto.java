@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class UserNicknameResponseDto {
+public class UpdateUserInfoResponseDto {
     private String nickname;
+    private String profileImage;
 }
