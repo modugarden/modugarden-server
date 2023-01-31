@@ -110,7 +110,7 @@ public class CurationController {
         return new SliceResponseDto<>(curationService.getStorageCuration(user.getUserId(), pageable));
     }
 
-    //내 프로필 큐레이션 좋아요 여부 조회
+    //내 프로필 큐레이션 보관 여부 조회
     @ApiOperation(value = "프로필 페이지 - 큐레이션 보관 여부 조회", notes = "특정 큐레이션 보관 여부 조회한다.")
     @GetMapping("/curations/me/storage/{curation_id}")
     public BaseResponseDto<CurationGetMyStorageResponseDto> getMyStorageCuration(@PathVariable Long curation_id,
