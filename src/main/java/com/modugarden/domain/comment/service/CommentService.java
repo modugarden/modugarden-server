@@ -28,7 +28,7 @@ public class CommentService {
     //댓글 조회
     //부모 댓글로 조회후 부모댓글이 같다면 시간순으로 조회
     public Slice<CommentListResponseDto> commentList(Long boardId, User user, Pageable pageable){
-        Slice<Comment> comments = commentRepository.findAllByBoard_IdOrderByCreatedDateDesc(boardId, pageable);
+        Slice<Comment> comments = commentRepository.findAllByBoard_IdOrderByCreatedDateAsc(boardId, pageable);
         Slice<CommentListResponseDto> result = comments
                 .map(c -> new CommentListResponseDto(c.getUser().getId(), c.getUser().getNickname(), c.getUser().getProfileImg(), c.getContent(), c.getCommentId(), c.getParentId()));  //commentId를 가져와야 하나?
         return result;
