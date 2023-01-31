@@ -136,6 +136,16 @@ public class BoardService {
         return postList.map(BoardUserGetResponseDto::new);
     }
 
+    //내 프로필 포스트 좋아요 조회 api
+    public BoardGetMyLikeResponseDto getMyLikeBoard(long board_id, ModugardenUser users) {
+        Board board = boardRepository.findById(board_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
+
+        if(likeBoardRepository.findByUserAndBoard(users.getUser(), board).isPresent())
+            return new BoardGetMyLikeResponseDto(users.getUserId(),board.getId(), true);
+
+        return new BoardGetMyLikeResponseDto(users.getUserId(),board.getId(), false);
+    }
+
     //포스트 삭제
     @Transactional
     public BoardDeleteResponseDto deleteBoard(long id, ModugardenUser user) {

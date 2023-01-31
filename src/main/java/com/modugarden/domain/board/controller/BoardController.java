@@ -81,6 +81,14 @@ public class BoardController {
         return new SliceResponseDto<>(boardService.getMyBoard(user.getUserId(), pageable));
     }
 
+    //내 프로필 큐레이션 좋아요 여부 조회
+    @ApiOperation(value = "프로필 페이지 - 포스트 좋아요 여부 조회", notes = "특정 포스트 좋아요 여부 조회한다.")
+    @GetMapping("/boards/me/like/{board_id}")
+    public BaseResponseDto<BoardGetMyLikeResponseDto> getMyLikeBoard(@PathVariable Long board_id,
+                                                                     @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(boardService.getMyLikeBoard(board_id, user));
+    }
+
     //포스트 삭제 api
     @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 삭제", notes = "사용자의 포스트를 삭제한다.")
     @DeleteMapping("/boards/{board_id}")
