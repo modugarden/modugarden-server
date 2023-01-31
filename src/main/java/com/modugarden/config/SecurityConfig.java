@@ -51,7 +51,13 @@ public class SecurityConfig {
     private static final String[] LOGIN_PERMIT_URL_ARRAY = {
             "/users/log-in/**",
             "/users/sign-up/**",
-            "/users/nickname/isDuplicated"
+            "/users/nickname/isDuplicated",
+            "/users/token-reissue"
+    };
+
+    private static final String[] ONLY_CURATOR_URL_ARRAY = {
+            "/curations",
+            "curations/me/**"
     };
 
     @Bean

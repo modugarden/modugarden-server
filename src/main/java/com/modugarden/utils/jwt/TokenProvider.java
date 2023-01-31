@@ -3,6 +3,7 @@ package com.modugarden.utils.jwt;
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +50,7 @@ public class TokenProvider {
 //        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
 //    }
 
-    protected String createToken(Authentication authentication, long tokenValid) {
+    protected String createToken(Authentication authentication, long tokenValidTime) {
         List<String> authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
@@ -61,11 +62,10 @@ public class TokenProvider {
         // ex) sub :
         Claims claims = Jwts.claims().setSubject(authentication.getName()); // JWT payload 에 저장되는 정보단위 - 현재 : 이메일
         claims.put("roles", authorities); // 정보는 key/value 쌍으로 저장됩니다.
-
         return Jwts.builder()
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(new Date()) // 토큰 발행 시간
-                .setExpiration(new Date(now.getTime() + tokenValid)) // 토큰 만료 시간
+                .setExpiration(new Date(now.getTime() + tokenValidTime)) // 토큰 만료 시간
                 .signWith(getSigninKey(), SignatureAlgorithm.HS256)  // 사용할 암호화 알고리즘
                 // signature 에 들어갈 secret 값 세팅
                 .compact();
@@ -120,7 +120,11 @@ public class TokenProvider {
      * @return 토큰에서 유저 이메일 획득
      */
     public String getUserEmail(String token) {
-        return Jwts.parserBuilder().setSigningKey(getSigninKey()).build().parseClaimsJws(token).getBody().getSubject();
+        try {
+            return Jwts.parserBuilder().setSigningKey(getSigninKey()).build().parseClaimsJws(token).getBody().getSubject();
+        } catch (ExpiredJwtException e) { // 만료된 토큰이더라도 일단 파싱을 함
+            return e.getClaims().getSubject(); // 만료된 토큰이더라도 반환하는 이유는 재발행 때문
+        }
     }
 
     /**
@@ -145,7 +149,7 @@ public class TokenProvider {
         try {
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(getSigninKey()).build().parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException | DecodingException e) {
             log.info("잘못된 JWT 서명입니다.");
             throw new BusinessException(ErrorMessage.WRONG_JWT_SIGNITURE);
         } catch (ExpiredJwtException e) {
@@ -159,4 +163,25 @@ public class TokenProvider {
             throw new BusinessException(ErrorMessage.WRONG_JWT_TOKEN);
         }
     }
+
+    public boolean validateAccessTokenForReissue(String token) {
+        try {
+            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(getSigninKey()).build().parseClaimsJws(token);
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException | DecodingException e) {
+            log.info("잘못된 JWT 서명입니다.");
+            throw new BusinessException(ErrorMessage.WRONG_JWT_SIGNITURE);
+        } catch (ExpiredJwtException e) {
+            log.info("만료된 JWT 토큰입니다.");
+            // throw new BusinessException(ErrorMessage.EXPIRED_JWT_TOKEN);
+        } catch (UnsupportedJwtException e) {
+            log.info("지원되지 않는 JWT 토큰입니다.");
+            throw new BusinessException(ErrorMessage.NOT_APPLY_JWT_TOKEN);
+        } catch (IllegalArgumentException e) {
+            log.info("JWT 토큰이 잘못되었습니다.");
+            throw new BusinessException(ErrorMessage.WRONG_JWT_TOKEN);
+        }
+        return true;
+    }
+
 }

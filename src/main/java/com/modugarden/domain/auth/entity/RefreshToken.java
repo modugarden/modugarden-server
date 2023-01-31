@@ -1,27 +1,26 @@
 package com.modugarden.domain.auth.entity;
 
-import lombok.Builder;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import lombok.Getter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
-// 우선 refreshToken RDBMS로 저장
-@Entity
-public class RefreshToken {
-    @Id
-    private String key;
 
-    @Column(nullable = false)
-    private String value;
+@Getter
+@RedisHash(value = "refreshToken", timeToLive = 1209600000) // @RedisHash : Redis 스토리지에 저장할 객체 클래스에 설정, timeToLive 단위는 초, timeToLive 시간이 지나면 Redis에서 삭제됨
+public class RefreshToken{
 
-    public void updateValue(String token) {
-        this.value = token;
-    }
+    @Id // javax.persistence.Id 대신 org.springframework.data.annotation.Id
+    private String userEmail; // userId, email? 뭐로하지, 난 email이 @Id같은데? 아닌가?
 
-    @Builder
-    public RefreshToken(String key, String value) {
-        this.key = key;
-        this.value = value;
+    private String refreshToken;
+
+
+    public RefreshToken(String userEmail, String refreshToken) {
+        this.userEmail = userEmail;
+        this.refreshToken = refreshToken;
     }
 }
+
+// @RedisHash의 value와 @Id를 붙인 필드의 값을 합쳐 Redis의 key로 사용
+// 예) refreshToken 필드의 값이 1이면, Redis의 key = refreshToken:1
