@@ -9,6 +9,11 @@ spring:
     password:
     driver-class-name: org.h2.Driver
 
+  # Redis
+  redis:
+    host: localhost
+    port: 6379 # 기본 port 6379
+
   jpa:
     hibernate:
       ddl-auto: create
