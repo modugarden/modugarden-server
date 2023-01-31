@@ -36,7 +36,7 @@ public enum ErrorMessage {
     WRONG_BOARD_DELETE(NOT_FOUND,false,"해당 포스트를 삭제할 수 없습니다."),
     WRONG_BOARD(NOT_FOUND,false,"해당 포스트를 찾을 수 없습니다."),
     WRONG_BOARD_STORAGE(NOT_FOUND,false,"이미 포스트가 저장되어 있습니다."),
-    WRONG_BOARD_LIST(NOT_FOUND,false,"해당 큐레이션 리스트를 찾을 수 없습니다.");
+    WRONG_BOARD_LIST(NOT_FOUND,false,"해당 포스트 리스트를 찾을 수 없습니다.");
 
     private final int code;
     private final boolean isSuccess;

@@ -24,7 +24,6 @@ public class BoardImage {
 
     private Long userid;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;

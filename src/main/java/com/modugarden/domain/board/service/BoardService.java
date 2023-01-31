@@ -16,6 +16,7 @@ import com.modugarden.domain.board.repository.BoardRepository;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 
+import com.modugarden.domain.curation.dto.response.CurationGetStorageResponseDto;
 import com.modugarden.domain.curation.dto.response.CurationLikeResponseDto;
 import com.modugarden.domain.curation.dto.response.CurationStorageResponseDto;
 import com.modugarden.domain.curation.dto.response.CurationUserGetResponseDto;
@@ -145,6 +146,17 @@ public class BoardService {
 
         return new BoardGetMyLikeResponseDto(users.getUserId(),board.getId(), false);
     }
+
+    //내 프로필 저장한 포스트 조회
+    public Slice<BoardGetStorageResponseDto> getStorageBoard(long user_id, Pageable pageable) {
+        Slice<BoardGetStorageResponseDto> myBoardStorageList = boardImageRepository.QueryfindAllByUser_Id(user_id, pageable);
+
+        if (myBoardStorageList.isEmpty())
+            throw new BusinessException(ErrorMessage.WRONG_BOARD_LIST);
+
+        return myBoardStorageList;
+    }
+
 
     //포스트 삭제
     @Transactional

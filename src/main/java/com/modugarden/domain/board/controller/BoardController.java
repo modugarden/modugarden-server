@@ -89,6 +89,13 @@ public class BoardController {
         return new BaseResponseDto<>(boardService.getMyLikeBoard(board_id, user));
     }
 
+    //내 프로필 저장한 포스트 조회
+    @ApiOperation(value = "프로필 페이지 - 저장한 포스트 조회", notes = "로그인한 사용자의 저장 포스트를 조회한다.")
+    @GetMapping("/boards/me/storage")
+    public SliceResponseDto<BoardGetStorageResponseDto> getStorageBoard(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+        return new SliceResponseDto<>(boardService.getStorageBoard(user.getUserId(), pageable));
+    }
+
     //포스트 삭제 api
     @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 삭제", notes = "사용자의 포스트를 삭제한다.")
     @DeleteMapping("/boards/{board_id}")
