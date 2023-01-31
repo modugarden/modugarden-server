@@ -7,8 +7,8 @@ import com.modugarden.domain.board.repository.BoardRepository;
 import com.modugarden.domain.comment.dto.request.CommentCreateRequestDto;
 import com.modugarden.domain.comment.dto.request.CommentDeleteRequestDto;
 import com.modugarden.domain.comment.dto.response.CommentCreateResponseDto;
-import com.modugarden.domain.comment.dto.response.CommentListResponseDto;
 import com.modugarden.domain.comment.dto.response.CommentDeleteResponseDto;
+import com.modugarden.domain.comment.dto.response.CommentListResponseDto;
 import com.modugarden.domain.comment.entity.Comment;
 import com.modugarden.domain.comment.repository.CommentRepository;
 import com.modugarden.domain.user.entity.User;
@@ -17,8 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.modugarden.common.error.enums.ErrorMessage.WRONG_PARENT_COMMENT_ID;
 
 @Service
 @Transactional(readOnly = true)
