@@ -6,6 +6,7 @@ import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
 import com.modugarden.domain.board.dto.response.*;
 import com.modugarden.domain.board.service.BoardService;
+import com.modugarden.domain.curation.dto.response.CurationSearchResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -72,6 +73,13 @@ public class BoardController {
     @GetMapping("/boards/search")
     public SliceResponseDto<BoardSearchResponseDto> searchBoard(@RequestParam @Size(max=50) String title, Pageable pageable) {
         return new SliceResponseDto<>(boardService.searchBoard(title, pageable));
+    }
+
+    //카테고리,날짜별 큐레이션 조회 api
+    @ApiOperation(value = "탐색 피드 - 카테고리 별 포스트 검색", notes = "카테고리별로 포스트 검색")
+    @GetMapping("/boards")
+    public SliceResponseDto<BoardSearchResponseDto> getFeedCuration(@RequestParam String category, Pageable pageable) {
+        return new SliceResponseDto<>(boardService.getFeed(category, pageable));
     }
 
 

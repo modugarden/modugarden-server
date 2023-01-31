@@ -15,6 +15,8 @@ import com.modugarden.domain.board.repository.BoardRepository;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 
+import com.modugarden.domain.curation.dto.response.CurationSearchResponseDto;
+import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.like.repository.LikeBoardRepository;
 import com.modugarden.domain.storage.entity.BoardStorage;
 import com.modugarden.domain.storage.entity.repository.BoardStorageRepository;
@@ -131,6 +133,17 @@ public class BoardService {
             throw new BusinessException(ErrorMessage.WRONG_BOARD_LIST);
 
         return board.map(BoardSearchResponseDto::new);
+    }
+
+    //카테고리,날짜별 포스트 조회
+    public Slice<BoardSearchResponseDto> getFeed(String category, Pageable pageable) {
+        InterestCategory interestCategory = interestCategoryRepository.findByCategory(category).get();
+        Slice<Board> getFeedCurationList = boardRepository.findAllByCategoryOrderByCreatedDateDesc(interestCategory, pageable);
+
+        if (getFeedCurationList.isEmpty())
+            throw new BusinessException(ErrorMessage.WRONG_BOARD_LIST);
+
+        return getFeedCurationList.map(BoardSearchResponseDto::new);
     }
 
     //포스트 좋아요 개수 조회
