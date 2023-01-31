@@ -85,9 +85,9 @@ public class FollowService {
     public Slice<FollowersResponseDto> othersFollowerList(Long id, Long otherId, Pageable pageable) {
         Slice<User> followers = followRepository.findByFollowingUser_Id(otherId, pageable);
         Slice<FollowersResponseDto> result = followers
-                .map(u -> new FollowersResponseDto(u.getId(), u.getNickname(), u.getProfileImg()
-                        , userRepository.readUserInterestCategory((u.getId()))
-                        , followRepository.exists(otherId, u.getId())));
+                .map(f -> new FollowersResponseDto(f.getId(), f.getNickname(), f.getProfileImg()
+                        , userRepository.readUserInterestCategory((f.getId()))
+                        , followRepository.exists(id, f.getId())));
         return result;
     }
     //타인 팔로잉 명단조회
@@ -96,7 +96,7 @@ public class FollowService {
         Slice<FollowingsResponseDto> result = followings
                 .map(u -> new FollowingsResponseDto(u.getId(), u.getNickname(), u.getProfileImg()
                         , userRepository.readUserInterestCategory((u.getId()))
-                        , followRepository.exists(otherId, u.getId())));
+                        , followRepository.exists(id, u.getId())));
         return result;
     }
     // 팔로우할 유저 추천
