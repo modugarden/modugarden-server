@@ -105,7 +105,7 @@ public class CurationController {
 
     //내 프로필 저장한 큐레이션 조회
     @ApiOperation(value = "프로필 페이지 - 저장한 큐레이션 조회", notes = "로그인한 사용자의 저장 큐레이션을 조회한다.")
-    @GetMapping("curations/me/storage")
+    @GetMapping("/curations/me/storage")
     public SliceResponseDto<CurationGetStorageResponseDto> getStorageCuration(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
         return new SliceResponseDto<>(curationService.getStorageCuration(user.getUserId(), pageable));
     }
