@@ -136,7 +136,7 @@ public class UserService2 {
                     .userId(user.getId())
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
-                    .aceessToken_expiredDate(expiration)
+                    .accessToken_expiredDate(expiration)
                     .build();
 
         }catch (BadCredentialsException e){
@@ -201,7 +201,7 @@ public class UserService2 {
                     .userId(user.getId())
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
-                    .aceessToken_expiredDate(expiration)
+                    .accessToken_expiredDate(expiration)
                     .build();
 
         }catch (BadCredentialsException e){
@@ -255,7 +255,7 @@ public class UserService2 {
                 .userId(user.getId())
                 .accessToken(newAccessToken)
                 .refreshToken(newRefreshToken)
-                .aceessToken_expiredDate(newExpiration.toString())
+                .accessToken_expiredDate(newExpiration.toString())
                 .build();
     }
 }
