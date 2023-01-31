@@ -56,16 +56,12 @@ public class UserController {
         return new BaseResponseDto<>(userService.readUserSettingInfo(user.getUserId()));
     }
 
-    @ApiOperation(value = "내 프로필 - 프로필 설정 - 사진 변경", notes = "내 프로필 - 프로필 설정에서 사진을 변경한다.")
-    @PatchMapping(value = "/me/profileImg", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public BaseResponseDto<UserProfileImgResponseDto> updateProfileImg(@RequestPart(name = "file", required = false) MultipartFile file, @AuthenticationPrincipal ModugardenUser user) throws IOException {
-        return new BaseResponseDto<>(userService.updateProfileImg(user.getUserId(), file));
-    }
-
-    @ApiOperation(value = "내 프로필 - 프로필 설정 - 닉네임 변경", notes = "내 프로필 - 프로필 설정에서 닉네임을 변경한다.")
-    @PatchMapping("/me/nickname")
-    public BaseResponseDto<UserNicknameResponseDto> updateUserNickname(@RequestBody @Valid UserNicknameRequestDto userNicknameRequestDto, @AuthenticationPrincipal ModugardenUser user) {
-        return new BaseResponseDto<>(userService.updateUserNickname(user.getUserId(), userNicknameRequestDto));
+    @ApiOperation(value = "내 프로필 - 프로필 설정 - 닉네임, 사진 변경", notes = "내 프로필 - 프로필 설정에서 닉네임, 사진을 변경한다.")
+    @PatchMapping(value = "/me/setting-info", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public BaseResponseDto<UpdateUserInfoResponseDto> updateUserInfo(@RequestPart @Valid UserNicknameRequestDto userNicknameRequestDto,
+                                                                       @RequestPart(name = "file", required = false) MultipartFile file,
+                                                                       @AuthenticationPrincipal ModugardenUser user) throws IOException {
+        return new BaseResponseDto<>(userService.updateUserInfo(user.getUserId(), file, userNicknameRequestDto));
     }
 
     @ApiOperation(value = "내 프로필 - 프로필 설정 - 카테고리 변경", notes = "내 프로필 - 프로필 설정에서 카테고리를 변경한다.")
