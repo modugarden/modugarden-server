@@ -6,7 +6,7 @@ import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
 import com.modugarden.domain.board.dto.response.*;
 import com.modugarden.domain.board.service.BoardService;
-import com.modugarden.domain.curation.dto.response.CurationStorageResponseDto;
+import com.modugarden.domain.curation.dto.response.*;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -72,6 +72,36 @@ public class BoardController {
     @GetMapping("/boards/like/{boards_id}")
     public BaseResponseDto<BoardLikeResponseDto> getLikeBoard(@PathVariable Long boards_id) {
         return new BaseResponseDto<>(boardService.getLikeBoard(boards_id));
+    }
+
+    //내 프로필 포스트 조회 api
+    @ApiOperation(value = "프로필 페이지 - 포스트 조회", notes = "로그인한 사용자의 포스트를 조회한다.")
+    @GetMapping("/boards/me")
+    public SliceResponseDto<BoardUserGetResponseDto> getMyBoard(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+        return new SliceResponseDto<>(boardService.getMyBoard(user.getUserId(), pageable));
+    }
+
+    //내 프로필 큐레이션 좋아요 여부 조회
+    @ApiOperation(value = "프로필 페이지 - 포스트 좋아요 여부 조회", notes = "특정 포스트 좋아요 여부 조회한다.")
+    @GetMapping("/boards/me/like/{board_id}")
+    public BaseResponseDto<BoardGetMyLikeResponseDto> getMyLikeBoard(@PathVariable Long board_id,
+                                                                     @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(boardService.getMyLikeBoard(board_id, user));
+    }
+
+    //내 프로필 저장한 포스트 조회
+    @ApiOperation(value = "프로필 페이지 - 저장한 포스트 조회", notes = "로그인한 사용자의 저장 포스트를 조회한다.")
+    @GetMapping("/boards/me/storage")
+    public SliceResponseDto<BoardGetStorageResponseDto> getStorageBoard(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+        return new SliceResponseDto<>(boardService.getStorageBoard(user.getUserId(), pageable));
+    }
+
+    //내 프로필 포스트 보관 여부 조회
+    @ApiOperation(value = "프로필 페이지 - 큐레이션 보관 여부 조회", notes = "특정 큐레이션 보관 여부 조회한다.")
+    @GetMapping("/boards/me/storage/{board_id}")
+    public BaseResponseDto<BoardGetMyStorageResponseDto> getMyStorageBoard(@PathVariable Long board_id,
+                                                                                 @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(boardService.getMyStorageBoard(board_id, user));
     }
 
     //포스트 삭제 api
