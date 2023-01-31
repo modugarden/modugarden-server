@@ -1,5 +1,7 @@
 package com.modugarden.domain.user.controller;
 
+import com.modugarden.common.error.enums.ErrorMessage;
+import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
@@ -15,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.util.StringUtils;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -28,7 +31,10 @@ public class UserController {
 
     @ApiOperation(value = "탐색 피드 - 회원 닉네임 검색", notes = "해당 문자열을 포함한 닉네임을 가진 회원의 정보를 조회한다.")
     @GetMapping("")
-    public SliceResponseDto<UserNicknameFindResponseDto> findByNickname(@AuthenticationPrincipal ModugardenUser user, @RequestParam(value = "nickname") @Valid String nickname, Pageable pageable) {
+    public SliceResponseDto<UserNicknameFindResponseDto> findByNickname(@AuthenticationPrincipal ModugardenUser user, @RequestParam(value = "nickname", required = false) @Valid String nickname, Pageable pageable) {
+        if(StringUtils.isEmpty(nickname)) {
+            throw new BusinessException(ErrorMessage.WRONG_NICKNAME);
+        }
         return new SliceResponseDto<UserNicknameFindResponseDto>(userService.findByNickname(user.getUserId(), nickname, pageable));
     }
 
