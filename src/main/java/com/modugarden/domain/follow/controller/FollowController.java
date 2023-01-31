@@ -45,12 +45,12 @@ public class FollowController {
     //user가 following user을 following 함
     //following user을 user가 follower 함
 
-    //팔로워 명단조회
+    //내 팔로워 명단조회
     @GetMapping("/me/follower")
     public SliceResponseDto<FollowersResponseDto> meFollowerList(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
         return new SliceResponseDto<>(followService.meFollowerList(user.getUserId(), pageable));
     }
-    //팔로잉 명단조회
+    //내 팔로잉 명단조회
     @GetMapping("/me/following")
     public SliceResponseDto<FollowingsResponseDto> meFollowingList( @AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
         return new SliceResponseDto<>(followService.meFollowingList(user.getUserId(), pageable));

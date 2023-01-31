@@ -1,4 +1,4 @@
-package com.modugarden.domain.comment.dto;
+package com.modugarden.domain.comment.dto.response;
 
 import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.comment.entity.Comment;
