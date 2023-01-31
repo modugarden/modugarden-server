@@ -56,14 +56,14 @@ public class FollowController {
         return new SliceResponseDto<>(followService.meFollowingList(user.getUserId(), pageable));
     }
     //타인 프로필을 봤을 때 타인의 팔로워 명단조회
-    @GetMapping("/{user_id}/follower")
-    public SliceResponseDto<FollowersResponseDto> otherFollowerList(@AuthenticationPrincipal ModugardenUser user, @PathVariable Long userId, Pageable pageable){
-        return new SliceResponseDto<>(followService.othersFollowerList(userId,user.getUserId(),pageable));
+    @GetMapping("/{other_id}/follower")
+    public SliceResponseDto<FollowersResponseDto> otherFollowerList(@AuthenticationPrincipal ModugardenUser user, @PathVariable Long other_id, Pageable pageable){
+        return new SliceResponseDto<>(followService.othersFollowerList(user.getUserId(), other_id, pageable));
     }
     //타인 프로필을 봤을 때 타인의 팔로잉 명단조회
-    @GetMapping("/{user_id}/following")
-    public SliceResponseDto<FollowingsResponseDto> otherFollowingList(@AuthenticationPrincipal ModugardenUser user, @PathVariable Long userId, Pageable pageable){
-        return new SliceResponseDto<>(followService.othersFollowingList(userId,user.getUserId(),pageable));
+    @GetMapping("/{other_id}/following")
+    public SliceResponseDto<FollowingsResponseDto> otherFollowingList(@AuthenticationPrincipal ModugardenUser user, @PathVariable Long other_id, Pageable pageable){
+        return new SliceResponseDto<>(followService.othersFollowingList(user.getUserId(), other_id, pageable));
     }
 
     @GetMapping("/recommendation")
