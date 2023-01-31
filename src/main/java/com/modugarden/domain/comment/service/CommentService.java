@@ -46,7 +46,7 @@ public class CommentService {
             commentRepository.save(newComment); // newComment.getCommentId -> 자동생성된 값이 있음.
             newComment.updateParentIdOfParentComment();
         } else {
-            commentRepository.findById(dto.getParentId()).orElseThrow(() -> new BusinessException(WRONG_PARENT_COMMENT_ID));// 존재하는 부모댓글인지 확인
+            commentRepository.findById(dto.getParentId()).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_PARENT_COMMENT_ID));// 존재하는 부모댓글인지 확인
             newComment = new Comment(dto.getContent(), dto.getParentId(), board, user);
             commentRepository.save(newComment);
         }
