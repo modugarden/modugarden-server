@@ -3,7 +3,6 @@ package com.modugarden.domain.user.service;
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.common.s3.FileService;
-import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.repository.BoardRepository;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.entity.UserInterestCategory;
@@ -17,7 +16,6 @@ import com.modugarden.domain.user.dto.request.UserNicknameRequestDto;
 import com.modugarden.domain.user.dto.response.*;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.entity.UserNotification;
-import com.modugarden.domain.user.repository.UserNotificationRepository;
 import com.modugarden.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -63,19 +61,12 @@ public class UserService {
     }
 
     @Transactional
-    public UserNicknameResponseDto updateUserNickname(Long userId, UserNicknameRequestDto userNicknameRequestDto) {
+    public UpdateUserInfoResponseDto updateUserInfo(Long userId, MultipartFile file, UserNicknameRequestDto userNicknameRequestDto) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
         String userNickname = userNicknameRequestDto.getNickname().toLowerCase();
-        user.updateNickname(userNickname);
-        return new UserNicknameResponseDto(user.getNickname());
-    }
-
-    @Transactional
-    public UserProfileImgResponseDto updateProfileImg(Long userId, MultipartFile file) throws IOException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
         String profileImageUrl = fileService.uploadFile(file, userId, "profileImage");
-        user.updateProfileImage(profileImageUrl);
-        return new UserProfileImgResponseDto(user.getProfileImg());
+        user.updateUserInfo(userNickname, profileImageUrl);
+        return new UpdateUserInfoResponseDto(userNickname, user.getProfileImg());
     }
 
     public UserSettingInfoResponseDto readUserSettingInfo(Long userId) {
