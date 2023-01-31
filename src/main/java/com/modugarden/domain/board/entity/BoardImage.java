@@ -22,6 +22,8 @@ public class BoardImage {
 
     private String content;
 
+    private String location;
+
     private Long userid;
 
     @JsonIgnore
@@ -32,10 +34,11 @@ public class BoardImage {
 
 
     @Builder
-    public BoardImage(Long id, String image, String content, Long userid, Board board) {
+    public BoardImage(Long id, String image, String content, String location, Long userid, Board board) {
         this.id = id;
         this.image = image;
         this.content = content;
+        this.location = location;
         this.userid = userid;
         this.board = board;
     }

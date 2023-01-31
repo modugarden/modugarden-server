@@ -11,7 +11,7 @@ import com.modugarden.domain.curation.dto.request.CurationLikeRequestDto;
 import com.modugarden.domain.curation.dto.response.*;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.curation.repository.CurationRepository;
-import com.modugarden.domain.like.repository.LikeRepository;
+import com.modugarden.domain.like.repository.LikeCurationRepository;
 import com.modugarden.domain.storage.entity.CurationStorage;
 import com.modugarden.domain.storage.entity.repository.CurationStorageRepository;
 import com.modugarden.domain.user.entity.User;
@@ -31,7 +31,7 @@ public class CurationService {
 
     private final CurationRepository curationRepository;
     private final UserRepository userRepository;
-    private final LikeRepository likeRepository;
+    private final LikeCurationRepository likeCurationRepository;
     private final FileService fileService;
     private final CurationStorageRepository curationStorageRepository;
     private final InterestCategoryRepository interestCategoryRepository;
@@ -64,11 +64,11 @@ public class CurationService {
         Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
         User users = userRepository.findById(user.getUserId()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
 
-        if (likeRepository.findByUserAndCuration(users, curation).isEmpty()) {
+        if (likeCurationRepository.findByUserAndCuration(users, curation).isEmpty()) {
             Curation modifyCuration = new Curation(curation.getId(), curation.getTitle(), curation.getLink(), curation.getPreviewImage(), curation.getLikeNum() + 1, curation.getUser(), curation.getCategory());
             CurationLikeRequestDto curationLikeRequestDto = new CurationLikeRequestDto(users, modifyCuration);
 
-            likeRepository.save(curationLikeRequestDto.toEntity());
+            likeCurationRepository.save(curationLikeRequestDto.toEntity());
             curationRepository.save(modifyCuration);
         }
         return new CurationLikeResponseDto(curation.getId(), curation.getLikeNum());
@@ -135,7 +135,7 @@ public class CurationService {
     public CurationGetMyLikeResponseDto getMyLikeCuration(long curation_id,ModugardenUser users) {
         Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
 
-        if(likeRepository.findByUserAndCuration(users.getUser(), curation).isPresent())
+        if(likeCurationRepository.findByUserAndCuration(users.getUser(), curation).isPresent())
             return new CurationGetMyLikeResponseDto(users.getUserId(),curation.getId(), true);
 
         return new CurationGetMyLikeResponseDto(users.getUserId(),curation.getId(), false);
@@ -170,7 +170,7 @@ public class CurationService {
             // 보관 모두 삭제
             curationStorageRepository.deleteAllByCuration_Id(curation.getId());
             // 좋아요 모두 삭제
-            likeRepository.deleteAllByCuration_Id(curation.getId());
+            likeCurationRepository.deleteAllByCuration_Id(curation.getId());
             curationRepository.delete(curation);
         }
         else
@@ -185,10 +185,10 @@ public class CurationService {
         Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
         User users = userRepository.findById(user.getUserId()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
 
-        likeRepository.findByUserAndCuration(users, curation)
+        likeCurationRepository.findByUserAndCuration(users, curation)
                 .ifPresent(it -> {
                     Curation modifyCuration = new Curation(curation.getId(), curation.getTitle(), curation.getLink(), curation.getPreviewImage(), curation.getLikeNum() - 1, curation.getUser(), curation.getCategory());
-                    likeRepository.delete(it);
+                    likeCurationRepository.delete(it);
                     curationRepository.save(modifyCuration);
                 });
 

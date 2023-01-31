@@ -3,7 +3,6 @@ package com.modugarden.domain.follow.service;
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.domain.auth.entity.ModugardenUser;
-import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.follow.dto.FollowRecommendResponseDto;
 import com.modugarden.domain.follow.dto.FollowersResponseDto;
 import com.modugarden.domain.follow.dto.FollowingsResponseDto;
@@ -22,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.modugarden.common.error.enums.ErrorMessage.USER_NOT_FOUND;
-//여기서는 인자에 @ 사용 안함
+
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service

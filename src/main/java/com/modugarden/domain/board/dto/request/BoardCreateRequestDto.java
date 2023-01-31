@@ -19,7 +19,7 @@ public class BoardCreateRequestDto {
 
     private List<String> content;
 
-    private String location; // 위치 태그
+    private List<String> location; // 위치 태그
 
     private String category; // 카테고리
 }

@@ -1,10 +1,7 @@
-package com.modugarden.domain.comment.dto;
+package com.modugarden.domain.comment.dto.response;
 
-import com.modugarden.domain.comment.entity.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.List;
 
 @AllArgsConstructor
 @Getter
@@ -13,4 +10,6 @@ public class CommentListResponseDto {
     private String nickname;
     private String profileImage;
     private String comment;
+    private Long commentId;
+    private Long parentId;
 }
