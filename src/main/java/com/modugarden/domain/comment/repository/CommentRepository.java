@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface CommentRepository extends JpaRepository <Comment, Long> {
     //댓글 조회
-    Slice<Comment> findAllByBoard_IdOrderByCreatedDateDesc(@Param("board_Id") Long boardId, Pageable pageable);
+    Slice<Comment> findAllByBoard_IdOrderByCreatedDateAsc(@Param("board_Id") Long boardId, Pageable pageable);
     //동해 오빠꺼
     Optional<Comment> deleteAllByBoard_Id(Long id);
 }
