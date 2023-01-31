@@ -10,4 +10,6 @@ public class CommentListResponseDto {
     private String nickname;
     private String profileImage;
     private String comment;
+    private Long commentId;
+    private Long parentId;
 }
