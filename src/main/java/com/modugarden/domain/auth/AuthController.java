@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RequiredArgsConstructor
 @RequestMapping("/users")
 @RestController
@@ -19,8 +21,8 @@ public class AuthController {
     private final EmailService emailService;
 
     @PostMapping("/log-in")
-    public BaseResponseDto<TokenDto> login(@RequestBody LoginRequestDto loginRequestDto){
-        TokenDto tokenDto = userService2.generalLogin(loginRequestDto);
+    public BaseResponseDto<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto){
+        LoginResponseDto tokenDto = userService2.generalLogin(loginRequestDto);
         return new BaseResponseDto<>(tokenDto);
     }
 
@@ -40,8 +42,14 @@ public class AuthController {
     }
 
     @PostMapping("/log-in/social")
-    public BaseResponseDto<TokenDto> googleLogin(@RequestBody SocialLoginRequestDto requestDto){
-        TokenDto tokenDto = userService2.socialLogin(requestDto);
+    public BaseResponseDto<LoginResponseDto> googleLogin(@RequestBody SocialLoginRequestDto requestDto){
+        LoginResponseDto tokenDto = userService2.socialLogin(requestDto);
+        return new BaseResponseDto<>(tokenDto);
+    }
+
+    @PostMapping("/token-reissue")
+    public BaseResponseDto<LoginResponseDto> reissueToken(@RequestBody @Valid TokenReissueRequestDto requestDto){
+        LoginResponseDto tokenDto = userService2.reissueAccessToken(requestDto);
         return new BaseResponseDto<>(tokenDto);
     }
 
