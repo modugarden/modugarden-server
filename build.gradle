@@ -85,6 +85,9 @@ dependencies {
 
 	// Json
 	implementation group: 'org.json', name: 'json', version: '20090211'
+
+	// Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.3.1.RELEASE'
 }
 
 tasks.named('test') {
