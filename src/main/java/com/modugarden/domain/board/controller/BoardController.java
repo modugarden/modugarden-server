@@ -6,7 +6,7 @@ import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
 import com.modugarden.domain.board.dto.response.*;
 import com.modugarden.domain.board.service.BoardService;
-import com.modugarden.domain.curation.dto.response.*;
+import com.modugarden.domain.curation.dto.response.CurationSearchResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import java.io.IOException;
 import java.util.List;
 
@@ -40,9 +41,9 @@ public class BoardController {
     //포스트 좋아요 달기 api
     @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 좋아요 달기", notes = "특정 포스트에 좋아요 누른다.")
     @PostMapping("/boards/{board_id}/like")
-    public BaseResponseDto<com.modugarden.domain.board.dto.response.BoardLikeResponseDto> createLikeBoard(@PathVariable Long board_id,
+    public BaseResponseDto<BoardLikeResponseDto> createLikeBoard(@PathVariable Long board_id,
                                                                                                           @AuthenticationPrincipal ModugardenUser user) {
-        com.modugarden.domain.board.dto.response.BoardLikeResponseDto boardLikeResponse = boardService.createLikeBoard(board_id, user);
+        BoardLikeResponseDto boardLikeResponse = boardService.createLikeBoard(board_id, user);
         return new BaseResponseDto<>(boardLikeResponse);
     }
 
@@ -63,9 +64,24 @@ public class BoardController {
     //회원 포스트 조회 api
     @ApiOperation(value = "게시물 상세보기 페이지 - 회원 포스트 조회", notes = "특정 회원의 모든 포스트를 조회 한다.")
     @GetMapping("/boards/users/{user_id}")
-    public SliceResponseDto<BoardUserGetResponseDto> getUserCuration(@PathVariable Long user_id, Pageable pageable) {
-        return new SliceResponseDto<>(boardService.getUserCuration(user_id, pageable));
+    public SliceResponseDto<BoardUserGetResponseDto> getUserBoard(@PathVariable Long user_id, Pageable pageable) {
+        return new SliceResponseDto<>(boardService.getUserBoard(user_id, pageable));
     }
+
+    //제목 포스트 검색 api
+    @ApiOperation(value = "탐색 피드 - 제목 포스트 검색", notes = "제목 으로 포스트 검색")
+    @GetMapping("/boards/search")
+    public SliceResponseDto<BoardSearchResponseDto> searchBoard(@RequestParam @Size(max=50) String title, Pageable pageable) {
+        return new SliceResponseDto<>(boardService.searchBoard(title, pageable));
+    }
+
+    //카테고리,날짜별 큐레이션 조회 api
+    @ApiOperation(value = "탐색 피드 - 카테고리 별 포스트 검색", notes = "카테고리별로 포스트 검색")
+    @GetMapping("/boards")
+    public SliceResponseDto<BoardSearchResponseDto> getFeedCuration(@RequestParam String category, Pageable pageable) {
+        return new SliceResponseDto<>(boardService.getFeed(category, pageable));
+    }
+
 
     //포스트 좋아요 개수 조회 api
     @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 좋아요 조회", notes = "특정 포스트의 좋아요 조회한다.")
