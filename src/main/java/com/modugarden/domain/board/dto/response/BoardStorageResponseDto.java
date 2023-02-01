@@ -7,5 +7,5 @@ import lombok.Getter;
 @Getter
 public class BoardStorageResponseDto {
     private Long user_id;
-    private Long curation_id;
+    private Long board_id;
 }

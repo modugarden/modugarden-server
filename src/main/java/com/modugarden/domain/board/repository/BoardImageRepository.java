@@ -21,8 +21,5 @@ public interface BoardImageRepository extends JpaRepository<BoardImage, Long> {
     Slice<BoardImage> findAllByUserid(Long user_id, Pageable pageable);
 
 
-    @Query(value = "SELECT bo FROM BoardImage bo \n" +
-            "            LEFT JOIN BoardStorage bs ON bo.userid = bs.user.id\n" +
-            "            WHERE bo.userid = bs.user.id")
-    Page<BoardGetStorageResponseDto> QueryfindAllByUser_Id(Long user_id, Pageable pageable);
+
 }

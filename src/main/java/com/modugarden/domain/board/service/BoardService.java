@@ -4,7 +4,6 @@ import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.common.s3.FileService;
 import com.modugarden.domain.auth.entity.ModugardenUser;
-import com.modugarden.domain.board.dto.request.BoardCreateImageReqeuestDto;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
 import com.modugarden.domain.board.dto.request.BoardLikeRequestDto;
 import com.modugarden.domain.board.dto.response.*;
@@ -15,8 +14,6 @@ import com.modugarden.domain.board.repository.BoardRepository;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 
-import com.modugarden.domain.curation.dto.response.CurationSearchResponseDto;
-import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.like.repository.LikeBoardRepository;
 import com.modugarden.domain.storage.entity.BoardStorage;
 import com.modugarden.domain.storage.entity.repository.BoardStorageRepository;
@@ -50,12 +47,11 @@ public class BoardService {
     public BoardCreateResponseDto createBoard(BoardCreateRequestDto boardCreateRequestDto, List<MultipartFile> file, ModugardenUser user) throws IOException {
 
         if (file.isEmpty())
-            throw new IOException(new BusinessException(ErrorMessage.WRONG_CURATION_FILE));
+            throw new IOException(new BusinessException(ErrorMessage.WRONG_BOARD_FILE));
 
         InterestCategory interestCategory = interestCategoryRepository.findByCategory(boardCreateRequestDto.getCategory()).get();
 
-
-        boolean index= false;
+        // 처음 board 값
         Board board= Board.builder()
                 .title(boardCreateRequestDto.getTitle())
                 .like_num((long) 0)
@@ -64,9 +60,12 @@ public class BoardService {
                 .category(interestCategory)
                 .build();
 
+        boolean index= false;
         for(MultipartFile multipartFile : file) {
+            //프로필 이미지 url 만들기
             String profileImageUrl = fileService.uploadFile(multipartFile, user.getUserId(), "boardImage");
             if(!index) {
+                //처음 한번 board 생성 - 썸네일 이미지 포함 생성
                 board = Board.builder()
                         .title(boardCreateRequestDto.getTitle())
                         .like_num((long) 0)
@@ -74,14 +73,19 @@ public class BoardService {
                         .user(user.getUser())
                         .category(interestCategory)
                         .build();
-
                 boardRepository.save(board);
                 index=true;
             }
-            BoardCreateImageReqeuestDto boardCreateImageReqeuestDto = new BoardCreateImageReqeuestDto(profileImageUrl, boardCreateRequestDto.getContent().get(file.indexOf(multipartFile)),boardCreateRequestDto.getLocation().get(file.indexOf(multipartFile)),user.getUserId(), board);
-            boardImageRepository.save(boardCreateImageReqeuestDto.toEntity());
-        }
+            BoardImage boardImage = BoardImage.builder()
+                    .image(profileImageUrl)
+                    .content(boardCreateRequestDto.getContent().get(file.indexOf(multipartFile)))
+                    .location(boardCreateRequestDto.getLocation().get(file.indexOf(multipartFile)))
+                    .userid(user.getUserId())
+                            .board(board)
+                                    .build();
 
+            boardImageRepository.save(boardImage);
+        }
         return new BoardCreateResponseDto(boardRepository.save(board).getId());
     }
 
@@ -114,7 +118,7 @@ public class BoardService {
 
     //포스트 하나 조회 api
     public BoardGetResponseDto getBoard(long id) {
-        Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+        Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
         List<BoardImage> imageList = boardImageRepository.findAllByBoard_Id(id);
         return new BoardGetResponseDto(board,imageList);
     }
@@ -122,11 +126,10 @@ public class BoardService {
     //회원 포스트 조회
     public Slice<BoardUserGetResponseDto> getUserBoard(long user_id, Pageable pageable) {
         Slice<BoardImage> imageList = boardImageRepository.findAllByUserid(user_id,pageable);
-
         return imageList.map(BoardUserGetResponseDto::new);
     }
 
-    //포스트 조회
+    //포스트 검색
     public Slice<BoardSearchResponseDto> searchBoard(String title, Pageable pageable) {
         Slice<Board> board = boardRepository.findAllByTitleLikeOrderByCreatedDateDesc('%' + title + '%', pageable);
         if (board.isEmpty())
@@ -138,17 +141,17 @@ public class BoardService {
     //카테고리,날짜별 포스트 조회
     public Slice<BoardSearchResponseDto> getFeed(String category, Pageable pageable) {
         InterestCategory interestCategory = interestCategoryRepository.findByCategory(category).get();
-        Slice<Board> getFeedCurationList = boardRepository.findAllByCategoryOrderByCreatedDateDesc(interestCategory, pageable);
+        Slice<Board> getFeedBoardList = boardRepository.findAllByCategoryOrderByCreatedDateDesc(interestCategory, pageable);
 
-        if (getFeedCurationList.isEmpty())
+        if (getFeedBoardList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_BOARD_LIST);
 
-        return getFeedCurationList.map(BoardSearchResponseDto::new);
+        return getFeedBoardList.map(BoardSearchResponseDto::new);
     }
 
     //포스트 좋아요 개수 조회
     public BoardLikeResponseDto getLikeBoard(long id) {
-        Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+        Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
         return new BoardLikeResponseDto(board.getId(), board.getLike_num());
     }
 
@@ -172,7 +175,7 @@ public class BoardService {
 
     //내 프로필 저장한 포스트 조회
     public Slice<BoardGetStorageResponseDto> getStorageBoard(long user_id, Pageable pageable) {
-        Slice<BoardGetStorageResponseDto> myBoardStorageList = boardImageRepository.QueryfindAllByUser_Id(user_id, pageable);
+        Slice<BoardGetStorageResponseDto> myBoardStorageList = boardRepository.QueryfindAllByUser_Id(user_id, pageable);
 
         if (myBoardStorageList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_BOARD_LIST);
@@ -180,9 +183,10 @@ public class BoardService {
         return myBoardStorageList;
     }
 
+
     //내 프로필 큐레이션 보관 여부 조회 api
     public BoardGetMyStorageResponseDto getMyStorageBoard(long board_id, ModugardenUser users) {
-        Board board = boardRepository.findById(board_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+        Board board = boardRepository.findById(board_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
 
         if(boardStorageRepository.findByUserAndBoard(users.getUser(), board).isPresent())
             return new BoardGetMyStorageResponseDto(users.getUserId(),board.getId(), true);
@@ -193,7 +197,7 @@ public class BoardService {
     //포스트 삭제
     @Transactional
     public BoardDeleteResponseDto deleteBoard(long id, ModugardenUser user) {
-        Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION_DELETE));
+        Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD_DELETE));
 
         if (board.getUser().getId().equals(user.getUserId())) {
             //이미지 모두 삭제
@@ -202,6 +206,8 @@ public class BoardService {
             boardStorageRepository.deleteAllByBoard_Id(id);
             // 좋아요 모두 삭제
             likeBoardRepository.deleteAllByBoard_Id(id);
+            //설마 댓글 삭제 ..?
+
             boardRepository.delete(board);
         }
         else

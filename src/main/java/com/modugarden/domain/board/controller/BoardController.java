@@ -6,7 +6,6 @@ import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
 import com.modugarden.domain.board.dto.response.*;
 import com.modugarden.domain.board.service.BoardService;
-import com.modugarden.domain.curation.dto.response.CurationSearchResponseDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +28,7 @@ public class BoardController {
     private final BoardService boardService;
 
     //포스트 작성 api
-    @ApiOperation(value = "업로드 페이지 - 포스트 작성", notes = "사용자가 포스트를 사진과 함께 작성한다.")
+    @ApiOperation( value= "업로드 페이지 - 포스트 작성", notes = "사용자가 포스트를 사진과 함께 작성한다.")
     @PostMapping(value = "/boards", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public BaseResponseDto<BoardCreateResponseDto> createBoard(@RequestPart @Valid BoardCreateRequestDto boardCreateRequest,
                                                                   @AuthenticationPrincipal ModugardenUser user,
@@ -78,7 +77,7 @@ public class BoardController {
     //카테고리,날짜별 큐레이션 조회 api
     @ApiOperation(value = "탐색 피드 - 카테고리 별 포스트 검색", notes = "카테고리별로 포스트 검색")
     @GetMapping("/boards")
-    public SliceResponseDto<BoardSearchResponseDto> getFeedCuration(@RequestParam String category, Pageable pageable) {
+    public SliceResponseDto<BoardSearchResponseDto> getFeedBoard(@RequestParam String category, Pageable pageable) {
         return new SliceResponseDto<>(boardService.getFeed(category, pageable));
     }
 
@@ -131,7 +130,7 @@ public class BoardController {
 
     //포스트 좋아요 취소 api
     @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 좋아요 취소", notes = "특정 포스트에 좋아요 취소한다.")
-    @DeleteMapping("/boards/{board_id}/unlike")
+    @DeleteMapping("/boards/{boㅂard_id}/unlike")
     public BaseResponseDto<BoardLikeResponseDto> createUnlikeBoard(@PathVariable Long board_id,
                                                                       @AuthenticationPrincipal ModugardenUser user) {
         BoardLikeResponseDto boardLikeResponseDto = boardService.createUnlikeBoard(board_id, user);
