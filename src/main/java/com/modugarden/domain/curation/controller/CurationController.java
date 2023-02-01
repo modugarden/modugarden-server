@@ -30,7 +30,7 @@ public class CurationController {
     private final CurationService curationService;
 
     //큐레이션 작성 api
-    @Secured({"ROLE_CURATOR","ROLE_GENERAL"})
+    @Secured({"ROLE_CURATOR"})
     @ApiOperation(value = "업로드 페이지 - 큐레이션 작성", notes = "사용자가 큐레이션을 사진과 함께 작성한다.")
     @PostMapping(value = "/curations", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public BaseResponseDto<CurationCreateResponseDto> createCuration(@RequestPart @Valid CurationCreateRequestDto curationCreateRequest,
