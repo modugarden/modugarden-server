@@ -1,7 +1,7 @@
 package com.modugarden.utils.jwt;
 
 import com.modugarden.common.error.enums.ErrorMessage;
-import com.modugarden.common.error.exception.custom.BusinessException;
+import com.modugarden.common.error.exception.custom.InvalidTokenException;
 import com.modugarden.common.error.exception.custom.LoginCancelException;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
@@ -26,7 +26,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try{
             filterChain.doFilter(request,response);
-        } catch (LoginCancelException ex){
+        } catch (LoginCancelException | InvalidTokenException ex){
             log.error("exception exception handler filter");
             setErrorResponse(response, ex.getErrorMessage());
         }
