@@ -1,4 +1,4 @@
-package com.modugarden.domain.user.service;
+package com.modugarden.domain.auth.service;
 
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
@@ -6,8 +6,8 @@ import com.modugarden.domain.auth.dto.request.IsEmailDuplicatedRequestDto;
 import com.modugarden.domain.auth.dto.response.IsEmailDuplicatedResponseDto;
 import com.modugarden.domain.auth.dto.response.LoginResponseDto;
 import com.modugarden.domain.auth.dto.request.TokenReissueRequestDto;
-import com.modugarden.domain.refreshToken.entity.RefreshToken;
-import com.modugarden.domain.refreshToken.repository.RefreshTokenRepository;
+import com.modugarden.domain.auth.entity.RefreshToken;
+import com.modugarden.domain.auth.repository.RefreshTokenRepository;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.entity.UserInterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
@@ -43,7 +43,7 @@ import static java.lang.Boolean.TRUE;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class UserService2 {
+public class authService {
 
     private final UserRepository2 userRepository2;
     private final InterestCategoryRepository interestCategoryRepository;

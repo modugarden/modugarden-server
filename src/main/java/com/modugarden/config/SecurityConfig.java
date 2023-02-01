@@ -1,6 +1,6 @@
 package com.modugarden.config;
 
-import com.modugarden.domain.auth.CustomUserDetailService;
+import com.modugarden.domain.auth.service.CustomUserDetailService;
 import com.modugarden.utils.jwt.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

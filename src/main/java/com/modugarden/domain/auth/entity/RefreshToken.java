@@ -1,4 +1,4 @@
-package com.modugarden.domain.refreshToken.entity;
+package com.modugarden.domain.auth.entity;
 
 
 import lombok.Getter;
