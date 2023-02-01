@@ -11,7 +11,6 @@ import org.springframework.data.repository.query.Param;
 public interface FollowRepository extends JpaRepository<Follow, Long>, CustomFollowRepository {
     //팔로워 삭제
     int deleteByUser_IdAndFollowingUser_Id(Long fromUserId, Long toUserId); // 언팔로우 메서드
-    //팔로잉 하고 있는 정보가 존재하는지 여부 체크
 
     //팔로워 명단조회
     //내가 팔로잉 유저

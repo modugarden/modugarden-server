@@ -4,7 +4,10 @@ import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.domain.auth.dto.IsEmailDuplicatedRequestDto;
 import com.modugarden.domain.auth.dto.IsEmailDuplicatedResponseDto;
-import com.modugarden.domain.auth.dto.TokenDto;
+import com.modugarden.domain.auth.dto.LoginResponseDto;
+import com.modugarden.domain.auth.dto.TokenReissueRequestDto;
+import com.modugarden.domain.auth.entity.RefreshToken;
+import com.modugarden.domain.auth.refreshToken.repository.RefreshTokenRepository;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.entity.UserInterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
@@ -31,8 +34,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
+import static com.modugarden.common.error.enums.ErrorMessage.*;
 import static java.lang.Boolean.TRUE;
 @Slf4j
 @RequiredArgsConstructor
@@ -47,6 +52,7 @@ public class UserService2 {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final TokenProvider tokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     // 회원가입
     // 소셜 로그인 유저도 해당 회원가입 함수를 사용, 비번은 프론트에서 랜덤비번을 생성해서 줌.
@@ -54,7 +60,7 @@ public class UserService2 {
 
         // 이메일 중복 체크
         if(userRepository2.existsByEmail(signUpRequestDto.getEmail())){
-            // 에러 처리 필요
+            throw new BusinessException(ALREADY_SIGNUPED_EMAIL_USER);
         }
 
         // 유저 알람 정보 생성, 저장
@@ -101,7 +107,7 @@ public class UserService2 {
     }
 
 
-    public TokenDto generalLogin(LoginRequestDto loginRequestDto){
+    public LoginResponseDto generalLogin(LoginRequestDto loginRequestDto){
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(), loginRequestDto.getPassword());
@@ -114,10 +120,23 @@ public class UserService2 {
             // 3. 인증 정보를 기반으로 JWT 토큰 생성
             String accessToken = tokenProvider.createAccessToken(authentication);
             String refreshToken = tokenProvider.createRefreshToken(authentication);
+            String expiration = tokenProvider.parseClaims(accessToken).getExpiration().toString();
 
-            return TokenDto.builder()
+            System.out.println("일반 로그인 expiration = " + expiration);
+
+            // 4. RefreshToken Redis에 저장
+            String userEmail = authentication.getName();
+            refreshTokenRepository.save(new RefreshToken(userEmail, refreshToken));
+
+            // 유저 이메일로 유저 가져오기
+            User user = userRepository2.findByEmail(userEmail).orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
+
+            // 로그인 response 생성
+            return LoginResponseDto.builder()
+                    .userId(user.getId())
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
+                    .accessToken_expiredDate(expiration)
                     .build();
 
         }catch (BadCredentialsException e){
@@ -150,7 +169,7 @@ public class UserService2 {
         return new NicknameIsDuplicatedResponseDto(isDuplicate, userNickname);
     }
 
-    public TokenDto socialLogin(SocialLoginRequestDto requestDto){
+    public LoginResponseDto socialLogin(SocialLoginRequestDto requestDto){
         // 이미 소셜로그인은 성공한 상태로 호출됨
         User socialLoginUser = userRepository2.findByEmail(requestDto.getEmail()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
 
@@ -169,15 +188,74 @@ public class UserService2 {
 
             String accessToken = tokenProvider.createAccessToken(authentication);
             String refreshToken = tokenProvider.createRefreshToken(authentication);
+            String expiration = tokenProvider.parseClaims(accessToken).getExpiration().toString();
 
-            return TokenDto.builder()
+            // 4. RefreshToken Redis에 저장
+            refreshTokenRepository.save(new RefreshToken(requestDto.getEmail(), refreshToken));
+
+            // 유저 이메일로 유저 가져오기
+            User user = userRepository2.findByEmail(requestDto.getEmail()).orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
+
+            // 토큰 DTO생성
+            return LoginResponseDto.builder()
+                    .userId(user.getId())
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
+                    .accessToken_expiredDate(expiration)
                     .build();
 
         }catch (BadCredentialsException e){
             System.out.println(e.getMessage());
             throw new BusinessException(ErrorMessage.WRONG_PASSWORD);
         }
+    }
+
+
+    public LoginResponseDto reissueAccessToken(TokenReissueRequestDto requestDto) throws BusinessException{
+        // 1. access Token 유효성 검증
+        tokenProvider.validateAccessTokenForReissue(requestDto.getAccessToken());
+
+        // 2. access Token에서 user email 가져옴
+        String userEmail = tokenProvider.parseClaims(requestDto.getAccessToken()).getSubject();
+
+        // 3. access Token이 만료되지 않았다면, refresh Token이 탈취되었다고 판단하여 재로그인 필요 메세지 전달
+        Date expiration = tokenProvider.parseClaims(requestDto.getAccessToken()).getExpiration();
+
+        if(!expiration.before(new Date())){ // 만료여부 체크 하는 거 헷갈림
+            throw new BusinessException(WRONG_REISSUE_TOKEN_ACCESS);
+        }
+
+        // 4. refresh Token 유효성 검증
+        tokenProvider.validateToken(requestDto.getRefreshToken());// validate 함수 내에서 에러 핸들링 throw
+
+        // 5. Redis에서 user email을 기반으로 저장된 RefreshToken값을 가져옴
+        RefreshToken redisRefreshToken = refreshTokenRepository.findById(userEmail).orElseThrow(() -> new BusinessException(WRONG_JWT_TOKEN));// accessToken속 정보와 일치하는 refreshToken이 존재하지 않음. 재 로그인 필요.
+       // System.out.println("redisRefreshToken = " + redisRefreshToken.getRefreshToken());
+
+        if(!redisRefreshToken.getRefreshToken().equals(requestDto.getRefreshToken())){ // request로 받은 refreshToken과 redis에 저장된 refreshToken 비교
+            throw new BusinessException(WRONG_JWT_TOKEN);// refresh Token 정보가 일치하지 않습니다.
+        }
+
+        // 6. 새로운 토큰 생성
+        Authentication authentication = tokenProvider.getAuthentication(requestDto.getAccessToken());
+        String newAccessToken = tokenProvider.createAccessToken(authentication);
+        String newRefreshToken = tokenProvider.createRefreshToken(authentication);
+        Date newExpiration = tokenProvider.parseClaims(newAccessToken).getExpiration();
+
+
+        // 7. RefreshToken Redis 업데이트(accessToken reissue시 refreshToken도 함께 재발급)
+        refreshTokenRepository.delete(redisRefreshToken);
+        refreshTokenRepository.save(new RefreshToken(userEmail, newRefreshToken));
+        System.out.println("newRefreshToken = " + newRefreshToken);
+
+        // 8. 유저 이메일로 유저 가져오기
+        User user = userRepository2.findByEmail(userEmail).orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
+
+        return LoginResponseDto.builder()
+                .userId(user.getId())
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
+                .accessToken_expiredDate(newExpiration.toString())
+                .build();
     }
 }
