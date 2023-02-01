@@ -1,8 +1,8 @@
 package com.modugarden.domain.auth;
 
 import com.modugarden.common.error.exception.custom.BusinessException;
-import com.modugarden.domain.auth.dto.EmailAuthRequestDto;
-import com.modugarden.domain.auth.dto.EmailAuthResponseDto;
+import com.modugarden.domain.auth.dto.request.EmailAuthRequestDto;
+import com.modugarden.domain.auth.dto.response.EmailAuthResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;

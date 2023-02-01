@@ -1,4 +1,4 @@
-package com.modugarden.domain.auth.dto;
+package com.modugarden.domain.auth.dto.request;
 
 import lombok.Getter;
 
