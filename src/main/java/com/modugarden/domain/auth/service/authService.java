@@ -5,9 +5,9 @@ import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.common.error.exception.custom.InvalidTokenException;
 import com.modugarden.common.error.exception.custom.LoginCancelException;
 import com.modugarden.domain.auth.dto.request.IsEmailDuplicatedRequestDto;
+import com.modugarden.domain.auth.dto.request.TokenReissueRequestDto;
 import com.modugarden.domain.auth.dto.response.IsEmailDuplicatedResponseDto;
 import com.modugarden.domain.auth.dto.response.LoginResponseDto;
-import com.modugarden.domain.auth.dto.request.TokenReissueRequestDto;
 import com.modugarden.domain.auth.entity.RefreshToken;
 import com.modugarden.domain.auth.repository.RefreshTokenRepository;
 import com.modugarden.domain.category.entity.InterestCategory;
@@ -24,7 +24,7 @@ import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.entity.UserNotification;
 import com.modugarden.domain.user.entity.enums.UserAuthority;
 import com.modugarden.domain.user.repository.UserNotificationRepository;
-import com.modugarden.domain.user.repository.UserRepository2;
+import com.modugarden.domain.user.repository.UserRepository;
 import com.modugarden.utils.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +47,7 @@ import static java.lang.Boolean.TRUE;
 @Service
 public class authService {
 
-    private final UserRepository2 userRepository2;
+    private final UserRepository userRepository;
     private final InterestCategoryRepository interestCategoryRepository;
     private final UserInterestCategoryRepository UICRepository;
     private final UserNotificationRepository userNotificationRepository;
@@ -61,7 +61,7 @@ public class authService {
     public Long signupUser(SignUpRequestDto signUpRequestDto){
 
         // 이메일 중복 체크
-        if(userRepository2.existsByEmail(signUpRequestDto.getEmail())){
+        if(userRepository.existsByEmail(signUpRequestDto.getEmail())){
             throw new BusinessException(ALREADY_SIGNUPED_EMAIL_USER);
         }
 
@@ -91,7 +91,7 @@ public class authService {
             signUpUser.encodePassword(passwordEncoder); // 비밀번호 암호화
         }
 
-        userRepository2.save(signUpUser);
+        userRepository.save(signUpUser);
 
         // 카테고리-유저 생성, 저장
         for (String category: signUpRequestDto.getCategories()) {
@@ -131,7 +131,7 @@ public class authService {
             refreshTokenRepository.save(new RefreshToken(userEmail, refreshToken));
 
             // 유저 이메일로 유저 가져오기
-            User user = userRepository2.findByEmail(userEmail).orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
+            User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
 
             // 로그인 response 생성
             return LoginResponseDto.builder()
@@ -148,7 +148,7 @@ public class authService {
     }
 
     public IsEmailDuplicatedResponseDto isEmailDuplicate(IsEmailDuplicatedRequestDto requestDto) {
-        Boolean isDuplicate = userRepository2.existsByEmail(requestDto.getEmail());
+        Boolean isDuplicate = userRepository.existsByEmail(requestDto.getEmail());
         return new IsEmailDuplicatedResponseDto(isDuplicate);
     }
 
@@ -161,19 +161,19 @@ public class authService {
         }
 
         // 유저 삭제
-        userRepository2.deleteById(user.getId());
+        userRepository.deleteById(user.getId());
         return new DeleteUserResponseDto(user.getId());
     }
 
     public NicknameIsDuplicatedResponseDto isNicknameDuplicate(NicknameIsDuplicatedRequestDto requestDto) {
         String userNickname = requestDto.getNickname().toLowerCase(); // 소문자 변환
-        Boolean isDuplicate = userRepository2.existsByNickname(userNickname);
+        Boolean isDuplicate = userRepository.existsByNickname(userNickname);
         return new NicknameIsDuplicatedResponseDto(isDuplicate, userNickname);
     }
 
     public LoginResponseDto socialLogin(SocialLoginRequestDto requestDto){
         // 이미 소셜로그인은 성공한 상태로 호출됨
-        User socialLoginUser = userRepository2.findByEmail(requestDto.getEmail()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+        User socialLoginUser = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
 
         // 암호화하기 전의 비번
         String password = socialLoginUser.getPassword();
@@ -196,7 +196,7 @@ public class authService {
             refreshTokenRepository.save(new RefreshToken(requestDto.getEmail(), refreshToken));
 
             // 유저 이메일로 유저 가져오기
-            User user = userRepository2.findByEmail(requestDto.getEmail()).orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
+            User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
 
             // 토큰 DTO생성
             return LoginResponseDto.builder()
@@ -251,7 +251,7 @@ public class authService {
         System.out.println("newRefreshToken = " + newRefreshToken);
 
         // 8. 유저 이메일로 유저 가져오기
-        User user = userRepository2.findByEmail(userEmail).orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
 
         return LoginResponseDto.builder()
                 .userId(user.getId())
