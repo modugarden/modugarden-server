@@ -60,9 +60,6 @@ public class FollowService {
         return new isFollowedResponseDto(followcheck);
     }
 
-    //user가 following user을 following 함
-    //following user을 user가 follower 함
-
     //내 팔로워 명단조회
     public Slice<FollowersResponseDto> meFollowerList(Long id, Pageable pageable) {
         Slice<User> followers = followRepository.findByFollowingUser_Id(id, pageable);
@@ -72,6 +69,7 @@ public class FollowService {
                         , followRepository.exists(id, u.getId())));
         return result;
     }
+
     //내 팔로잉 명단조회
     public Slice<FollowingsResponseDto> meFollowingList(Long id, Pageable pageable) {
         Slice<User> followings = followRepository.findByUser_Id(id, pageable);
@@ -99,7 +97,7 @@ public class FollowService {
                         , followRepository.exists(id, u.getId())));
         return result;
     }
-    // 팔로우할 유저 추천
+    //팔로우할 유저 추천
     public List<FollowRecommendResponseDto> recommendFollowingList(User user, Pageable pageable){
         List<FollowRecommendResponseDto> responseDto = new ArrayList<>();
 

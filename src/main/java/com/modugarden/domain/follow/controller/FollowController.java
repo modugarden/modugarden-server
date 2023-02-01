@@ -37,13 +37,10 @@ public class FollowController {
 
 
     //팔로우 유무 체크
-    @GetMapping("/isfollowed/{id}")  //pathvariable 쓰면 {~~} 이거 써야 함
+    @GetMapping("/isfollowed/{id}")
     public BaseResponseDto<isFollowedResponseDto> profile(@PathVariable Long id, @AuthenticationPrincipal ModugardenUser user) {
-        //if으로 return이 두 개일 경우 밑과 같이 받아옴
         return new BaseResponseDto<isFollowedResponseDto>(followService.profile(id,user));
     }
-    //user가 following user을 following 함
-    //following user을 user가 follower 함
 
     //내 팔로워 명단조회
     @GetMapping("/me/follower")
