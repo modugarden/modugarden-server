@@ -15,10 +15,10 @@ import java.util.Optional;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
+
     Optional<Board> findById(Long boardId);
 
     Long countByUser_Id(Long user_id);
-
 
     //제목 검색
     Slice<Board> findAllByTitleLikeOrderByCreatedDateDesc(String title, Pageable pageable);
@@ -30,4 +30,5 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "            LEFT JOIN BoardStorage bs ON bo.id = bs.board.id\n" +
             "            WHERE bo.user.id = bs.user.id")
     Slice<BoardGetStorageResponseDto> QueryfindAllByUser_Id(Long user_id, Pageable pageable);
+
 }

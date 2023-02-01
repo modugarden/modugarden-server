@@ -22,5 +22,6 @@ public class BoardCreateRequestDto {
 
     private List<String> location; // 위치 태그
 
+    @NotEmpty(message = "카테고리는 필수 입력 값입니다.")
     private String category; // 카테고리
 }

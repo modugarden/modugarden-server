@@ -2,7 +2,6 @@ package com.modugarden.domain.board.dto.request;
 
 import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.like.entity.LikeBoard;
-import com.modugarden.domain.like.entity.LikeCuration;
 import com.modugarden.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardLikeRequestDto {
+
     private User user; // 유저
     private Board board; // 카테고리
 
