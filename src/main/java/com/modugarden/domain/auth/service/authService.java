@@ -1,13 +1,15 @@
-package com.modugarden.domain.user.service;
+package com.modugarden.domain.auth.service;
 
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
+import com.modugarden.common.error.exception.custom.InvalidTokenException;
+import com.modugarden.common.error.exception.custom.LoginCancelException;
 import com.modugarden.domain.auth.dto.request.IsEmailDuplicatedRequestDto;
 import com.modugarden.domain.auth.dto.response.IsEmailDuplicatedResponseDto;
 import com.modugarden.domain.auth.dto.response.LoginResponseDto;
 import com.modugarden.domain.auth.dto.request.TokenReissueRequestDto;
-import com.modugarden.domain.refreshToken.entity.RefreshToken;
-import com.modugarden.domain.refreshToken.repository.RefreshTokenRepository;
+import com.modugarden.domain.auth.entity.RefreshToken;
+import com.modugarden.domain.auth.repository.RefreshTokenRepository;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.entity.UserInterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
@@ -43,7 +45,7 @@ import static java.lang.Boolean.TRUE;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class UserService2 {
+public class authService {
 
     private final UserRepository2 userRepository2;
     private final InterestCategoryRepository interestCategoryRepository;
@@ -141,7 +143,7 @@ public class UserService2 {
 
         }catch (BadCredentialsException e){
             System.out.println(e.getMessage());
-            throw new BusinessException(ErrorMessage.WRONG_PASSWORD);
+            throw new LoginCancelException(ErrorMessage.WRONG_PASSWORD);
         }
     }
 
@@ -206,12 +208,12 @@ public class UserService2 {
 
         }catch (BadCredentialsException e){
             System.out.println(e.getMessage());
-            throw new BusinessException(ErrorMessage.WRONG_PASSWORD);
+            throw new LoginCancelException(ErrorMessage.WRONG_PASSWORD);
         }
     }
 
 
-    public LoginResponseDto reissueAccessToken(TokenReissueRequestDto requestDto) throws BusinessException{
+    public LoginResponseDto reissueAccessToken(TokenReissueRequestDto requestDto) {
         // 1. access Token 유효성 검증
         tokenProvider.validateAccessTokenForReissue(requestDto.getAccessToken());
 
@@ -222,7 +224,7 @@ public class UserService2 {
         Date expiration = tokenProvider.parseClaims(requestDto.getAccessToken()).getExpiration();
 
         if(!expiration.before(new Date())){ // 만료여부 체크 하는 거 헷갈림
-            throw new BusinessException(WRONG_REISSUE_TOKEN_ACCESS);
+            throw new InvalidTokenException(WRONG_REISSUE_TOKEN_ACCESS);
         }
 
         // 4. refresh Token 유효성 검증
@@ -233,7 +235,7 @@ public class UserService2 {
        // System.out.println("redisRefreshToken = " + redisRefreshToken.getRefreshToken());
 
         if(!redisRefreshToken.getRefreshToken().equals(requestDto.getRefreshToken())){ // request로 받은 refreshToken과 redis에 저장된 refreshToken 비교
-            throw new BusinessException(WRONG_JWT_TOKEN);// refresh Token 정보가 일치하지 않습니다.
+            throw new InvalidTokenException(WRONG_JWT_TOKEN);// refresh Token 정보가 일치하지 않습니다.
         }
 
         // 6. 새로운 토큰 생성

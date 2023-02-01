@@ -1,6 +1,7 @@
 package com.modugarden.common.error.exception;
 
 import com.modugarden.common.error.exception.custom.BusinessException;
+import com.modugarden.common.error.exception.custom.InvalidTokenException;
 import com.modugarden.common.error.exception.custom.LoginCancelException;
 import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.common.error.enums.ErrorMessage;
@@ -27,7 +28,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(LoginCancelException.class)
-    public BaseResponseDto<ErrorMessage> loginCancelExceptionHandle(BusinessException e) {
+    public BaseResponseDto<ErrorMessage> loginCancelExceptionHandle(LoginCancelException e) {
         log.warn("loginCancelException : {}", e);
         return new BaseResponseDto(e.getErrorMessage());
     }
@@ -47,5 +48,11 @@ public class GlobalExceptionHandler {
         log.warn("MethodArgumen:tNotValidExceptionException : {}", errorMsg);
 
         return new BaseResponseDto(HttpStatus.BAD_REQUEST.value(), false, firstErrorMessage);
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public BaseResponseDto<ErrorMessage> InvalidTokenExceptionHandle(InvalidTokenException e) {
+        log.warn("InvalidTokenException : {}", e);
+        return new BaseResponseDto(e.getErrorMessage());
     }
 }

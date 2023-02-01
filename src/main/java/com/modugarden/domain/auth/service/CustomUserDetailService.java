@@ -1,4 +1,4 @@
-package com.modugarden.domain.auth;
+package com.modugarden.domain.auth.service;
 
 import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.domain.auth.entity.ModugardenUser;
