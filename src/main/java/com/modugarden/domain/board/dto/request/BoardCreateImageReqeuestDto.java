@@ -23,14 +23,4 @@ public class BoardCreateImageReqeuestDto {
     private Long userid;
 
     private Board board; // 해당하는 포스트
-
-    public BoardImage toEntity() {
-        return BoardImage.builder()
-                .image(image)
-                .content(content)
-                .location(location)
-                .userid(userid)
-                .board(board)
-                .build();
-    }
 }
