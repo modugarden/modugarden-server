@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -31,4 +32,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "            WHERE bo.user.id = bs.user.id")
     Slice<BoardGetStorageResponseDto> QueryfindAllByUser_Id(Long user_id, Pageable pageable);
 
+    @Query("select b from Board b inner join b.user u where u.id in :followingUserIds order by b.createdDate")
+    Slice<Board> findBoard(List<Long> followingUserIds, Pageable pageable);
 }

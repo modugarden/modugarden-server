@@ -154,4 +154,11 @@ public class BoardController {
     public BaseResponseDto<BoardStorageResponseDto> storeCancelBoard(@PathVariable Long board_id, @AuthenticationPrincipal ModugardenUser user) {
         return new BaseResponseDto<>(boardService.storeCancelBoard(user, board_id));
     }
+
+    //팔로우한 유저 포스트 조회
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
+    @GetMapping("/boards/followfeed")
+    public SliceResponseDto<BoardFollowFeedResponseDto> getFollowFeed(@AuthenticationPrincipal ModugardenUser user,Pageable pageable){
+        return new SliceResponseDto<>(boardService.getFollowFeed(user, pageable));
+    }
 }
