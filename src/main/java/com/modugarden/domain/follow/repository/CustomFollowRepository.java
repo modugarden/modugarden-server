@@ -7,6 +7,5 @@ import java.util.List;
 
 public interface CustomFollowRepository {
     boolean exists(Long userId, Long followingUserId);
-
     public List<Long> recommend3FollowingId(User user, long offset, int size);
 }

@@ -26,7 +26,6 @@ public class CommentService {
     private final BoardRepository boardRepository;
 
     //댓글 조회
-    //부모 댓글로 조회후 부모댓글이 같다면 시간순으로 조회
     public Slice<CommentListResponseDto> commentList(Long boardId, User user, Pageable pageable){
         Slice<Comment> comments = commentRepository.findAllByBoard_IdOrderByCreatedDateAsc(boardId, pageable);
         Slice<CommentListResponseDto> result = comments
@@ -34,7 +33,6 @@ public class CommentService {
         return result;
     }
     //댓글 작성
-    //create할 때 본인이 부모댓글인지 여부 확인과, 본인이 자식 댓글이면 Parent의 commentId가 필요하다
     @Transactional
     public CommentCreateResponseDto write(User user, Long boardId, CommentCreateRequestDto dto) {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_POST));
