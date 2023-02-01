@@ -31,7 +31,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    // swagger - permit url
+    // swagger - permit uri
     private static final String[] SWAGGER_PERMIT_URL_ARRAY = {
             /* swagger v2 */
             "/v2/api-docs",
@@ -48,16 +48,12 @@ public class SecurityConfig {
             "/swagger-ui/**"
     };
 
+    // login - permit uri
     private static final String[] LOGIN_PERMIT_URL_ARRAY = {
             "/users/log-in/**",
             "/users/sign-up/**",
             "/users/nickname/isDuplicated",
             "/users/token-reissue"
-    };
-
-    private static final String[] ONLY_CURATOR_URL_ARRAY = {
-            "/curations",
-            "curations/me/**"
     };
 
     @Bean

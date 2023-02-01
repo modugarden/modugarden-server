@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +29,7 @@ public class BoardController {
     private final BoardService boardService;
 
     //포스트 작성 api
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation( value= "업로드 페이지 - 포스트 작성", notes = "사용자가 포스트를 사진과 함께 작성한다.")
     @PostMapping(value = "/boards", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public BaseResponseDto<BoardCreateResponseDto> createBoard(@RequestPart @Valid BoardCreateRequestDto boardCreateRequest,
@@ -38,6 +40,7 @@ public class BoardController {
     }
 
     //포스트 좋아요 달기 api
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 좋아요 달기", notes = "특정 포스트에 좋아요 누른다.")
     @PostMapping("/boards/{board_id}/like")
     public BaseResponseDto<BoardLikeResponseDto> createLikeBoard(@PathVariable Long board_id,
@@ -47,6 +50,7 @@ public class BoardController {
     }
 
     //포스트 보관 api
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 보관", notes = "큐레이션을 보관한다.")
     @PostMapping("/boards/{board_id}/storage")
     public BaseResponseDto<BoardStorageResponseDto> storeBoard(@PathVariable Long board_id, @AuthenticationPrincipal ModugardenUser user) {
@@ -90,6 +94,7 @@ public class BoardController {
     }
 
     //내 프로필 포스트 조회 api
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "프로필 페이지 - 포스트 조회", notes = "로그인한 사용자의 포스트를 조회한다.")
     @GetMapping("/boards/me")
     public SliceResponseDto<BoardUserGetResponseDto> getMyBoard(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
@@ -97,6 +102,7 @@ public class BoardController {
     }
 
     //내 프로필 큐레이션 좋아요 여부 조회
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "프로필 페이지 - 포스트 좋아요 여부 조회", notes = "특정 포스트 좋아요 여부 조회한다.")
     @GetMapping("/boards/me/like/{board_id}")
     public BaseResponseDto<BoardGetMyLikeResponseDto> getMyLikeBoard(@PathVariable Long board_id,
@@ -105,6 +111,7 @@ public class BoardController {
     }
 
     //내 프로필 저장한 포스트 조회
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "프로필 페이지 - 저장한 포스트 조회", notes = "로그인한 사용자의 저장 포스트를 조회한다.")
     @GetMapping("/boards/me/storage")
     public SliceResponseDto<BoardGetStorageResponseDto> getStorageBoard(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
@@ -112,6 +119,7 @@ public class BoardController {
     }
 
     //내 프로필 포스트 보관 여부 조회
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "프로필 페이지 - 큐레이션 보관 여부 조회", notes = "특정 큐레이션 보관 여부 조회한다.")
     @GetMapping("/boards/me/storage/{board_id}")
     public BaseResponseDto<BoardGetMyStorageResponseDto> getMyStorageBoard(@PathVariable Long board_id,
@@ -120,6 +128,7 @@ public class BoardController {
     }
 
     //포스트 삭제 api
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 삭제", notes = "사용자의 포스트를 삭제한다.")
     @DeleteMapping("/boards/{board_id}")
     public BaseResponseDto<BoardDeleteResponseDto> deleteBoard(@PathVariable Long board_id,
@@ -129,6 +138,7 @@ public class BoardController {
     }
 
     //포스트 좋아요 취소 api
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 좋아요 취소", notes = "특정 포스트에 좋아요 취소한다.")
     @DeleteMapping("/boards/{boㅂard_id}/unlike")
     public BaseResponseDto<BoardLikeResponseDto> createUnlikeBoard(@PathVariable Long board_id,
@@ -138,6 +148,7 @@ public class BoardController {
     }
 
     //포스트 보관 취소 api
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 보관 취소", notes = "보관된 포스트를 취소한다.")
     @DeleteMapping("/boards/{board_id}/storage")
     public BaseResponseDto<BoardStorageResponseDto> storeCancelBoard(@PathVariable Long board_id, @AuthenticationPrincipal ModugardenUser user) {

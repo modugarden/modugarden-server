@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +29,7 @@ public class CurationController {
     private final CurationService curationService;
 
     //큐레이션 작성 api
+    @Secured({"ROLE_CURATOR"})
     @ApiOperation(value = "업로드 페이지 - 큐레이션 작성", notes = "사용자가 큐레이션을 사진과 함께 작성한다.")
     @PostMapping(value = "/curations", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public BaseResponseDto<CurationCreateResponseDto> createCuration(@RequestPart @Valid CurationCreateRequestDto curationCreateRequest,
@@ -38,6 +40,7 @@ public class CurationController {
     }
 
     //큐레이션 좋아요 달기 api
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 좋아요 달기", notes = "특정 큐레이션에 좋아요 누른다.")
     @PostMapping("/curations/{curation_id}/like")
     public BaseResponseDto<CurationLikeResponseDto> createLikeCuration(@PathVariable Long curation_id,
@@ -47,6 +50,7 @@ public class CurationController {
     }
 
     //큐레이션 보관 api
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 보관", notes = "큐레이션을 보관한다.")
     @PostMapping("/curations/{curation_id}/storage")
     public BaseResponseDto<CurationStorageResponseDto> storeCuration(@PathVariable Long curation_id, @AuthenticationPrincipal ModugardenUser user) {
@@ -89,6 +93,7 @@ public class CurationController {
     }
 
     //내 프로필 큐레이션 조회 api
+    @Secured({"ROLE_CURATOR"})
     @ApiOperation(value = "프로필 페이지 - 큐레이션 조회", notes = "로그인한 사용자의 큐레이션을 조회한다.")
     @GetMapping("/curations/me")
     public SliceResponseDto<CurationUserGetResponseDto> getMyCuration(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
@@ -96,6 +101,7 @@ public class CurationController {
     }
 
     //내 프로필 큐레이션 좋아요 여부 조회
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "프로필 페이지 - 큐레이션 좋아요 여부 조회", notes = "특정 큐레이션 좋아요 여부 조회한다.")
     @GetMapping("/curations/me/like/{curation_id}")
     public BaseResponseDto<CurationGetMyLikeResponseDto> getMyLikeCuration(@PathVariable Long curation_id,
@@ -104,6 +110,7 @@ public class CurationController {
     }
 
     //내 프로필 저장한 큐레이션 조회
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "프로필 페이지 - 저장한 큐레이션 조회", notes = "로그인한 사용자의 저장 큐레이션을 조회한다.")
     @GetMapping("/curations/me/storage")
     public SliceResponseDto<CurationGetStorageResponseDto> getStorageCuration(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
@@ -111,6 +118,7 @@ public class CurationController {
     }
 
     //내 프로필 큐레이션 보관 여부 조회
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "프로필 페이지 - 큐레이션 보관 여부 조회", notes = "특정 큐레이션 보관 여부 조회한다.")
     @GetMapping("/curations/me/storage/{curation_id}")
     public BaseResponseDto<CurationGetMyStorageResponseDto> getMyStorageCuration(@PathVariable Long curation_id,
@@ -119,6 +127,7 @@ public class CurationController {
     }
 
     //큐레이션 삭제 api
+    @Secured({"ROLE_CURATOR"})
     @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 삭제", notes = "사용자의 큐레이션을 삭제한다.")
     @DeleteMapping("/curations/{curation_id}")
     public BaseResponseDto<CurationDeleteResponseDto> deleteCuration(@PathVariable Long curation_id,
@@ -128,6 +137,7 @@ public class CurationController {
     }
 
     //큐레이션 좋아요 취소 api
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 좋아요 취소", notes = "특정 큐레이션에 좋아요 취소한다.")
     @DeleteMapping("/curations/{curation_id}/unlike")
     public BaseResponseDto<CurationLikeResponseDto> createUnlikeCuration(@PathVariable Long curation_id,
@@ -137,6 +147,7 @@ public class CurationController {
     }
 
     //큐레이션 보관 취소 api
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 보관 취소", notes = "보관된 큐레이션을 취소한다.")
     @DeleteMapping("/curations/{curation_id}/storage")
     public BaseResponseDto<CurationStorageResponseDto> storeCancelCuration(@PathVariable Long curation_id, @AuthenticationPrincipal ModugardenUser user) {
