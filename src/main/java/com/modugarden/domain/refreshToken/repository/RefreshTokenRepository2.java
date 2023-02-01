@@ -1,6 +1,6 @@
-package com.modugarden.domain.auth.refreshToken.repository;
+package com.modugarden.domain.refreshToken.repository;
 
-import com.modugarden.domain.auth.entity.RefreshToken;
+import com.modugarden.domain.refreshToken.entity.RefreshToken;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
