@@ -55,11 +55,6 @@ public class SecurityConfig {
             "/users/token-reissue"
     };
 
-    private static final String[] ONLY_CURATOR_URL_ARRAY = {
-            "/curations",
-            "curations/me/**"
-    };
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http

@@ -11,6 +11,7 @@ import com.modugarden.domain.comment.dto.response.CommentListResponseDto;
 import com.modugarden.domain.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,12 +31,14 @@ public class CommentController {
     }
 
     // 댓글, 대댓글 작성
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @PostMapping("/{board_id}/comments")
     public BaseResponseDto<CommentCreateResponseDto> write(@AuthenticationPrincipal ModugardenUser modugardenUser, @RequestBody @Valid CommentCreateRequestDto dto, @PathVariable Long board_id) {
         return new BaseResponseDto<>(commentService.write(modugardenUser.getUser(), board_id, dto));
     }
 
     // 댓글 삭제
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @PatchMapping("/{board_id}/comments/{comment_id}")
     public BaseResponseDto<CommentDeleteResponseDto> delete(@AuthenticationPrincipal ModugardenUser modugardenUser, @RequestBody CommentDeleteRequestDto dto, @PathVariable Long board_id) {
         return new BaseResponseDto<>(commentService.delete(modugardenUser.getUser(), dto));

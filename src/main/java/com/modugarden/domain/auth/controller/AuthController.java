@@ -19,6 +19,7 @@ import com.modugarden.domain.user.dto.response.SignUpResponseDto;
 import com.modugarden.domain.auth.service.authService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -71,12 +72,14 @@ public class AuthController {
         return new BaseResponseDto<>(userService2.isEmailDuplicate(requestDto));
     }
 
+    @Secured("ROLE_GENERAL")
     @ApiOperation(value = "내 프로필 - 설정 - 회원 탈퇴", notes = "현재 로그인한 유저 회원 탈퇴를 진행한다.")
     @DeleteMapping("/me")
     public BaseResponseDto<DeleteUserResponseDto> deleteCurrentUser(@AuthenticationPrincipal ModugardenUser modugardenUser){
         return new BaseResponseDto<>(userService2.deleteCurrentUser(modugardenUser.getUser()));
     }
 
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "accessToken, refreshToken 재발급", notes = "만료된 accessToken과 만료되지 않은 refreshToken을 사용해 새로운 accessToken과 refreshToken을 발급받는다.")
     @PostMapping("/token-reissue")
     public BaseResponseDto<LoginResponseDto> reissueToken(@RequestBody @Valid TokenReissueRequestDto requestDto){
