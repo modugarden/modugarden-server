@@ -22,7 +22,7 @@ public interface CurationRepository extends JpaRepository<Curation, Long> {
     Long countByUser_Id(Long user_id);
 
     @Query(value = "SELECT cu FROM Curation cu \n" +
-            "            LEFT JOIN CurationStorage cs ON cu.user.id = cs.user.id\n" +
+            "            LEFT JOIN CurationStorage cs ON cu.id = cs.curation.id\n" +
             "            WHERE cu.user.id = cs.user.id")
     Page<CurationGetStorageResponseDto> QueryfindAllByUser_Id(Long user_id, Pageable pageable);
 }

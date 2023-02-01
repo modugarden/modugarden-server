@@ -2,7 +2,6 @@ package com.modugarden.domain.board.dto.response;
 
 import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.board.entity.BoardImage;
-import com.modugarden.domain.curation.entity.Curation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

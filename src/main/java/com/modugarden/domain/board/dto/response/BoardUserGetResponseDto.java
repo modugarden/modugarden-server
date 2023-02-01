@@ -1,15 +1,12 @@
 package com.modugarden.domain.board.dto.response;
 
 
-import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.board.entity.BoardImage;
-import com.modugarden.domain.curation.entity.Curation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -22,6 +19,7 @@ public class BoardUserGetResponseDto {
     private LocalDateTime created_Date;
     private String image;
     private String location;
+    private String content;
     private Long user_id;
     private String user_nickname;
     private String user_profile_image;
@@ -36,6 +34,7 @@ public class BoardUserGetResponseDto {
         this.image = boardImage.getImage();
         this.location = boardImage.getLocation();
         this.like_num = boardImage.getBoard().getLike_num();
+        this.content = boardImage.getContent();
         this.user_id=boardImage.getBoard().getUser().getId();
         this.user_nickname=boardImage.getBoard().getUser().getNickname();
         this.user_profile_image=boardImage.getBoard().getUser().getProfileImg();

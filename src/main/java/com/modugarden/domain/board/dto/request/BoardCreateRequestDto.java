@@ -17,6 +17,7 @@ public class BoardCreateRequestDto {
     @Size(min= 1, max = 25, message = "길이는 1~25자여야 합니다.")
     private String title; // 제목
 
+    @Size(min= 1, max = 25, message = "길이는 1~25자여야 합니다.")
     private List<String> content;
 
     private List<String> location; // 위치 태그

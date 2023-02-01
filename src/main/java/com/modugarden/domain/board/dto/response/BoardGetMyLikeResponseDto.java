@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BoardGetMyLikeResponseDto {
     private Long user_id;
-    private Long curation_id;
+    private Long board_id;
     private boolean check;
 }

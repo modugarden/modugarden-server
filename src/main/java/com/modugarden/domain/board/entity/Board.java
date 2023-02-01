@@ -22,8 +22,10 @@ public class Board extends BaseTimeEntity {
     @Column(length = 40, nullable = false)
     private String title;
 
+    @Column
     private Long like_num;
 
+    @Column
     private String preview_img;
 
     @ManyToOne(fetch = FetchType.LAZY)
