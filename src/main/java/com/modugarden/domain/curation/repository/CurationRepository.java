@@ -27,7 +27,7 @@ public interface CurationRepository extends JpaRepository<Curation, Long> {
     @Query(value = "SELECT cu FROM Curation cu \n" +
             "            LEFT JOIN CurationStorage cs ON cu.id = cs.curation.id\n" +
             "            WHERE cu.user.id = cs.user.id")
-    Page<CurationGetStorageResponseDto> QueryfindAllByUser_Id(Long user_id, Pageable pageable);
+    Page<Curation> QueryfindAllByUser_Id(Long user_id, Pageable pageable);
 
     @Query("select b from Curation b inner join b.user u where u.id in :followingUserIds order by b.createdDate")
     Slice<Curation> findCuration(List<Long> followingUserIds, Pageable pageable);

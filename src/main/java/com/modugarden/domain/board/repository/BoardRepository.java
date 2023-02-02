@@ -30,7 +30,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query(value = "SELECT bo FROM Board bo \n" +
             "            LEFT JOIN BoardStorage bs ON bo.id = bs.board.id\n" +
             "            WHERE bo.user.id = bs.user.id")
-    Slice<BoardGetStorageResponseDto> QueryfindAllByUser_Id(Long user_id, Pageable pageable);
+    Slice<Board> QueryfindAllByUser_Id(Long user_id, Pageable pageable);
 
     @Query("select b from Board b inner join b.user u where u.id in :followingUserIds order by b.createdDate")
     Slice<Board> findBoard(List<Long> followingUserIds, Pageable pageable);

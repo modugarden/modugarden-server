@@ -3,6 +3,8 @@ package com.modugarden.domain.curation.service;
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.common.s3.FileService;
+import com.modugarden.domain.board.dto.response.BoardGetStorageResponseDto;
+import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
@@ -145,10 +147,14 @@ public class CurationService {
     
     //내 프로필 저장한 큐레이션 조회
     public Slice<CurationGetStorageResponseDto> getStorageCuration(long user_id, Pageable pageable) {
-        Slice<CurationGetStorageResponseDto> myCurationStorageList = curationRepository.QueryfindAllByUser_Id(user_id, pageable);
+        Slice<Curation> curationStorageList = curationRepository.QueryfindAllByUser_Id(user_id, pageable);
 
-        if (myCurationStorageList.isEmpty())
+        if (curationStorageList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
+
+        Slice<CurationGetStorageResponseDto> myCurationStorageList = curationStorageList.map(
+                u->new CurationGetStorageResponseDto(u)
+        );
 
         return myCurationStorageList;
     }
