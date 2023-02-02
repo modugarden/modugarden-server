@@ -1,5 +1,6 @@
 package com.modugarden.domain.curation.repository;
 
+import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.curation.dto.response.CurationGetStorageResponseDto;
 import com.modugarden.domain.curation.entity.Curation;
@@ -9,6 +10,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface CurationRepository extends JpaRepository<Curation, Long> {
@@ -25,4 +28,7 @@ public interface CurationRepository extends JpaRepository<Curation, Long> {
             "            LEFT JOIN CurationStorage cs ON cu.id = cs.curation.id\n" +
             "            WHERE cu.user.id = cs.user.id")
     Page<CurationGetStorageResponseDto> QueryfindAllByUser_Id(Long user_id, Pageable pageable);
+
+    @Query("select b from Curation b inner join b.user u where u.id in :followingUserIds order by b.createdDate")
+    Slice<Curation> findCuration(List<Long> followingUserIds, Pageable pageable);
 }

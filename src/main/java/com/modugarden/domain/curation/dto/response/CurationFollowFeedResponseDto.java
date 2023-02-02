@@ -10,33 +10,28 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CurationGetResponseDto {
-    private Long id;
+public class CurationFollowFeedResponseDto {
+    private Long curation_id;
     private String title;
-    private String link;
-    private String preview_image;
-    private Long like_num;
     private LocalDateTime created_Date;
+    private String image;
     private Long user_id;
     private String user_nickname;
     private String user_profile_image;
     private String category_category;
-    private Boolean isliked;
-    private Boolean isSaved;
+    private boolean isLiked;
+    private boolean isSaved;
 
-
-    public CurationGetResponseDto(Curation curation,Boolean isliked, Boolean isSaved) {
-        this.id=curation.getId();
+    public CurationFollowFeedResponseDto(Curation curation, boolean like, boolean save) {
+        this.curation_id = curation.getId();
         this.title=curation.getTitle();
-        this.link=curation.getLink();
-        this.preview_image=curation.getPreviewImage();
-        this.like_num =curation.getLikeNum();
         this.created_Date=curation.getCreatedDate();
+        this.image = curation.getPreviewImage();
         this.user_id=curation.getUser().getId();
         this.user_nickname=curation.getUser().getNickname();
         this.user_profile_image=curation.getUser().getProfileImg();
         this.category_category=curation.getCategory().getCategory();
-        this.isliked=isliked;
-        this.isSaved=isSaved;
+        this.isLiked=like;
+        this.isSaved=save;
     }
 }

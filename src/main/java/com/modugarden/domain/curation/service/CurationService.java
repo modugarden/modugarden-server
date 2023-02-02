@@ -11,6 +11,7 @@ import com.modugarden.domain.curation.dto.request.CurationLikeRequestDto;
 import com.modugarden.domain.curation.dto.response.*;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.curation.repository.CurationRepository;
+import com.modugarden.domain.follow.repository.FollowRepository;
 import com.modugarden.domain.like.repository.LikeCurationRepository;
 import com.modugarden.domain.storage.entity.CurationStorage;
 import com.modugarden.domain.storage.entity.repository.CurationStorageRepository;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +37,7 @@ public class CurationService {
     private final FileService fileService;
     private final CurationStorageRepository curationStorageRepository;
     private final InterestCategoryRepository interestCategoryRepository;
-
+    private final FollowRepository followRepository;
     //큐레이션 생성
     @Transactional
     public CurationCreateResponseDto createCuration(CurationCreateRequestDto createRequestDto, MultipartFile file, ModugardenUser user) throws IOException {
@@ -86,9 +88,9 @@ public class CurationService {
     }
 
     //큐레이션 하나 조회 api
-    public CurationGetResponseDto getCuration(long id) {
+    public CurationGetResponseDto getCuration(long id,ModugardenUser user) {
         Curation curation = curationRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
-        return new CurationGetResponseDto(curation);
+        return new CurationGetResponseDto(curation,likeCurationRepository.findByUserAndCuration(user.getUser(), curation).isPresent(),curationStorageRepository.findByUserAndCuration(user.getUser(), curation).isPresent());
     }
 
     //회원 큐레이션 조회
@@ -202,5 +204,17 @@ public class CurationService {
                 curationStorageRepository::delete
         );
         return new CurationStorageResponseDto(curation.getUser().getId(), curation.getId());
+    }
+
+    //팔로우 피드 조회
+    public Slice<CurationFollowFeedResponseDto> getFollowFeed(ModugardenUser user, Pageable pageable){
+        List<Long> userList = followRepository.ffindByFollowingUser_Id(user.getUserId(),pageable);
+
+        Slice<Curation> curationSlice = curationRepository.findCuration(userList,pageable);
+
+        Slice<CurationFollowFeedResponseDto> followBoard = curationSlice
+                .map(u -> new CurationFollowFeedResponseDto(u,likeCurationRepository.findByUserAndCuration(user.getUser(), u).isPresent(),curationStorageRepository.findByUserAndCuration(user.getUser(), u).isPresent()));
+
+        return followBoard;
     }
 }

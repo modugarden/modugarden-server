@@ -14,6 +14,7 @@ import com.modugarden.domain.board.repository.BoardRepository;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 
+import com.modugarden.domain.follow.repository.FollowRepository;
 import com.modugarden.domain.like.repository.LikeBoardRepository;
 import com.modugarden.domain.storage.entity.BoardStorage;
 import com.modugarden.domain.storage.entity.repository.BoardStorageRepository;
@@ -28,6 +29,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +43,7 @@ public class BoardService {
     private final BoardStorageRepository boardStorageRepository;
     private final InterestCategoryRepository interestCategoryRepository;
     private final FileService fileService;
+    private final FollowRepository followRepository;
 
 
     //포스트 생성
@@ -117,10 +121,10 @@ public class BoardService {
     }
 
     //포스트 하나 조회 api
-    public BoardGetResponseDto getBoard(long id) {
+    public BoardGetResponseDto getBoard(long id,ModugardenUser user) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
         List<BoardImage> imageList = boardImageRepository.findAllByBoard_Id(id);
-        return new BoardGetResponseDto(board,imageList);
+        return new BoardGetResponseDto(board,imageList,likeBoardRepository.findByUserAndBoard(user.getUser(), board).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), board).isPresent());
     }
 
     //회원 포스트 조회
@@ -241,6 +245,18 @@ public class BoardService {
         );
 
         return new BoardStorageResponseDto(board.getUser().getId(), board.getId());
+    }
+
+    //팔로우 피드 조회
+    public Slice<BoardFollowFeedResponseDto> getFollowFeed(ModugardenUser user, Pageable pageable){
+        List<Long> userList = followRepository.ffindByFollowingUser_Id(user.getUserId(),pageable);
+
+        Slice<Board> boardSlice = boardRepository.findBoard(userList,pageable);
+
+        Slice<BoardFollowFeedResponseDto> followBoard = boardSlice
+                        .map(u -> new BoardFollowFeedResponseDto(u,likeBoardRepository.findByUserAndBoard(user.getUser(), u).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), u).isPresent()));
+
+        return followBoard;
     }
 
 }

@@ -4,6 +4,7 @@ import com.modugarden.common.response.BaseResponseDto;
 
 import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
+import com.modugarden.domain.board.dto.response.BoardFollowFeedResponseDto;
 import com.modugarden.domain.curation.dto.request.CurationCreateRequestDto;
 import com.modugarden.domain.curation.dto.response.*;
 import com.modugarden.domain.curation.service.CurationService;
@@ -60,8 +61,8 @@ public class CurationController {
     //큐레이션 하나 조회 api
     @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 하나 조회", notes = "특정 큐레이션 한개를 조회 한다.")
     @GetMapping("/curations/{curation_id}")
-    public BaseResponseDto<CurationGetResponseDto> getCuration(@PathVariable Long curation_id) {
-        return new BaseResponseDto<>(curationService.getCuration(curation_id));
+    public BaseResponseDto<CurationGetResponseDto> getCuration(@PathVariable Long curation_id, @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(curationService.getCuration(curation_id,user));
     }
 
     //회원 큐레이션 조회 api
@@ -152,5 +153,12 @@ public class CurationController {
     @DeleteMapping("/curations/{curation_id}/storage")
     public BaseResponseDto<CurationStorageResponseDto> storeCancelCuration(@PathVariable Long curation_id, @AuthenticationPrincipal ModugardenUser user) {
         return new BaseResponseDto<>(curationService.storeCancelCuration(user, curation_id));
+    }
+
+    //팔로우한 유저 큐레이션 조회
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
+    @GetMapping("/curations/followfeed")
+    public SliceResponseDto<CurationFollowFeedResponseDto> getFollowFeed(@AuthenticationPrincipal ModugardenUser user, Pageable pageable){
+        return new SliceResponseDto<>(curationService.getFollowFeed(user, pageable));
     }
 }
