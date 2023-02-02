@@ -14,6 +14,7 @@ import com.modugarden.domain.board.repository.BoardRepository;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 
+import com.modugarden.domain.comment.repository.CommentRepository;
 import com.modugarden.domain.follow.repository.FollowRepository;
 import com.modugarden.domain.like.repository.LikeBoardRepository;
 import com.modugarden.domain.storage.entity.BoardStorage;
@@ -42,7 +43,7 @@ public class BoardService {
     private final InterestCategoryRepository interestCategoryRepository;
     private final FileService fileService;
     private final FollowRepository followRepository;
-
+    private final CommentRepository commentRepository;
 
     //포스트 생성
     @Transactional
@@ -208,7 +209,8 @@ public class BoardService {
             boardStorageRepository.deleteAllByBoard_Id(id);
             // 좋아요 모두 삭제
             likeBoardRepository.deleteAllByBoard_Id(id);
-            //설마 댓글 삭제 ..?
+            // 댓글 삭제
+            commentRepository.deleteAllByBoard_Id(id);
 
             boardRepository.delete(board);
         }
