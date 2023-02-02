@@ -29,8 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -249,7 +247,7 @@ public class BoardService {
 
     //팔로우 피드 조회
     public Slice<BoardFollowFeedResponseDto> getFollowFeed(ModugardenUser user, Pageable pageable){
-        List<Long> userList = followRepository.ffindByFollowingUser_Id(user.getUserId(),pageable);
+        List<Long> userList = followRepository.listFindByFollowingUser_Id(user.getUserId(),pageable);
 
         Slice<Board> boardSlice = boardRepository.findBoard(userList,pageable);
 

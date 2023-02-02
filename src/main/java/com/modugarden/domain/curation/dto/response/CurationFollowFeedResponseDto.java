@@ -15,6 +15,7 @@ public class CurationFollowFeedResponseDto {
     private String title;
     private LocalDateTime created_Date;
     private String image;
+    private String link;
     private Long user_id;
     private String user_nickname;
     private String user_profile_image;
@@ -27,6 +28,7 @@ public class CurationFollowFeedResponseDto {
         this.title=curation.getTitle();
         this.created_Date=curation.getCreatedDate();
         this.image = curation.getPreviewImage();
+        this.link = curation.getLink();
         this.user_id=curation.getUser().getId();
         this.user_nickname=curation.getUser().getNickname();
         this.user_profile_image=curation.getUser().getProfileImg();
