@@ -35,7 +35,7 @@ public class CommentService {
     //댓글 작성
     @Transactional
     public CommentCreateResponseDto write(User user, Long boardId, CommentCreateRequestDto dto) {
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_POST));
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
         Comment newComment;
         if (dto.getParentId() == null) { // 부모 댓글 작성
             newComment = new Comment(dto.getContent(), 0L, board, user); // parentId에 일단 아무값이나 채우기(DB에서 not null 조건 있어서)

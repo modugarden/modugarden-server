@@ -68,7 +68,7 @@ public class ReportService {
     }
 
     public ReportBoardResponseDto reportBoard(User user, Long boardId, String type) {
-        Board reportBoard = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_POST));
+        Board reportBoard = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
         ReportType reportType = ReportType.from(type);
         BoardReport boardReport = new BoardReport(reportType, reportBoard, user);
         reportBoardRepository.save(boardReport);
