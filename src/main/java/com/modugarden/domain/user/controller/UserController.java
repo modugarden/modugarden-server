@@ -51,7 +51,7 @@ public class UserController {
     @ApiOperation(value = "내 프로필 - 메인 정보 조회", notes = "내 프로필 메인 정보를 조회한다.")
     @GetMapping("/me/info")
     public BaseResponseDto<CurrentUserInfoResponseDto> currentUserInfo(@AuthenticationPrincipal ModugardenUser user) {
-        return new BaseResponseDto<>(userService.readCurrentUserInfo(user.getUserId()));
+        return new BaseResponseDto<>(userService.readCurrentUserInfo(user.getUser()));
     }
 
     @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
