@@ -22,9 +22,10 @@ public class BoardGetResponseDto {
     private String user_nickname;
     private String user_profile_image;
     private String category_category;
+    private Boolean isliked;
+    private Boolean isSaved;
 
-
-    public BoardGetResponseDto(Board board, List<BoardImage> image) {
+    public BoardGetResponseDto(Board board, List<BoardImage> image,Boolean isliked, Boolean isSaved) {
         this.id=board.getId();
         this.title=board.getTitle();
         this.created_Date=board.getCreatedDate();
@@ -34,6 +35,8 @@ public class BoardGetResponseDto {
         this.user_nickname=board.getUser().getNickname();
         this.user_profile_image=board.getUser().getProfileImg();
         this.category_category=board.getCategory().getCategory();
+        this.isliked=isliked;
+        this.isSaved=isSaved;
     }
 }
 

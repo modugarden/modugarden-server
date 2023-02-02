@@ -60,8 +60,8 @@ public class BoardController {
     //포스트 하나 조회 api
     @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 하나 조회", notes = "특정 포스트 한개를 조회 한다.")
     @GetMapping("/boards/{board_id}")
-    public BaseResponseDto<BoardGetResponseDto> getBoard(@PathVariable Long board_id) {
-        return new BaseResponseDto<>(boardService.getBoard(board_id));
+    public BaseResponseDto<BoardGetResponseDto> getBoard(@PathVariable Long board_id, @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(boardService.getBoard(board_id,user));
     }
 
     //회원 포스트 조회 api

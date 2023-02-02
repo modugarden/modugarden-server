@@ -88,9 +88,9 @@ public class CurationService {
     }
 
     //큐레이션 하나 조회 api
-    public CurationGetResponseDto getCuration(long id) {
+    public CurationGetResponseDto getCuration(long id,ModugardenUser user) {
         Curation curation = curationRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
-        return new CurationGetResponseDto(curation);
+        return new CurationGetResponseDto(curation,likeCurationRepository.findByUserAndCuration(user.getUser(), curation).isPresent(),curationStorageRepository.findByUserAndCuration(user.getUser(), curation).isPresent());
     }
 
     //회원 큐레이션 조회

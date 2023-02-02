@@ -121,10 +121,10 @@ public class BoardService {
     }
 
     //포스트 하나 조회 api
-    public BoardGetResponseDto getBoard(long id) {
+    public BoardGetResponseDto getBoard(long id,ModugardenUser user) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
         List<BoardImage> imageList = boardImageRepository.findAllByBoard_Id(id);
-        return new BoardGetResponseDto(board,imageList);
+        return new BoardGetResponseDto(board,imageList,likeBoardRepository.findByUserAndBoard(user.getUser(), board).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), board).isPresent());
     }
 
     //회원 포스트 조회
