@@ -51,14 +51,14 @@ public class UserController {
     @ApiOperation(value = "내 프로필 - 메인 정보 조회", notes = "내 프로필 메인 정보를 조회한다.")
     @GetMapping("/me/info")
     public BaseResponseDto<CurrentUserInfoResponseDto> currentUserInfo(@AuthenticationPrincipal ModugardenUser user) {
-        return new BaseResponseDto<>(userService.readCurrentUserInfo(user.getUserId()));
+        return new BaseResponseDto<>(userService.readCurrentUserInfo(user.getUser()));
     }
 
     @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
-    @ApiOperation(value = "내 프로필 - 프로필 설정", notes = "내 프로필에서 프로필 설정시 나타나는 정보들을 조회한다.")
+    @ApiOperation(value = "내 프로필 - 프로필 설정 정보 조회", notes = "내 프로필에서 프로필 설정시 나타나는 정보들을 조회한다.")
     @GetMapping("/me/setting-info")
     public BaseResponseDto<UserSettingInfoResponseDto> readUserInfo(@AuthenticationPrincipal ModugardenUser user) {
-        return new BaseResponseDto<>(userService.readUserSettingInfo(user.getUserId()));
+        return new BaseResponseDto<>(userService.readUserSettingInfo(user.getUser()));
     }
 
     @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
