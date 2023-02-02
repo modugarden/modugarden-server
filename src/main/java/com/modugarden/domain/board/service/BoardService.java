@@ -254,11 +254,10 @@ public class BoardService {
     //팔로우 피드 조회
     public Slice<BoardFollowFeedResponseDto> getFollowFeed(ModugardenUser user, Pageable pageable){
         List<Long> userList = followRepository.listFindByFollowingUser_Id(user.getUserId(),pageable);
-
         Slice<Board> boardSlice = boardRepository.findBoard(userList,pageable);
 
         Slice<BoardFollowFeedResponseDto> followBoard = boardSlice
-                        .map(u -> new BoardFollowFeedResponseDto(u,likeBoardRepository.findByUserAndBoard(user.getUser(), u).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), u).isPresent()));
+                        .map(u -> new BoardFollowFeedResponseDto(u,boardImageRepository.findAllByBoard_Id(u.getId()),likeBoardRepository.findByUserAndBoard(user.getUser(), u).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), u).isPresent()));
 
         return followBoard;
     }
