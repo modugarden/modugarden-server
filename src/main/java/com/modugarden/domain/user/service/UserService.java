@@ -68,9 +68,8 @@ public class UserService {
         return new UpdateUserInfoResponseDto(userNickname, user.getProfileImg());
     }
 
-    public UserSettingInfoResponseDto readUserSettingInfo(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
-        List<String> categories = userRepository.readUserInterestCategory(userId);
+    public UserSettingInfoResponseDto readUserSettingInfo(User user) {
+        List<String> categories = userRepository.readUserInterestCategory(user.getId());
         if (categories.isEmpty()) throw new BusinessException(ErrorMessage.CATEGORY_NOT_FOUND);
         return new UserSettingInfoResponseDto(user.getId(), user.getEmail(), user.getNickname(), user.getBirth(), user.getAuthority(), user.getProfileImg(), categories);
     }
