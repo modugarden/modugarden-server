@@ -178,10 +178,14 @@ public class BoardService {
 
     //내 프로필 저장한 포스트 조회
     public Slice<BoardGetStorageResponseDto> getStorageBoard(long user_id, Pageable pageable) {
-        Slice<BoardGetStorageResponseDto> myBoardStorageList = boardRepository.QueryfindAllByUser_Id(user_id, pageable);
+        Slice<Board> boardStorageList = boardRepository.QueryfindAllByUser_Id(user_id, pageable);
 
-        if (myBoardStorageList.isEmpty())
+        if (boardStorageList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_BOARD_LIST);
+
+        Slice<BoardGetStorageResponseDto> myBoardStorageList = boardStorageList.map(
+                u->new BoardGetStorageResponseDto(u)
+        );
 
         return myBoardStorageList;
     }
