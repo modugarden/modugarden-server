@@ -208,7 +208,7 @@ public class CurationService {
 
     //팔로우 피드 조회
     public Slice<CurationFollowFeedResponseDto> getFollowFeed(ModugardenUser user, Pageable pageable){
-        List<Long> userList = followRepository.ffindByFollowingUser_Id(user.getUserId(),pageable);
+        List<Long> userList = followRepository.listFindByFollowingUser_Id(user.getUserId(),pageable);
 
         Slice<Curation> curationSlice = curationRepository.findCuration(userList,pageable);
 

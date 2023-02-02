@@ -14,6 +14,7 @@ import com.modugarden.domain.board.repository.BoardRepository;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 
+import com.modugarden.domain.comment.repository.CommentRepository;
 import com.modugarden.domain.follow.repository.FollowRepository;
 import com.modugarden.domain.like.repository.LikeBoardRepository;
 import com.modugarden.domain.storage.entity.BoardStorage;
@@ -29,8 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +43,7 @@ public class BoardService {
     private final InterestCategoryRepository interestCategoryRepository;
     private final FileService fileService;
     private final FollowRepository followRepository;
-
+    private final CommentRepository commentRepository;
 
     //포스트 생성
     @Transactional
@@ -210,7 +209,8 @@ public class BoardService {
             boardStorageRepository.deleteAllByBoard_Id(id);
             // 좋아요 모두 삭제
             likeBoardRepository.deleteAllByBoard_Id(id);
-            //설마 댓글 삭제 ..?
+            // 댓글 삭제
+            commentRepository.deleteAllByBoard_Id(id);
 
             boardRepository.delete(board);
         }
@@ -249,7 +249,7 @@ public class BoardService {
 
     //팔로우 피드 조회
     public Slice<BoardFollowFeedResponseDto> getFollowFeed(ModugardenUser user, Pageable pageable){
-        List<Long> userList = followRepository.ffindByFollowingUser_Id(user.getUserId(),pageable);
+        List<Long> userList = followRepository.listFindByFollowingUser_Id(user.getUserId(),pageable);
 
         Slice<Board> boardSlice = boardRepository.findBoard(userList,pageable);
 

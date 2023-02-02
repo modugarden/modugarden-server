@@ -24,7 +24,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, CustomFol
     Slice<User> findByUser_Id(@Param("userId") Long userId, Pageable pageable);
 
     @Query(value = "select f.followingUser.id from Follow f where f.user.id=:userId" )
-    List<Long> ffindByFollowingUser_Id(@Param("userId") Long userId, Pageable pageable);
+    List<Long> listFindByFollowingUser_Id(@Param("userId") Long userId, Pageable pageable);
 
     //유저아이디로 팔로워 수 알기
     Long countByFollowingUser_Id(Long user_id);
