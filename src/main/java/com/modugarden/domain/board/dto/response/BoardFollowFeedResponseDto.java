@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -15,7 +16,7 @@ public class BoardFollowFeedResponseDto {
     private Long board_id;
     private String title;
     private LocalDateTime created_Date;
-    private String image;
+    private List<BoardImage> image;
     private Long user_id;
     private String user_nickname;
     private String user_profile_image;
@@ -23,11 +24,11 @@ public class BoardFollowFeedResponseDto {
     private boolean isLiked;
     private boolean isSaved;
 
-    public BoardFollowFeedResponseDto(Board board,boolean like, boolean save) {
+    public BoardFollowFeedResponseDto(Board board, List<BoardImage> image, boolean like, boolean save) {
         this.board_id = board.getId();
         this.title=board.getTitle();
         this.created_Date=board.getCreatedDate();
-        this.image = board.getPreview_img();
+        this.image = image;
         this.user_id=board.getUser().getId();
         this.user_nickname=board.getUser().getNickname();
         this.user_profile_image=board.getUser().getProfileImg();
