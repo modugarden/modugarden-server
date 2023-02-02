@@ -21,9 +21,11 @@ public class CurationGetResponseDto {
     private String user_nickname;
     private String user_profile_image;
     private String category_category;
+    private Boolean isliked;
+    private Boolean isSaved;
 
 
-    public CurationGetResponseDto(Curation curation) {
+    public CurationGetResponseDto(Curation curation,Boolean isliked, Boolean isSaved) {
         this.id=curation.getId();
         this.title=curation.getTitle();
         this.link=curation.getLink();
@@ -34,5 +36,7 @@ public class CurationGetResponseDto {
         this.user_nickname=curation.getUser().getNickname();
         this.user_profile_image=curation.getUser().getProfileImg();
         this.category_category=curation.getCategory().getCategory();
+        this.isliked=isliked;
+        this.isSaved=isSaved;
     }
 }

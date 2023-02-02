@@ -61,8 +61,8 @@ public class CurationController {
     //큐레이션 하나 조회 api
     @ApiOperation(value = "게시물 상세보기 페이지 - 큐레이션 하나 조회", notes = "특정 큐레이션 한개를 조회 한다.")
     @GetMapping("/curations/{curation_id}")
-    public BaseResponseDto<CurationGetResponseDto> getCuration(@PathVariable Long curation_id) {
-        return new BaseResponseDto<>(curationService.getCuration(curation_id));
+    public BaseResponseDto<CurationGetResponseDto> getCuration(@PathVariable Long curation_id, @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(curationService.getCuration(curation_id,user));
     }
 
     //회원 큐레이션 조회 api
