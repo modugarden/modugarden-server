@@ -56,7 +56,7 @@ public class UserService {
         List<String> categories = userRepository.readUserInterestCategory(userId);
         if (categories.isEmpty()) throw new BusinessException(ErrorMessage.CATEGORY_NOT_FOUND);
         return new CurrentUserInfoResponseDto(user.getId(), user.getNickname(), user.getAuthority(), user.getProfileImg(),
-                followRepository.countByUser_Id(userId),
+                followRepository.countByFollowingUser_Id(userId),
                 boardRepository.countByUser_Id(userId) + curationRepository.countByUser_Id(userId), categories);
     }
 
@@ -81,7 +81,7 @@ public class UserService {
         List<String> categories = userRepository.readUserInterestCategory(userId);
         if (categories.isEmpty()) throw new BusinessException(ErrorMessage.CATEGORY_NOT_FOUND);
         return new UserInfoResponseDto(user.getId(), user.getNickname(), user.getAuthority(), user.getProfileImg(),
-                followRepository.countByUser_Id(userId),
+                followRepository.countByFollowingUser_Id(userId),
                 boardRepository.countByUser_Id(userId) + curationRepository.countByUser_Id(userId),
                 categories, followRepository.exists(loginUserId, userId));
     }
