@@ -95,7 +95,7 @@ public class CurationService {
 
     //회원 큐레이션 조회
     public Slice<CurationUserGetResponseDto> getUserCuration(long user_id, Pageable pageable) {
-        Slice<Curation> userCurationList = curationRepository.findAllByUser_Id(user_id, pageable);
+        Slice<Curation> userCurationList = curationRepository.findAllByUser_IdOrderByCreatedDateDesc(user_id, pageable);
 
         if (userCurationList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
@@ -132,7 +132,7 @@ public class CurationService {
 
     //내 프로필 큐레이션 조회 api
     public Slice<CurationMyProfileGetResponseDto> getMyCuration(long user_id, Pageable pageable) {
-        Slice<Curation> myCurationList = curationRepository.findAllByUser_Id(user_id, pageable);
+        Slice<Curation> myCurationList = curationRepository.findAllByUser_IdOrderByCreatedDateDesc(user_id, pageable);
         if (myCurationList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
 
