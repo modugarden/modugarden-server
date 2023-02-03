@@ -100,10 +100,8 @@ public class CurationService {
         if (userCurationList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
 
-        Slice<CurationUserGetResponseDto> myProfileCuration = userCurationList
-                .map(u -> new CurationUserGetResponseDto(u));
-
-        return myProfileCuration;
+        return userCurationList
+                .map(CurationUserGetResponseDto::new);
     }
 
     //제목별 큐레이션 검색
@@ -138,10 +136,8 @@ public class CurationService {
         if (myCurationList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
 
-        Slice<CurationMyProfileGetResponseDto> myProfileCuration = myCurationList
-                .map(u -> new CurationMyProfileGetResponseDto(u));
-
-        return myProfileCuration;
+        return myCurationList
+                .map(CurationMyProfileGetResponseDto::new);
     }
 
     //내 프로필 큐레이션 좋아요 조회 api
@@ -161,11 +157,8 @@ public class CurationService {
         if (curationStorageList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
 
-        Slice<CurationGetStorageResponseDto> myCurationStorageList = curationStorageList.map(
-                u->new CurationGetStorageResponseDto(u)
-        );
-
-        return myCurationStorageList;
+        return curationStorageList.map(
+                CurationGetStorageResponseDto::new);
     }
 
     //내 프로필 큐레이션 보관 여부 조회 api
@@ -227,9 +220,7 @@ public class CurationService {
 
         Slice<Curation> curationSlice = curationRepository.findCuration(userList,pageable);
 
-        Slice<CurationFollowFeedResponseDto> followBoard = curationSlice
+        return curationSlice
                 .map(u -> new CurationFollowFeedResponseDto(u,likeCurationRepository.findByUserAndCuration(user.getUser(), u).isPresent(),curationStorageRepository.findByUserAndCuration(user.getUser(), u).isPresent()));
-
-        return followBoard;
     }
 }

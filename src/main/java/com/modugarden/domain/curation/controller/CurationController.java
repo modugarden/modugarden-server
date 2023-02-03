@@ -4,7 +4,6 @@ import com.modugarden.common.response.BaseResponseDto;
 
 import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
-import com.modugarden.domain.board.dto.response.BoardFollowFeedResponseDto;
 import com.modugarden.domain.curation.dto.request.CurationCreateRequestDto;
 import com.modugarden.domain.curation.dto.response.*;
 import com.modugarden.domain.curation.service.CurationService;
@@ -157,6 +156,7 @@ public class CurationController {
 
     //팔로우한 유저 큐레이션 조회
     @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
+    @ApiOperation(value = "팔로우 피드", notes = "팔로우한 사용자의 포스트를 조회한다.")
     @GetMapping("/curations/followfeed")
     public SliceResponseDto<CurationFollowFeedResponseDto> getFollowFeed(@AuthenticationPrincipal ModugardenUser user, Pageable pageable){
         return new SliceResponseDto<>(curationService.getFollowFeed(user, pageable));
