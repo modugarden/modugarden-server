@@ -113,3 +113,8 @@ configurations {
 compileQuerydsl {
 	options.annotationProcessorPath = configurations.querydsl
 }
+
+// 자동 배포
+jar {
+	enabled = false
+}
