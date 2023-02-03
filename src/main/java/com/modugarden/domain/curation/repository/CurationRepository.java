@@ -2,6 +2,7 @@ package com.modugarden.domain.curation.repository;
 
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.curation.entity.Curation;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -22,8 +23,9 @@ public interface CurationRepository extends JpaRepository<Curation, Long> {
 
     @Query(value = "SELECT cu FROM Curation cu \n" +
             "            LEFT JOIN CurationStorage cs ON cu.id = cs.curation.id\n" +
-            "            WHERE cu.user.id = cs.user.id")
-    Page<Curation> QueryfindAllByUser_Id(Long user_id, Pageable pageable);
+            "            WHERE :user_id = cs.user.id" +
+            "           order by cs.createdDate desc")
+    Page<Curation> QueryfindAllByUser_Id(@Param("user_id") Long user_id, Pageable pageable);
 
     @Query("select b from Curation b inner join b.user u where u.id in :followingUserIds order by b.createdDate desc")
     Slice<Curation> findCuration(List<Long> followingUserIds, Pageable pageable);

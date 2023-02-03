@@ -2,6 +2,7 @@ package com.modugarden.domain.board.repository;
 
 import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.category.entity.InterestCategory;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,8 +27,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     @Query(value = "SELECT bo FROM Board bo \n" +
             "            LEFT JOIN BoardStorage bs ON bo.id = bs.board.id\n" +
-            "            WHERE bo.user.id = bs.user.id")
-    Slice<Board> QueryfindAllByUser_Id(Long user_id, Pageable pageable);
+            "            WHERE :user_id = bs.user.id"+
+            "           order by bs.createdDate desc")
+    Slice<Board> QueryfindAllByUser_Id(@Param("user_id") Long user_id, Pageable pageable);
 
     @Query("select b from Board b inner join b.user u where u.id in :followingUserIds order by b.createdDate desc")
     Slice<Board> findBoard(List<Long> followingUserIds, Pageable pageable);
