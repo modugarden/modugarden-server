@@ -97,7 +97,7 @@ public class CurationController {
     @Secured({"ROLE_CURATOR"})
     @ApiOperation(value = "프로필 페이지 - 큐레이션 조회", notes = "로그인한 사용자의 큐레이션을 조회한다.")
     @GetMapping("/curations/me")
-    public SliceResponseDto<CurationUserGetResponseDto> getMyCuration(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+    public SliceResponseDto<CurationMyProfileGetResponseDto> getMyCuration(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
         return new SliceResponseDto<>(curationService.getMyCuration(user.getUserId(), pageable));
     }
 
