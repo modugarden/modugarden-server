@@ -47,7 +47,7 @@ public class CommentService {
             commentRepository.save(newComment);
         }
         Comment comment = commentRepository.findById(newComment.getCommentId()).orElseThrow(()-> new BusinessException(ErrorMessage.COMMENT_NOT_FOUND));
-        return new CommentCreateResponseDto(comment.getUser().getId(), comment.getUser().getNickname(), comment.getUser().getProfileImg(), dto.getContent(), newComment.getCommentId(), newComment.getParentId(), comment.getCreatedDate());
+        return new CommentCreateResponseDto(comment.getUser().getId(), comment.getUser().getNickname(), comment.getUser().getProfileImg(), dto.getContent(), newComment.getCommentId(), dto.getParentId(), comment.getCreatedDate());
     }
 
     //댓글 삭제
