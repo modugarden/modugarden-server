@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoardMyProfilGetResponseDto {
+public class BoardMyProfileGetResponseDto {
     private Long id;
     private String image;
 
-    public BoardMyProfilGetResponseDto(Board board) {
+    public BoardMyProfileGetResponseDto(Board board) {
         this.id=board.getId();
         this.image = board.getPreview_img();
     }

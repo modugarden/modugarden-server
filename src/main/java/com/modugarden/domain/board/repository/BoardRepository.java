@@ -1,7 +1,6 @@
 package com.modugarden.domain.board.repository;
 
 import com.modugarden.domain.board.entity.Board;
-import com.modugarden.domain.board.entity.BoardImage;
 import com.modugarden.domain.category.entity.InterestCategory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -16,8 +15,6 @@ import java.util.Optional;
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
     Optional<Board> findById(Long boardId);
-
-    Long countByUser_Id(Long user_id);
 
     Slice<Board> findAllByUser_Id(Long user_id, Pageable pageable);
 
@@ -34,4 +31,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     @Query("select b from Board b inner join b.user u where u.id in :followingUserIds order by b.createdDate desc")
     Slice<Board> findBoard(List<Long> followingUserIds, Pageable pageable);
+
+    Long countByUser_Id(Long user_id);
 }

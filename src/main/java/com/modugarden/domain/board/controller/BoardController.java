@@ -58,6 +58,7 @@ public class BoardController {
     }
 
     //포스트 하나 조회 api
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "게시물 상세보기 페이지 - 포스트 하나 조회", notes = "특정 포스트 한개를 조회 한다.")
     @GetMapping("/boards/{board_id}")
     public BaseResponseDto<BoardGetResponseDto> getBoard(@PathVariable Long board_id, @AuthenticationPrincipal ModugardenUser user) {
@@ -97,7 +98,7 @@ public class BoardController {
     @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "프로필 페이지 - 포스트 조회", notes = "로그인한 사용자의 포스트를 조회한다.")
     @GetMapping("/boards/me")
-    public SliceResponseDto<BoardMyProfilGetResponseDto> getMyBoard(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+    public SliceResponseDto<BoardMyProfileGetResponseDto> getMyBoard(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
         return new SliceResponseDto<>(boardService.getMyBoard(user.getUserId(), pageable));
     }
 
@@ -157,6 +158,7 @@ public class BoardController {
 
     //팔로우한 유저 포스트 조회
     @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
+    @ApiOperation(value = "팔로우 피드", notes = "팔로우한 사용자의 포스트를 조회한다.")
     @GetMapping("/boards/followfeed")
     public SliceResponseDto<BoardFollowFeedResponseDto> getFollowFeed(@AuthenticationPrincipal ModugardenUser user,Pageable pageable){
         return new SliceResponseDto<>(boardService.getFollowFeed(user, pageable));
