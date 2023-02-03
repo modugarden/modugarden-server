@@ -97,7 +97,7 @@ public class BoardController {
     @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "프로필 페이지 - 포스트 조회", notes = "로그인한 사용자의 포스트를 조회한다.")
     @GetMapping("/boards/me")
-    public SliceResponseDto<BoardUserGetResponseDto> getMyBoard(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+    public SliceResponseDto<BoardMyProfilGetResponseDto> getMyBoard(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
         return new SliceResponseDto<>(boardService.getMyBoard(user.getUserId(), pageable));
     }
 

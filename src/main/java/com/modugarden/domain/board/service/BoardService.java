@@ -48,27 +48,20 @@ public class BoardService {
     //포스트 생성
     @Transactional
     public BoardCreateResponseDto createBoard(BoardCreateRequestDto boardCreateRequestDto, List<MultipartFile> file, ModugardenUser user) throws IOException {
-
+        //사진 유무 조회
         if (file.isEmpty())
             throw new IOException(new BusinessException(ErrorMessage.WRONG_BOARD_FILE));
 
         InterestCategory interestCategory = interestCategoryRepository.findByCategory(boardCreateRequestDto.getCategory()).get();
-
-        // 처음 board 값
-        Board board= Board.builder()
-                .title(boardCreateRequestDto.getTitle())
-                .like_num((long) 0)
-                .preview_img(" ")
-                .user(user.getUser())
-                .category(interestCategory)
-                .build();
+        // 처음 board 값 초기화
+        Board board= Board.builder().build();
 
         boolean index= false;
         for(MultipartFile multipartFile : file) {
             //프로필 이미지 url 만들기
             String profileImageUrl = fileService.uploadFile(multipartFile, user.getUserId(), "boardImage");
+            //처음 한번 board 생성 - 썸네일 이미지 포함 생성
             if(!index) {
-                //처음 한번 board 생성 - 썸네일 이미지 포함 생성
                 board = Board.builder()
                         .title(boardCreateRequestDto.getTitle())
                         .like_num((long) 0)
@@ -79,13 +72,14 @@ public class BoardService {
                 boardRepository.save(board);
                 index=true;
             }
+
             BoardImage boardImage = BoardImage.builder()
                     .image(profileImageUrl)
                     .content(boardCreateRequestDto.getContent().get(file.indexOf(multipartFile)))
                     .location(boardCreateRequestDto.getLocation().get(file.indexOf(multipartFile)))
                     .userid(user.getUserId())
-                            .board(board)
-                                    .build();
+                    .board(board)
+                    .build();
 
             boardImageRepository.save(boardImage);
         }
@@ -159,11 +153,15 @@ public class BoardService {
     }
 
     //내 프로필 포스트 조회 api
-    public Slice<BoardUserGetResponseDto> getMyBoard(long user_id, Pageable pageable) {
-        Slice<BoardImage> postList = boardImageRepository.findAllByUserid(user_id, pageable);
+    public Slice<BoardMyProfilGetResponseDto> getMyBoard(long user_id, Pageable pageable) {
+        Slice<Board> postList = boardRepository.findAllByUser_Id(user_id, pageable);
         if (postList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_BOARD_LIST);
-        return postList.map(BoardUserGetResponseDto::new);
+
+        Slice<BoardMyProfilGetResponseDto> myProfileBoard = postList
+                .map(u -> new BoardMyProfilGetResponseDto(u));
+
+        return myProfileBoard;
     }
 
     //내 프로필 포스트 좋아요 조회 api
