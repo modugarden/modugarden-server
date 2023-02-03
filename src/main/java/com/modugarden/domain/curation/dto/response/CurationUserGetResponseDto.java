@@ -12,27 +12,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CurationUserGetResponseDto {
     private Long id;
-    private String title;
-    private String link;
-    private String preview_image;
-    private Long like_num;
+    private String image;
     private LocalDateTime created_date;
-    private Long user_id;
-    private String user_nickname;
-    private String user_profile_image;
-    private String category_category;
+    private String title;
+    private String category;
 
 
     public CurationUserGetResponseDto(Curation curation) {
-        this.id = curation.getId();
-        this.title = curation.getTitle();
-        this.link = curation.getLink();
-        this.preview_image = curation.getPreviewImage();
-        this.like_num =curation.getLikeNum();
+        this.id=curation.getId();
+        this.image = curation.getPreviewImage();
         this.created_date=curation.getCreatedDate();
-        this.user_id = curation.getUser().getId();
-        this.user_nickname = curation.getUser().getNickname();
-        this.user_profile_image = curation.getUser().getProfileImg();
-        this.category_category = curation.getCategory().getCategory();
+        this.title=curation.getTitle();
+        this.category=curation.getCategory().getCategory();
     }
 }
