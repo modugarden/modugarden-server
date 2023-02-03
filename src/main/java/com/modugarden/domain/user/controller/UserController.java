@@ -34,7 +34,7 @@ public class UserController {
     @ApiOperation(value = "탐색 피드 - 회원 닉네임 검색", notes = "해당 문자열을 포함한 닉네임을 가진 회원의 정보를 조회한다.")
     @GetMapping("")
     public SliceResponseDto<UserNicknameFindResponseDto> findByNickname(@AuthenticationPrincipal ModugardenUser user, @RequestParam(value = "nickname", required = false) @Valid String nickname, Pageable pageable) {
-        if(StringUtils.isEmpty(nickname)) {
+        if (StringUtils.isEmpty(nickname)) {
             throw new BusinessException(ErrorMessage.WRONG_NICKNAME);
         }
         return new SliceResponseDto<UserNicknameFindResponseDto>(userService.findByNickname(user.getUserId(), nickname, pageable));
@@ -65,8 +65,8 @@ public class UserController {
     @ApiOperation(value = "내 프로필 - 프로필 설정 - 닉네임, 사진 변경", notes = "내 프로필 - 프로필 설정에서 닉네임, 사진을 변경한다.")
     @PatchMapping(value = "/me/setting-info", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public BaseResponseDto<UpdateUserInfoResponseDto> updateUserInfo(@RequestPart @Valid UserNicknameRequestDto userNicknameRequestDto,
-                                                                       @RequestPart(name = "file", required = false) MultipartFile file,
-                                                                       @AuthenticationPrincipal ModugardenUser user) throws IOException {
+                                                                     @RequestPart(name = "file", required = false) MultipartFile file,
+                                                                     @AuthenticationPrincipal ModugardenUser user) throws IOException {
         return new BaseResponseDto<>(userService.updateUserInfo(user.getUserId(), file, userNicknameRequestDto));
     }
 
@@ -74,7 +74,7 @@ public class UserController {
     @ApiOperation(value = "내 프로필 - 프로필 설정 - 카테고리 변경", notes = "내 프로필 - 프로필 설정에서 카테고리를 변경한다.")
     @PatchMapping("/me/category")
     public BaseResponseDto<UpdateUserCategoryResponseDto> updateUserCategory(@RequestBody @Valid UpdateUserCategoryRequestDto updateUserCategoryRequestDto
-                                                                            , @AuthenticationPrincipal ModugardenUser user) {
+            , @AuthenticationPrincipal ModugardenUser user) {
         return new BaseResponseDto<>(userService.updateUserCategory(user.getUser(), updateUserCategoryRequestDto));
     }
 
@@ -82,7 +82,7 @@ public class UserController {
     @ApiOperation(value = "내 프로필 - 알림 설정", notes = "내 프로필 - 알림 설정에서 알림을 설정한다.")
     @PatchMapping("/me/notification")
     public BaseResponseDto<UpdateNotificationResponseDto> updateNotification(@RequestBody @Valid UpdateNotificationRequestDto updateNotificationRequestDto
-                                                                            , @AuthenticationPrincipal ModugardenUser user) {
+            , @AuthenticationPrincipal ModugardenUser user) {
         return new BaseResponseDto<>(userService.updateNotification(user.getUser(), updateNotificationRequestDto));
     }
 
@@ -96,12 +96,6 @@ public class UserController {
     @ApiOperation(value = "배포", notes = "내 프로필 - 알림 설정 - 현재 알림 설정을 조회한다.")
     @GetMapping("/me/baepo")
     public BaseResponseDto<UserNotificationResponseDto> readUseraa(@AuthenticationPrincipal ModugardenUser user) {
-        return new BaseResponseDto<>(userService.readUserNotification(user.getUser()));
-    }
-
-    @ApiOperation(value = "배포!!!!!!", notes = "내 프로필 - 알림 설정 - 현재 알림 설정을 조회한다.")
-    @GetMapping("/me/baepo111")
-    public BaseResponseDto<UserNotificationResponseDto> readUserdaa(@AuthenticationPrincipal ModugardenUser user) {
         return new BaseResponseDto<>(userService.readUserNotification(user.getUser()));
     }
 }
