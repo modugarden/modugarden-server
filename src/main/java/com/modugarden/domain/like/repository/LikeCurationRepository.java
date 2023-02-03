@@ -11,5 +11,6 @@ import java.util.Optional;
 @Repository
 public interface LikeCurationRepository extends JpaRepository<LikeCuration, Long> {
     Optional<LikeCuration> findByUserAndCuration(User user, Curation curation);
+
     Optional<LikeCuration> deleteAllByCuration_Id(Long id);
 }

@@ -95,10 +95,10 @@ public class BoardService {
         if (likeBoardRepository.findByUserAndBoard(users, board).isEmpty()) {
             Board modifyBoard = new Board(board.getId(), board.getTitle(), board.getLike_num()+1,board.getPreview_img(),board.getUser(),board.getCategory());
             BoardLikeRequestDto boardLikeRequestDto = new BoardLikeRequestDto(users, modifyBoard);
-
             likeBoardRepository.save(boardLikeRequestDto.toEntity());
             boardRepository.save(modifyBoard);
         }
+
         return new BoardLikeResponseDto(board.getId(), board.getLike_num());
     }
 
@@ -114,7 +114,7 @@ public class BoardService {
     }
 
     //포스트 하나 조회 api
-    public BoardGetResponseDto getBoard(long id,ModugardenUser user) {
+    public BoardGetResponseDto getBoard(long id, ModugardenUser user) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
         List<BoardImage> imageList = boardImageRepository.findAllByBoard_Id(id);
         return new BoardGetResponseDto(board,imageList,likeBoardRepository.findByUserAndBoard(user.getUser(), board).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), board).isPresent());
@@ -126,10 +126,8 @@ public class BoardService {
         if (imageList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_BOARD_LIST);
 
-        Slice<BoardUserGetResponseDto> userProfileBoard = imageList
-                .map(u -> new BoardUserGetResponseDto(u));
-
-        return userProfileBoard;
+        return imageList
+                .map(BoardUserGetResponseDto::new);
     }
 
     //포스트 검색
@@ -155,6 +153,7 @@ public class BoardService {
     //포스트 좋아요 개수 조회
     public BoardLikeResponseDto getLikeBoard(long id) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
+
         return new BoardLikeResponseDto(board.getId(), board.getLike_num());
     }
 
@@ -164,10 +163,8 @@ public class BoardService {
         if (postList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_BOARD_LIST);
 
-        Slice<BoardMyProfileGetResponseDto> myProfileBoard = postList
-                .map(u -> new BoardMyProfileGetResponseDto(u));
-
-        return myProfileBoard;
+        return postList
+                .map(BoardMyProfileGetResponseDto::new);
     }
 
     //내 프로필 포스트 좋아요 조회 api
@@ -187,11 +184,9 @@ public class BoardService {
         if (boardStorageList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_BOARD_LIST);
 
-        Slice<BoardGetStorageResponseDto> myBoardStorageList = boardStorageList.map(
-                u->new BoardGetStorageResponseDto(u)
+        return boardStorageList.map(
+                BoardGetStorageResponseDto::new
         );
-
-        return myBoardStorageList;
     }
 
 
@@ -260,10 +255,8 @@ public class BoardService {
         List<Long> userList = followRepository.listFindByFollowingUser_Id(user.getUserId(),pageable);
         Slice<Board> boardSlice = boardRepository.findBoard(userList,pageable);
 
-        Slice<BoardFollowFeedResponseDto> followBoard = boardSlice
-                        .map(u -> new BoardFollowFeedResponseDto(u,boardImageRepository.findAllByBoard_Id(u.getId()),likeBoardRepository.findByUserAndBoard(user.getUser(), u).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), u).isPresent()));
-
-        return followBoard;
+        return boardSlice
+                .map(u -> new BoardFollowFeedResponseDto(u,boardImageRepository.findAllByBoard_Id(u.getId()),likeBoardRepository.findByUserAndBoard(user.getUser(), u).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), u).isPresent()));
     }
 
 }

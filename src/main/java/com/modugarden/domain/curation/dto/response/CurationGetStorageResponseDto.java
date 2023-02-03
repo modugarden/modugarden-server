@@ -1,7 +1,6 @@
 package com.modugarden.domain.curation.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.curation.entity.Curation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

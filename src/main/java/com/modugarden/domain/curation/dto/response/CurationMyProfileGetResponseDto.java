@@ -1,6 +1,5 @@
 package com.modugarden.domain.curation.dto.response;
 
-import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.curation.entity.Curation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

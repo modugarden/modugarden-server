@@ -1,8 +1,6 @@
 package com.modugarden.domain.curation.repository;
 
-import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.category.entity.InterestCategory;
-import com.modugarden.domain.curation.dto.response.CurationGetStorageResponseDto;
 import com.modugarden.domain.curation.entity.Curation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,8 +19,6 @@ public interface CurationRepository extends JpaRepository<Curation, Long> {
     Slice<Curation> findAllByTitleLikeOrderByCreatedDateDesc(String title, Pageable pageable);
     //카테고리로 생성일자 순 조회
     Slice<Curation> findAllByCategoryOrderByCreatedDateDesc(InterestCategory category, Pageable pageable);
-    //유저 아이디로 게시물 수 조회
-    Long countByUser_Id(Long user_id);
 
     @Query(value = "SELECT cu FROM Curation cu \n" +
             "            LEFT JOIN CurationStorage cs ON cu.id = cs.curation.id\n" +
@@ -31,4 +27,7 @@ public interface CurationRepository extends JpaRepository<Curation, Long> {
 
     @Query("select b from Curation b inner join b.user u where u.id in :followingUserIds order by b.createdDate desc")
     Slice<Curation> findCuration(List<Long> followingUserIds, Pageable pageable);
+
+    //유저 아이디로 게시물 수 조회
+    Long countByUser_Id(Long user_id);
 }
