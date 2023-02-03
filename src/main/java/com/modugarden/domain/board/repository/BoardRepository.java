@@ -16,7 +16,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     Optional<Board> findById(Long boardId);
 
-    Slice<Board> findAllByUser_Id(Long user_id, Pageable pageable);
+    Slice<Board> findAllByUser_IdOrderByCreatedDateDesc(Long user_id, Pageable pageable);
 
     //제목 검색
     Slice<Board> findAllByTitleLikeOrderByCreatedDateDesc(String title, Pageable pageable);
