@@ -33,6 +33,21 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
+          
+      # Ignore yml 파일 추가
+      - name: Copy dev secret
+        env:
+          DEV_SECRET: ${{ secrets.DEV_SECRET }}
+          DEV_SECRET_DIR: src/main/resources
+          DEV_SECRET_DIR_FILE_NAME: application-dev.yml
+        run: echo $DEV_SECRET | base64 --decode > $DEV_SECRET_DIR/$DEV_SECRET_DIR_FILE_NAME
+        
+      - name: Copy security secret
+        env:
+          SECURITY_SECRET: ${{ secrets.SECURITY_SECRET }}
+          SECURITY_SECRET_DIR: src/main/resources
+          SECURITY_SECRET_DIR_FILE_NAME: application-security.yml
+        run: echo $SECURITY_SECRET | base64 --decode > $SECURITY_SECRET_DIR/$SECURITY_SECRET_DIR_FILE_NAME
 
       # Build 설정
       - name: Grant execute permission for gradlew
