@@ -96,7 +96,14 @@ public class CurationService {
     //회원 큐레이션 조회
     public Slice<CurationUserGetResponseDto> getUserCuration(long user_id, Pageable pageable) {
         Slice<Curation> userCurationList = curationRepository.findAllByUser_Id(user_id, pageable);
-        return userCurationList.map(CurationUserGetResponseDto::new);
+
+        if (userCurationList.isEmpty())
+            throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
+
+        Slice<CurationUserGetResponseDto> myProfileCuration = userCurationList
+                .map(u -> new CurationUserGetResponseDto(u));
+
+        return myProfileCuration;
     }
 
     //제목별 큐레이션 검색

@@ -1,12 +1,9 @@
 package com.modugarden.domain.board.dto.response;
 
 import com.modugarden.domain.board.entity.Board;
-import com.modugarden.domain.board.entity.BoardImage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Getter
 @AllArgsConstructor

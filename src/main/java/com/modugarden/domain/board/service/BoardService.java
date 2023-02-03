@@ -122,8 +122,14 @@ public class BoardService {
 
     //회원 포스트 조회
     public Slice<BoardUserGetResponseDto> getUserBoard(long user_id, Pageable pageable) {
-        Slice<BoardImage> imageList = boardImageRepository.findAllByUserid(user_id,pageable);
-        return imageList.map(BoardUserGetResponseDto::new);
+        Slice<Board> imageList = boardRepository.findAllByUser_Id(user_id,pageable);
+        if (imageList.isEmpty())
+            throw new BusinessException(ErrorMessage.WRONG_BOARD_LIST);
+
+        Slice<BoardUserGetResponseDto> userProfileBoard = imageList
+                .map(u -> new BoardUserGetResponseDto(u));
+
+        return userProfileBoard;
     }
 
     //포스트 검색
@@ -153,13 +159,13 @@ public class BoardService {
     }
 
     //내 프로필 포스트 조회 api
-    public Slice<BoardMyProfilGetResponseDto> getMyBoard(long user_id, Pageable pageable) {
+    public Slice<BoardMyProfileGetResponseDto> getMyBoard(long user_id, Pageable pageable) {
         Slice<Board> postList = boardRepository.findAllByUser_Id(user_id, pageable);
         if (postList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_BOARD_LIST);
 
-        Slice<BoardMyProfilGetResponseDto> myProfileBoard = postList
-                .map(u -> new BoardMyProfilGetResponseDto(u));
+        Slice<BoardMyProfileGetResponseDto> myProfileBoard = postList
+                .map(u -> new BoardMyProfileGetResponseDto(u));
 
         return myProfileBoard;
     }
