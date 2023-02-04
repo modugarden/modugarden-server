@@ -40,8 +40,4 @@ public class Comment extends BaseTimeEntity {
         this.board = board;
         this.user = user;
     }
-    public void updateParentIdOfParentComment(){
-        this.parentId = this.commentId;
-    }
-
 }
