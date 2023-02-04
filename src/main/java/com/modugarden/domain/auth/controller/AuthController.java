@@ -79,7 +79,6 @@ public class AuthController {
         return new BaseResponseDto<>(userService2.deleteCurrentUser(modugardenUser.getUser()));
     }
 
-    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "accessToken, refreshToken 재발급", notes = "만료된 accessToken과 만료되지 않은 refreshToken을 사용해 새로운 accessToken과 refreshToken을 발급받는다.")
     @PostMapping("/token-reissue")
     public BaseResponseDto<LoginResponseDto> reissueToken(@RequestBody @Valid TokenReissueRequestDto requestDto){
