@@ -29,7 +29,7 @@ public class CommentService {
     public Slice<CommentListResponseDto> commentList(Long boardId, User user, Pageable pageable){
         Slice<Comment> comments = commentRepository.findAllByBoard_IdOrderByCreatedDateAsc(boardId, pageable);
         Slice<CommentListResponseDto> result = comments
-                .map(c -> new CommentListResponseDto(c.getUser().getId(), c.getUser().getNickname(), c.getUser().getProfileImg(), c.getContent(), c.getCommentId(), c.getParentId(), c.getCreatedDate()));  //commentId를 가져와야 하나?
+                .map(c -> new CommentListResponseDto(c.getUser().getId(), c.getUser().getNickname(), c.getUser().getProfileImg(), c.getContent(), c.getCommentId(), c.getParentId(), c.getCreatedDate()));
         return result;
     }
     //댓글 작성
@@ -37,10 +37,9 @@ public class CommentService {
     public CommentCreateResponseDto write(User user, Long boardId, CommentCreateRequestDto dto) {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
         Comment newComment;
-        if (dto.getParentId() == null) { // 부모 댓글 작성
-            newComment = new Comment(dto.getContent(), 0L, board, user); // parentId에 일단 아무값이나 채우기(DB에서 not null 조건 있어서)
+        if (dto.getParentId()==null) { // 부모 댓글 작성, null 값 들어올 수 있음
+            newComment = new Comment(dto.getContent(), null, board, user); // parentId에 일단 아무값이나 채우기(DB에서 not null 조건 있어서)
             commentRepository.save(newComment); // newComment.getCommentId -> 자동생성된 값이 있음.
-            newComment.updateParentIdOfParentComment();
         } else {
             commentRepository.findById(dto.getParentId()).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_PARENT_COMMENT_ID));// 존재하는 부모댓글인지 확인
             newComment = new Comment(dto.getContent(), dto.getParentId(), board, user);
