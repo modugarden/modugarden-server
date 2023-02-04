@@ -50,7 +50,7 @@ public enum ErrorMessage {
 
     // JWT
     WRONG_JWT_SIGNITURE(NOT_FOUND, false, "잘못된 JWT 서명입니다."),
-    EXPIRED_JWT_TOKEN(NOT_FOUND, false, "만료된 JWT 토큰입니다."),
+    EXPIRED_JWT_TOKEN(UNAUTHORIZED, false, "만료된 JWT 토큰입니다."),
     NOT_APPLY_JWT_TOKEN(NOT_FOUND, false, "지원되지 않는 JWT 토큰입니다."),
     WRONG_JWT_TOKEN(NOT_FOUND, false, "JWT 토큰이 잘못되었습니다."),
 
