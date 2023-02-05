@@ -45,7 +45,7 @@ public class ReportController {
 
     @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "포스트 상세보기 - 메인 - 신고", notes = "포스트 상세보기 - 메인에서 댓글을 신고한다.")
-    @PostMapping("/boards/{boardId")
+    @PostMapping("/boards/{boardId}")
     public BaseResponseDto<ReportBoardResponseDto> reportBoard(@PathVariable Long boardId, @RequestParam("type") String type
                                                                 , @AuthenticationPrincipal ModugardenUser user) {
         return new BaseResponseDto<>(reportService.reportBoard(user.getUser(), boardId, type));
