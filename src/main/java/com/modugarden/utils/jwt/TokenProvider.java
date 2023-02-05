@@ -35,7 +35,7 @@ public class TokenProvider {
     @Value("${spring.security.jwt.secret}")
     private String secretKey;
 
-    private long ACCESS_TOKEN_EXPIRE_TIME = Duration.ofSeconds(30).toMillis(); // 만료시간 30분
+    private long ACCESS_TOKEN_EXPIRE_TIME = Duration.ofMinutes(30).toMillis(); // 만료시간 30분
 
     private long REFRESH_TOKEN_EXPIRE_TIME = Duration.ofDays(14).toMillis(); // 만료시간 2주
 
