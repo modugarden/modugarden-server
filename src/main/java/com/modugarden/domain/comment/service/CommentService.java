@@ -52,8 +52,11 @@ public class CommentService {
     //댓글 삭제
     @Transactional
     public CommentDeleteResponseDto delete(User user, CommentDeleteRequestDto dto){
-        commentRepository.findById(dto.getCommentId()).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_COMMENT));
-        commentRepository.deleteById(dto.getCommentId());
+        Comment comment = commentRepository.findById(dto.getCommentId()).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_COMMENT));
+        if(comment.getParentId()==null) {
+            commentRepository.deleteByParentId(comment.getCommentId());
+        }
+        commentRepository.deleteById(comment.getCommentId());
         return new CommentDeleteResponseDto(dto.getCommentId());
     }
 }
