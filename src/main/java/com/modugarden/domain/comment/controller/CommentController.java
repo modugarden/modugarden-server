@@ -39,7 +39,7 @@ public class CommentController {
 
     // 댓글 삭제
     @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
-    @PatchMapping("/{board_id}/comments/{comment_id}")
+    @DeleteMapping("/{board_id}/comments")
     public BaseResponseDto<CommentDeleteResponseDto> delete(@AuthenticationPrincipal ModugardenUser modugardenUser, @RequestBody CommentDeleteRequestDto dto, @PathVariable Long board_id) {
         return new BaseResponseDto<>(commentService.delete(modugardenUser.getUser(), dto));
     }
