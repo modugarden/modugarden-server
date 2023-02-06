@@ -1,4 +1,14 @@
 # modugarden-server
+
+
+## 참가 인원
+### 백엔드
+|미니 (김민정)|이안 (민경혁)|오션 (김동해)|제리 (김지은)|
+|:------:|:---:|:------:|:---:|
+|[mingsound](https://github.com/mingsound21)|[kyeong-hyeok](https://github.com/kyeong-hyeok)|[donghae-kim](https://github.com/donghae-kim)|[0zlrlo](https://github.com/0zlrlo)|
+<br>
+<br>
+
 ## COMMIT CONVENTION
 - **[FEAT]** : 새로운 기능 구현
 - **[MOD]** : 코드 수정 및 내부 파일 수정
@@ -13,6 +23,7 @@
 - **[RENAME]** : 파일 이름 변경
 - **[REFACTOR]** : 전면 수정
 - **[DOCS]** : README나 WIKI 등의 문서 개정
+<br>
 <br>
 
 ## 
