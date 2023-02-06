@@ -117,7 +117,8 @@ public class BoardService {
     public BoardGetResponseDto getBoard(long id, ModugardenUser user) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
         List<BoardImage> imageList = boardImageRepository.findAllByBoard_Id(id);
-        return new BoardGetResponseDto(board,imageList,likeBoardRepository.findByUserAndBoard(user.getUser(), board).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), board).isPresent());
+
+        return new BoardGetResponseDto(board,imageList,likeBoardRepository.findByUserAndBoard(user.getUser(), board).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), board).isPresent(),followRepository.exists(user.getUserId(), board.getUser().getId()));
     }
 
     //회원 포스트 조회

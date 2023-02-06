@@ -24,8 +24,9 @@ public class BoardGetResponseDto {
     private String category_category;
     private Boolean isliked;
     private Boolean isSaved;
+    private Boolean isFollowed;
 
-    public BoardGetResponseDto(Board board, List<BoardImage> image,Boolean isliked, Boolean isSaved) {
+    public BoardGetResponseDto(Board board, List<BoardImage> image,Boolean isliked, Boolean isSaved,Boolean isFollowed) {
         this.id=board.getId();
         this.title=board.getTitle();
         this.created_Date=board.getCreatedDate();
@@ -37,6 +38,7 @@ public class BoardGetResponseDto {
         this.category_category=board.getCategory().getCategory();
         this.isliked=isliked;
         this.isSaved=isSaved;
+        this.isFollowed=isFollowed;
     }
 }
 
