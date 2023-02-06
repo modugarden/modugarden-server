@@ -56,10 +56,13 @@ public class CustomFollowRepositoryImpl implements CustomFollowRepository {
                 .select(follow.user.id,
                         ExpressionUtils.as(JPAExpressions.select(userInterestCategory.count())
                                 .from(userInterestCategory)
-                                .where(userInterestCategory.user.id.eq(follow.user.id).and(userInterestCategory.category.id.in(loginUserCategoryList))), "categoryCount"),
+                                .where(userInterestCategory.user.id.eq(follow.user.id).and(userInterestCategory.category.id.in(loginUserCategoryList)))
+                                .limit(1), "categoryCount"),
                         ExpressionUtils.as(JPAExpressions.select(follow.count())
                                 .from(follow2)
-                                .where(follow2.followingUser.id.eq(follow.user.id)), "followingCount")
+                                .where(follow2.followingUser.id.eq(follow.user.id))
+                                .limit(1), "followingCount")
+
                 )
                 .from(follow)
                 .groupBy(follow.user.id)
