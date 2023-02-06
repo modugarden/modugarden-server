@@ -11,7 +11,7 @@ import org.springframework.data.redis.core.RedisHash;
 public class RefreshToken{
 
     @Id // javax.persistence.Id 대신 org.springframework.data.annotation.Id
-    private String userEmail; // userId, email? 뭐로하지, 난 email이 @Id같은데? 아닌가?
+    private String userEmail;
 
     private String refreshToken;
 
