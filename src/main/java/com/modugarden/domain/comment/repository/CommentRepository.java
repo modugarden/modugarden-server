@@ -13,4 +13,6 @@ public interface CommentRepository extends JpaRepository <Comment, Long> {
     //댓글 조회
     Slice<Comment> findAllByBoard_IdOrderByCreatedDateAsc(@Param("board_Id") Long boardId, Pageable pageable);
     Optional<Comment> deleteAllByBoard_Id(Long id);
+
+    void deleteByParentId(Long parentId);
 }
