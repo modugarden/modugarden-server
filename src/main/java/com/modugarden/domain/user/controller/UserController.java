@@ -6,7 +6,6 @@ import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.user.dto.request.UpdateNotificationRequestDto;
-import com.modugarden.domain.user.dto.request.UpdateUserCategoryRequestDto;
 import com.modugarden.domain.user.dto.request.UpdateProfileRequestDto;
 import com.modugarden.domain.user.dto.response.*;
 import com.modugarden.domain.user.service.UserService;

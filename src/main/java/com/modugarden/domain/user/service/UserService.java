@@ -11,7 +11,6 @@ import com.modugarden.domain.category.repository.UserInterestCategoryRepository;
 import com.modugarden.domain.curation.repository.CurationRepository;
 import com.modugarden.domain.follow.repository.FollowRepository;
 import com.modugarden.domain.user.dto.request.UpdateNotificationRequestDto;
-import com.modugarden.domain.user.dto.request.UpdateUserCategoryRequestDto;
 import com.modugarden.domain.user.dto.request.UpdateProfileRequestDto;
 import com.modugarden.domain.user.dto.response.*;
 import com.modugarden.domain.user.entity.User;
@@ -61,6 +60,7 @@ public class UserService {
 
     @Transactional
     public UpdateProfileResponseDto updateUserInfo(Long userId, MultipartFile file, UpdateProfileRequestDto updateProfileRequestDto) throws IOException {
+        if(updateProfileRequestDto.getCategories().isEmpty()) throw new BusinessException(ErrorMessage.WRONG_CATEGORY);
         User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
         String userNickname = updateProfileRequestDto.getNickname().toLowerCase();
         String profileImageUrl = fileService.uploadFile(file, userId, "profileImage");

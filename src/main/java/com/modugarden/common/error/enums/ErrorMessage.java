@@ -31,6 +31,7 @@ public enum ErrorMessage {
     SEND_EMAIL_ERROR(BAD_REQUEST, false, "이메일 인증 코드 전송을 실패하였습니다."),
     WRONG_REISSUE_TOKEN_ACCESS(BAD_REQUEST, false, "RefreshToken 탈취가 의심됩니다. 재 로그인해주세요."),
     FCM_TOKEN_NOT_FOUND(BAD_REQUEST, false, "해당 FCM 토큰이 없습니다."),
+    WRONG_CATEGORY(BAD_REQUEST, false, "카테고리를 입력해야 합니다."),
 
 
     // POST
