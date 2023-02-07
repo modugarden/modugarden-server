@@ -134,7 +134,7 @@ public class BoardController {
     @DeleteMapping("/boards/{board_id}")
     public BaseResponseDto<BoardDeleteResponseDto> deleteBoard(@PathVariable Long board_id,
                                                                   @AuthenticationPrincipal ModugardenUser user) {
-        BoardDeleteResponseDto boardDeleteResponseDto = boardService.deleteBoard(board_id,user);
+        BoardDeleteResponseDto boardDeleteResponseDto = boardService.deleteBoard(board_id, user.getUser());
         return new BaseResponseDto<>(boardDeleteResponseDto);
     }
 

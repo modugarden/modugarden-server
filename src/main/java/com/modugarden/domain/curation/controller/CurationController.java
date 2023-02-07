@@ -132,7 +132,7 @@ public class CurationController {
     @DeleteMapping("/curations/{curation_id}")
     public BaseResponseDto<CurationDeleteResponseDto> deleteCuration(@PathVariable Long curation_id,
                                                                      @AuthenticationPrincipal ModugardenUser user) {
-        CurationDeleteResponseDto curationDeleteResponse = curationService.delete(curation_id,user);
+        CurationDeleteResponseDto curationDeleteResponse = curationService.delete(curation_id,user.getUser());
         return new BaseResponseDto<>(curationDeleteResponse);
     }
 

@@ -175,10 +175,10 @@ public class CurationService {
 
     //큐레이션 삭제
     @Transactional
-    public CurationDeleteResponseDto delete(long id, ModugardenUser user) {
+    public CurationDeleteResponseDto delete(long id, User user) {
         Curation curation = curationRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION_DELETE));
 
-        if (curation.getUser().getId().equals(user.getUserId())) {
+        if (curation.getUser().getId().equals(user.getId())) {
             // 보관 모두 삭제
             curationStorageRepository.deleteAllByCuration_Id(curation.getId());
             // 좋아요 모두 삭제
@@ -227,4 +227,15 @@ public class CurationService {
         return curationSlice
                 .map(u -> new CurationFollowFeedResponseDto(u,likeCurationRepository.findByUserAndCuration(user.getUser(), u).isPresent(),curationStorageRepository.findByUserAndCuration(user.getUser(), u).isPresent()));
     }
+
+    // 해당 유저의 모든 큐레이션 삭제
+    @Transactional
+    public void deleteAllCurationOfUser(User user){
+        List<Curation> allCurationOfUser = curationRepository.findByUser(user);
+
+        for (Curation curation : allCurationOfUser) {
+            delete(curation.getId(), user);
+        }
+    }
+
 }

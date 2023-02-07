@@ -10,10 +10,16 @@ import com.modugarden.domain.auth.dto.response.IsEmailDuplicatedResponseDto;
 import com.modugarden.domain.auth.dto.response.LoginResponseDto;
 import com.modugarden.domain.auth.entity.RefreshToken;
 import com.modugarden.domain.auth.repository.RefreshTokenRepository;
+import com.modugarden.domain.block.repository.BlockRepository;
+import com.modugarden.domain.board.service.BoardService;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.entity.UserInterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 import com.modugarden.domain.category.repository.UserInterestCategoryRepository;
+import com.modugarden.domain.curation.service.CurationService;
+import com.modugarden.domain.fcm.repository.FcmRepository;
+import com.modugarden.domain.follow.repository.FollowRepository;
+import com.modugarden.domain.report.repository.ReportUserRepository;
 import com.modugarden.domain.user.dto.request.LoginRequestDto;
 import com.modugarden.domain.user.dto.request.NicknameIsDuplicatedRequestDto;
 import com.modugarden.domain.user.dto.request.SignUpRequestDto;
@@ -43,9 +49,9 @@ import static com.modugarden.common.error.enums.ErrorMessage.*;
 import static java.lang.Boolean.TRUE;
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 @Service
-public class authService {
+public class AuthService {
 
     private final UserRepository userRepository;
     private final InterestCategoryRepository interestCategoryRepository;
@@ -56,8 +62,19 @@ public class authService {
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    // 회원가입
-    // 소셜 로그인 유저도 해당 회원가입 함수를 사용, 비번은 프론트에서 랜덤비번을 생성해서 줌.
+    private final BoardService boardService;
+    private final CurationService curationService;
+
+    private final BlockRepository blockRepository;
+    private final ReportUserRepository reportUserRepository;
+    private final FcmRepository fcmRepository;
+    private final FollowRepository followRepository;
+
+    /**
+     * 회원 가입
+     * 소셜 로그인 유저도 해당 회원가입 함수를 사용
+     */
+    @Transactional
     public Long signupUser(SignUpRequestDto signUpRequestDto){
 
         // 이메일 중복 체크
@@ -108,7 +125,10 @@ public class authService {
         return signUpUser.getId();
     }
 
-
+    /**
+     * 일반 로그인
+     */
+    @Transactional
     public LoginResponseDto generalLogin(LoginRequestDto loginRequestDto){
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
@@ -147,30 +167,10 @@ public class authService {
         }
     }
 
-    public IsEmailDuplicatedResponseDto isEmailDuplicate(IsEmailDuplicatedRequestDto requestDto) {
-        Boolean isDuplicate = userRepository.existsByEmail(requestDto.getEmail());
-        return new IsEmailDuplicatedResponseDto(isDuplicate);
-    }
-
-    public DeleteUserResponseDto deleteCurrentUser(User user){
-        // User pk로 외래키 연관된 UserInterestCategory부터 삭제
-        List<UserInterestCategory> userInterestCategories = UICRepository.findByUser(user);
-
-          for (UserInterestCategory userInterestCategory : userInterestCategories) {
-            UICRepository.deleteById(userInterestCategory.getId());
-        }
-
-        // 유저 삭제
-        userRepository.deleteById(user.getId());
-        return new DeleteUserResponseDto(user.getId());
-    }
-
-    public NicknameIsDuplicatedResponseDto isNicknameDuplicate(NicknameIsDuplicatedRequestDto requestDto) {
-        String userNickname = requestDto.getNickname().toLowerCase(); // 소문자 변환
-        Boolean isDuplicate = userRepository.existsByNickname(userNickname);
-        return new NicknameIsDuplicatedResponseDto(isDuplicate, userNickname);
-    }
-
+    /**
+     * 소셜 로그인
+     */
+    @Transactional
     public LoginResponseDto socialLogin(SocialLoginRequestDto requestDto){
         // 이미 소셜로그인은 성공한 상태로 호출됨
         User socialLoginUser = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
@@ -212,7 +212,27 @@ public class authService {
         }
     }
 
+    /**
+     * 이메일 중복 여부 검증
+     */
+    public IsEmailDuplicatedResponseDto isEmailDuplicate(IsEmailDuplicatedRequestDto requestDto) {
+        Boolean isDuplicate = userRepository.existsByEmail(requestDto.getEmail());
+        return new IsEmailDuplicatedResponseDto(isDuplicate);
+    }
 
+    /**
+     * 닉네임 중복 여부 검증
+     */
+    public NicknameIsDuplicatedResponseDto isNicknameDuplicate(NicknameIsDuplicatedRequestDto requestDto) {
+        String userNickname = requestDto.getNickname().toLowerCase(); // 소문자 변환
+        Boolean isDuplicate = userRepository.existsByNickname(userNickname);
+        return new NicknameIsDuplicatedResponseDto(isDuplicate, userNickname);
+    }
+
+    /**
+     * accessToken 재 발급
+     */
+    @Transactional
     public LoginResponseDto reissueAccessToken(TokenReissueRequestDto requestDto) {
         // 1. access Token 유효성 검증
         tokenProvider.validateAccessTokenForReissue(requestDto.getAccessToken());
@@ -259,5 +279,43 @@ public class authService {
                 .refreshToken(newRefreshToken)
                 .accessToken_expiredDate(newExpiration.toString())
                 .build();
+    }
+
+    /**
+     * 유저 탈퇴
+     */
+    @Transactional
+    public DeleteUserResponseDto deleteCurrentUser(User user){
+        // 큐레이션 삭제
+        curationService.deleteAllCurationOfUser(user);
+
+        // 포스트 삭제
+        boardService.deleteAllBoardOfUser(user);
+
+        // fcm 토큰 삭제
+        fcmRepository.deleteByUser(user);
+
+        // 차단 유저
+        blockRepository.deleteByUser(user);
+
+        // 유저 신고 삭제
+        reportUserRepository.deleteByUser(user);
+
+        // 팔로우 삭제
+        followRepository.deleteByFollowingUser(user);
+        followRepository.deleteByUser(user);
+
+        // 알림 삭제
+        userNotificationRepository.delete(user.getNotification());
+
+        // 회원 관심사 카테고리 삭제
+        List<UserInterestCategory> userInterestCategories = UICRepository.findByUser(user);
+        for (UserInterestCategory userInterestCategory : userInterestCategories) {
+            UICRepository.deleteById(userInterestCategory.getId());
+        }
+
+        // 유저 삭제
+        userRepository.deleteById(user.getId());
+        return new DeleteUserResponseDto(user.getId());
     }
 }
