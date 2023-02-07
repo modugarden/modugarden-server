@@ -25,11 +25,11 @@ public interface CommentRepository extends JpaRepository <Comment, Long> {
     @Query("select c.commentId from Comment c where c.user = :user")
     List<Long> findAllCommentIdByUser(@Param("user")User user);
 
-    @Modifying(clearAutomatically = true) // 벌크 연산, 영속성 컨텍스트 초기화까지
+    @Modifying(clearAutomatically = true, flushAutomatically = true) // 벌크 연산, 영속성 컨텍스트 초기화까지
     @Query("delete from Comment c where c.parentId in :parentIds")
     int blukDeleteByParentIds(@Param("parentIds")List<Long> parentIds);
 
-    @Modifying(clearAutomatically = true) // 벌크 연산, 영속성 컨텍스트 초기화까지
+    @Modifying(clearAutomatically = true, flushAutomatically = true) // 벌크 연산, 영속성 컨텍스트 초기화까지
     @Query("delete from Comment c where c.commentId in :commentIds")
     int blukDeleteByCommentIds(@Param("commentIds")List<Long> commentIds);
 }
