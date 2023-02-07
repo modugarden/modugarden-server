@@ -2,6 +2,7 @@ package com.modugarden.domain.board.repository;
 
 import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.category.entity.InterestCategory;
+import com.modugarden.domain.user.entity.User;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -35,4 +36,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     Slice<Board> findBoard(List<Long> followingUserIds, Pageable pageable);
 
     Long countByUser_Id(Long user_id);
+
+    List<Board> findByUser(User user);
 }

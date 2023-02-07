@@ -28,4 +28,8 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, CustomFol
 
     //유저아이디로 팔로워 수 알기
     Long countByFollowingUser_Id(Long user_id);
+
+    Long deleteByUser(User user);
+
+    Long deleteByFollowingUser(User followingUser);
 }

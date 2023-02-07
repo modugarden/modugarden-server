@@ -206,10 +206,10 @@ public class BoardService {
 
     //포스트 삭제
     @Transactional
-    public BoardDeleteResponseDto deleteBoard(long id, ModugardenUser user) {
+    public BoardDeleteResponseDto deleteBoard(long id, User user) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD_DELETE));
 
-        if (board.getUser().getId().equals(user.getUserId())) {
+        if (board.getUser().getId().equals(user.getId())) {
             //이미지 모두 삭제
             boardImageRepository.deleteAllByBoard_Id(id);
             // 보관 모두 삭제
@@ -262,6 +262,16 @@ public class BoardService {
 
         return boardSlice
                 .map(u -> new BoardFollowFeedResponseDto(u,boardImageRepository.findAllByBoard_Id(u.getId()),likeBoardRepository.findByUserAndBoard(user.getUser(), u).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), u).isPresent()));
+    }
+
+    // 해당 유저의 모든 포스트 삭제
+    @Transactional
+    public void deleteAllBoardOfUser(User user){
+        List<Board> allBoardOfUser = boardRepository.findByUser(user);
+
+        for (Board board : allBoardOfUser) {
+            deleteBoard(board.getId(), user);
+        }
     }
 
 }

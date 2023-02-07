@@ -16,7 +16,7 @@ import com.modugarden.domain.user.dto.request.SocialLoginRequestDto;
 import com.modugarden.domain.user.dto.response.DeleteUserResponseDto;
 import com.modugarden.domain.user.dto.response.NicknameIsDuplicatedResponseDto;
 import com.modugarden.domain.user.dto.response.SignUpResponseDto;
-import com.modugarden.domain.auth.service.authService;
+import com.modugarden.domain.auth.service.AuthService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
@@ -29,7 +29,7 @@ import javax.validation.Valid;
 @RequestMapping("/users")
 @RestController
 public class AuthController {
-    private final authService userService2;
+    private final AuthService userService2;
     private final EmailService emailService;
 
 

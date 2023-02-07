@@ -2,6 +2,7 @@ package com.modugarden.domain.curation.repository;
 
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.curation.entity.Curation;
+import com.modugarden.domain.user.entity.User;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,4 +33,6 @@ public interface CurationRepository extends JpaRepository<Curation, Long> {
 
     //유저 아이디로 게시물 수 조회
     Long countByUser_Id(Long user_id);
+
+    List<Curation> findByUser(User user);
 }
