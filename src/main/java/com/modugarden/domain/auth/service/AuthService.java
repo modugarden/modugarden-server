@@ -305,9 +305,6 @@ public class AuthService {
         followRepository.deleteByFollowingUser(user);
         followRepository.deleteByUser(user);
 
-        // 알림 삭제
-        userNotificationRepository.delete(user.getNotification());
-
         // 회원 관심사 카테고리 삭제
         List<UserInterestCategory> userInterestCategories = UICRepository.findByUser(user);
         for (UserInterestCategory userInterestCategory : userInterestCategories) {
@@ -316,6 +313,10 @@ public class AuthService {
 
         // 유저 삭제
         userRepository.deleteById(user.getId());
+
+        // 알림 삭제
+        userNotificationRepository.delete(user.getNotification());
+
         return new DeleteUserResponseDto(user.getId());
     }
 }
