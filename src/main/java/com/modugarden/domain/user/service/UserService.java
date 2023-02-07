@@ -12,7 +12,7 @@ import com.modugarden.domain.curation.repository.CurationRepository;
 import com.modugarden.domain.follow.repository.FollowRepository;
 import com.modugarden.domain.user.dto.request.UpdateNotificationRequestDto;
 import com.modugarden.domain.user.dto.request.UpdateUserCategoryRequestDto;
-import com.modugarden.domain.user.dto.request.UserNicknameRequestDto;
+import com.modugarden.domain.user.dto.request.UpdateProfileRequestDto;
 import com.modugarden.domain.user.dto.response.*;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.entity.UserNotification;
@@ -60,12 +60,24 @@ public class UserService {
     }
 
     @Transactional
-    public UpdateUserInfoResponseDto updateUserInfo(Long userId, MultipartFile file, UserNicknameRequestDto userNicknameRequestDto) throws IOException {
+    public UpdateProfileResponseDto updateUserInfo(Long userId, MultipartFile file, UpdateProfileRequestDto updateProfileRequestDto) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
-        String userNickname = userNicknameRequestDto.getNickname().toLowerCase();
+        String userNickname = updateProfileRequestDto.getNickname().toLowerCase();
         String profileImageUrl = fileService.uploadFile(file, userId, "profileImage");
         user.updateUserInfo(userNickname, profileImageUrl);
-        return new UpdateUserInfoResponseDto(userNickname, user.getProfileImg());
+
+        userInterestCategoryRepository.deleteAllByUser(user);
+        List<String> categories = new ArrayList<>();
+        for (String category: updateProfileRequestDto.getCategories()) {
+            InterestCategory interestCategory = interestCategoryRepository.findByCategory(category).get();
+            UserInterestCategory userInterestCategory = UserInterestCategory.builder()
+                    .user(user)
+                    .category(interestCategory)
+                    .build();
+            categories.add(category);
+            userInterestCategoryRepository.save(userInterestCategory);
+        }
+        return new UpdateProfileResponseDto(userId, userNickname, user.getProfileImg(), categories);
     }
 
     public UserSettingInfoResponseDto readUserSettingInfo(User user) {
@@ -82,22 +94,6 @@ public class UserService {
                 followRepository.countByFollowingUser_Id(userId),
                 boardRepository.countByUser_Id(userId) + curationRepository.countByUser_Id(userId),
                 categories, followRepository.exists(loginUserId, userId));
-    }
-
-    @Transactional
-    public UpdateUserCategoryResponseDto updateUserCategory(User user, UpdateUserCategoryRequestDto updateUserCategoryRequestDto) {
-        userInterestCategoryRepository.deleteAllByUser(user);
-        List<String> categories = new ArrayList<>();
-        for (String category: updateUserCategoryRequestDto.getCategories()) {
-            InterestCategory interestCategory = interestCategoryRepository.findByCategory(category).get();
-            UserInterestCategory userInterestCategory = UserInterestCategory.builder()
-                    .user(user)
-                    .category(interestCategory)
-                    .build();
-            categories.add(category);
-            userInterestCategoryRepository.save(userInterestCategory);
-        }
-        return new UpdateUserCategoryResponseDto(user.getId(), categories);
     }
 
     @Transactional
