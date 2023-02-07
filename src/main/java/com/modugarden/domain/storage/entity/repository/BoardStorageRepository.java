@@ -11,4 +11,6 @@ public interface BoardStorageRepository extends JpaRepository<BoardStorage, Long
     Optional<BoardStorage> findByUserAndBoard(User user, Board board);
 
     Optional<BoardStorage> deleteAllByBoard_Id(Long id);
+
+    Long deleteByUser(User user);
 }

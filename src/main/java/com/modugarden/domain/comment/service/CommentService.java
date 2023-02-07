@@ -18,6 +18,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -58,5 +60,11 @@ public class CommentService {
         }
         commentRepository.deleteById(comment.getCommentId());
         return new CommentDeleteResponseDto(dto.getCommentId());
+    }
+
+    public void deleteAllCommentOfUser(User user) {
+        List<Long> allCommentIdByUser = commentRepository.findAllCommentIdByUser(user);
+        int count1 = commentRepository.blukDeleteByParentIds(allCommentIdByUser);
+        int count2 = commentRepository.blukDeleteByCommentIds(allCommentIdByUser);
     }
 }

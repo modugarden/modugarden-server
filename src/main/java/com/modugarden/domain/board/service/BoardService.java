@@ -272,6 +272,9 @@ public class BoardService {
         for (Board board : allBoardOfUser) {
             deleteBoard(board.getId(), user);
         }
+
+        likeBoardRepository.deleteByUser(user);
+        boardStorageRepository.deleteByUser(user);
     }
 
 }

@@ -13,4 +13,6 @@ public interface LikeCurationRepository extends JpaRepository<LikeCuration, Long
     Optional<LikeCuration> findByUserAndCuration(User user, Curation curation);
 
     Optional<LikeCuration> deleteAllByCuration_Id(Long id);
+
+    Long deleteByUser(User user);
 }

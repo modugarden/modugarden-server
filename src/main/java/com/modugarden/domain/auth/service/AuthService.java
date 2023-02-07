@@ -16,6 +16,7 @@ import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.entity.UserInterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 import com.modugarden.domain.category.repository.UserInterestCategoryRepository;
+import com.modugarden.domain.comment.service.CommentService;
 import com.modugarden.domain.curation.service.CurationService;
 import com.modugarden.domain.fcm.repository.FcmRepository;
 import com.modugarden.domain.follow.repository.FollowRepository;
@@ -69,7 +70,7 @@ public class AuthService {
     private final ReportUserRepository reportUserRepository;
     private final FcmRepository fcmRepository;
     private final FollowRepository followRepository;
-
+    private final CommentService commentService;
     /**
      * 회원 가입
      * 소셜 로그인 유저도 해당 회원가입 함수를 사용
@@ -304,6 +305,9 @@ public class AuthService {
         // 팔로우 삭제
         followRepository.deleteByFollowingUser(user);
         followRepository.deleteByUser(user);
+
+        // 댓글 삭제
+        commentService.deleteAllCommentOfUser(user);
 
         // 회원 관심사 카테고리 삭제
         List<UserInterestCategory> userInterestCategories = UICRepository.findByUser(user);

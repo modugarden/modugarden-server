@@ -236,6 +236,9 @@ public class CurationService {
         for (Curation curation : allCurationOfUser) {
             delete(curation.getId(), user);
         }
+
+        likeCurationRepository.deleteByUser(user);
+        curationStorageRepository.deleteByUser(user);
     }
 
 }
