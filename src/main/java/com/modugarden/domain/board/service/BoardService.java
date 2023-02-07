@@ -267,14 +267,17 @@ public class BoardService {
     // 해당 유저의 모든 포스트 삭제
     @Transactional
     public void deleteAllBoardOfUser(User user){
+        // 유저가 작성한 모든 포스트 삭제
         List<Board> allBoardOfUser = boardRepository.findByUser(user);
-
         for (Board board : allBoardOfUser) {
             deleteBoard(board.getId(), user);
         }
+        boardRepository.flush();
 
-        likeBoardRepository.deleteByUser(user);
-        boardStorageRepository.deleteByUser(user);
+        likeBoardRepository.deleteByUser(user); // 유저의 포스트 좋아요 삭제
+        likeBoardRepository.flush();
+        boardStorageRepository.deleteByUser(user); // 유저의 포스트 저장 삭제
+        boardStorageRepository.flush();
     }
 
 }

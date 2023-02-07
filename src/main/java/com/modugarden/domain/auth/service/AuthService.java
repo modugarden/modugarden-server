@@ -295,16 +295,20 @@ public class AuthService {
 
         // fcm 토큰 삭제
         fcmRepository.deleteByUser(user);
+        fcmRepository.flush();
 
         // 차단 유저
         blockRepository.deleteByUser(user);
+        blockRepository.flush();
 
         // 유저 신고 삭제
         reportUserRepository.deleteByUser(user);
+        reportUserRepository.flush();
 
         // 팔로우 삭제
         followRepository.deleteByFollowingUser(user);
         followRepository.deleteByUser(user);
+        followRepository.flush();
 
         // 댓글 삭제
         commentService.deleteAllCommentOfUser(user);
