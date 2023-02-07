@@ -13,4 +13,6 @@ public interface CurationStorageRepository extends JpaRepository<CurationStorage
     Optional<CurationStorage> findByUserAndCuration(User user, Curation curation);
 
     Optional<CurationStorage> deleteAllByCuration_Id(Long id);
+
+    Long deleteByUser(User user);
 }
