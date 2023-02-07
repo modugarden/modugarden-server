@@ -13,6 +13,7 @@ import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.curation.repository.CurationRepository;
 import com.modugarden.domain.follow.repository.FollowRepository;
 import com.modugarden.domain.like.repository.LikeCurationRepository;
+import com.modugarden.domain.report.repository.ReportCurationRepository;
 import com.modugarden.domain.storage.entity.CurationStorage;
 import com.modugarden.domain.storage.entity.repository.CurationStorageRepository;
 import com.modugarden.domain.user.entity.User;
@@ -38,6 +39,7 @@ public class CurationService {
     private final CurationStorageRepository curationStorageRepository;
     private final InterestCategoryRepository interestCategoryRepository;
     private final FollowRepository followRepository;
+    private final ReportCurationRepository reportCurationRepository;
     //큐레이션 생성
     @Transactional
     public CurationCreateResponseDto createCuration(CurationCreateRequestDto createRequestDto, MultipartFile file, ModugardenUser user) throws IOException {
@@ -181,6 +183,8 @@ public class CurationService {
             curationStorageRepository.deleteAllByCuration_Id(curation.getId());
             // 좋아요 모두 삭제
             likeCurationRepository.deleteAllByCuration_Id(curation.getId());
+            // 신고 모두 삭제
+            reportCurationRepository.deleteAllByReportCuration_Id(curation.getId());
             curationRepository.delete(curation);
         }
         else
