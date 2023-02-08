@@ -11,12 +11,11 @@ import com.modugarden.domain.follow.service.FollowService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 // 컨트롤러에서 서비스 호출, 서비스에서 레퍼지토리를 호출
 @RestController
@@ -75,8 +74,8 @@ public class FollowController {
     @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "팔로우피드 - 팔로잉할 유저 추천", notes = "유저의 팔로잉이 3명이하일 경우, 팔로잉할 유저를 추천한다.")
     @GetMapping("/recommendation")
-    public BaseResponseDto<List<FollowRecommendResponseDto>> recommendation(@AuthenticationPrincipal ModugardenUser user, @PageableDefault(size=3) Pageable pageable){
-        List<FollowRecommendResponseDto> responseDto = followService.recommendFollowingList(user.getUser(), pageable);
-        return new BaseResponseDto<>(responseDto);
+    public SliceResponseDto<FollowRecommendResponseDto> recommendation(@AuthenticationPrincipal ModugardenUser user, @PageableDefault(size=3) Pageable pageable){
+        Slice<FollowRecommendResponseDto> responseDto = followService.recommendFollowingList(user.getUser(), pageable);
+        return new SliceResponseDto<>(responseDto);
     }
 }
