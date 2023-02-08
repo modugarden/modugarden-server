@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface CurationStorageRepository extends JpaRepository<CurationStorage, Long> {
     Optional<CurationStorage> findByUserAndCuration(User user, Curation curation);
 
-    Optional<CurationStorage> deleteAllByCuration_Id(Long id);
+    Optional<CurationStorage> deleteAllByCuration(Curation curation);
 
     Long deleteByUser(User user);
 }

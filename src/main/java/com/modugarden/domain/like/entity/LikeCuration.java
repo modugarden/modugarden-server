@@ -28,8 +28,7 @@ public class LikeCuration extends BaseTimeEntity {
     private Curation curation;
 
     @Builder
-    public LikeCuration(Long id, User user, Curation curation) {
-        this.id = id;
+    public LikeCuration(User user, Curation curation) {
         this.user = user;
         this.curation = curation;
     }
