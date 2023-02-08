@@ -18,7 +18,7 @@ public class Comment extends BaseTimeEntity {
     //댓글 id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long commentId;
+    private Long id;
     //내용
     @Column(nullable = false, length = 40)
     private String content;
