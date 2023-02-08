@@ -40,13 +40,20 @@ public class Curation extends BaseTimeEntity {
     private InterestCategory category;
 
     @Builder
-    public Curation(Long id, String title, String link, String previewImage,Long likeNum, User user, InterestCategory category) {
-        this.id = id;
+    public Curation(String title, String link, String previewImage,Long likeNum, User user, InterestCategory category) {
         this.title = title;
         this.link = link;
         this.previewImage = previewImage;
         this.likeNum = likeNum;
         this.user = user;
         this.category = category;
+    }
+
+    public void addLike(){
+        this.likeNum += 1;
+    }
+
+    public void delLike(){
+        this.likeNum -= 1;
     }
 }

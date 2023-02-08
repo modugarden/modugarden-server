@@ -12,6 +12,7 @@ import com.modugarden.domain.curation.dto.response.*;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.curation.repository.CurationRepository;
 import com.modugarden.domain.follow.repository.FollowRepository;
+import com.modugarden.domain.like.entity.LikeCuration;
 import com.modugarden.domain.like.repository.LikeCurationRepository;
 import com.modugarden.domain.report.repository.ReportCurationRepository;
 import com.modugarden.domain.storage.entity.CurationStorage;
@@ -55,7 +56,7 @@ public class CurationService {
                 .link(createRequestDto.getLink())
                 .previewImage(profileImageUrl)
                 .user(user.getUser())
-                .likeNum((long) 0)
+                .likeNum(0L)
                 .category(interestCategory)
                 .build();
 
@@ -66,14 +67,10 @@ public class CurationService {
     @Transactional
     public CurationLikeResponseDto createLikeCuration(Long curation_id, ModugardenUser user) {
         Curation curation = curationRepository.findById(curation_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
-        User users = userRepository.findById(user.getUserId()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
 
-        if (likeCurationRepository.findByUserAndCuration(users, curation).isEmpty()) {
-            Curation modifyCuration = new Curation(curation.getId(), curation.getTitle(), curation.getLink(), curation.getPreviewImage(), curation.getLikeNum() + 1, curation.getUser(), curation.getCategory());
-            CurationLikeRequestDto curationLikeRequestDto = new CurationLikeRequestDto(users, modifyCuration);
-
-            likeCurationRepository.save(curationLikeRequestDto.toEntity());
-            curationRepository.save(modifyCuration);
+        if (likeCurationRepository.findByUserAndCuration(user.getUser(), curation).isEmpty()) {
+            curation.addLike();
+            likeCurationRepository.save(new LikeCuration(user.getUser(), curation));
         }
         return new CurationLikeResponseDto(curation.getId(), curation.getLikeNum());
     }
@@ -201,9 +198,8 @@ public class CurationService {
 
         likeCurationRepository.findByUserAndCuration(users, curation)
                 .ifPresent(it -> {
-                    Curation modifyCuration = new Curation(curation.getId(), curation.getTitle(), curation.getLink(), curation.getPreviewImage(), curation.getLikeNum() - 1, curation.getUser(), curation.getCategory());
+                    curation.delLike();
                     likeCurationRepository.delete(it);
-                    curationRepository.save(modifyCuration);
                 });
 
         return new CurationLikeResponseDto(curation.getId(), curation.getLikeNum());
