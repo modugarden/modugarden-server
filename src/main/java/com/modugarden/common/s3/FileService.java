@@ -34,9 +34,8 @@ public class FileService {
     private String defaultUrl;
 
     public String uploadFile(MultipartFile multipartFile, Long userId, String imageType) {
-        if (multipartFile.isEmpty()) {
-            return null;
-        }
+        if (multipartFile == null) return null;
+        if (multipartFile.isEmpty()) return null;
         String savedFileName = getSavedFileName(multipartFile, userId, imageType);
         ObjectMetadata metadata = new ObjectMetadata();
 
