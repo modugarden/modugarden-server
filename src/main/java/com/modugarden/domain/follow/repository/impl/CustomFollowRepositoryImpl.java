@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import static com.modugarden.domain.category.entity.QInterestCategory.interestCategory;
 import static com.modugarden.domain.category.entity.QUserInterestCategory.userInterestCategory;
 import static com.modugarden.domain.follow.entity.QFollow.follow;
+import static com.modugarden.domain.user.entity.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
@@ -68,10 +69,9 @@ public class CustomFollowRepositoryImpl implements CustomFollowRepository {
                 .groupBy(follow.user.id)
                 .having(follow.user.id.notIn(loginUserFollowingList).and(follow.user.id.ne(loginUser.getId())))// 유저는 제외, 유저가 팔로잉하고 있는 사람은 제외
                 .orderBy(categoryCount.desc(), followingCount.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize()+1)
+                .offset(pageable.getOffset()) // 시작지점
+                .limit(pageable.getPageSize()+1) // 몇 개의 row 가져올지
                 .fetch();
-
 
         List<Long> recommendUserIds = recommendTuple.stream().map(tuple -> tuple.get(follow.user.id)).collect(Collectors.toList());
 
@@ -79,6 +79,33 @@ public class CustomFollowRepositoryImpl implements CustomFollowRepository {
         if (recommendUserIds.size() > pageable.getPageSize()) {
             recommendUserIds.remove(pageable.getPageSize());
             hasNext = true;
+        }
+
+        // 3명을 채우기 위해 유저 중에서 랜덤으로 select
+        if(recommendUserIds.size() < pageable.getPageSize()){
+            Long userTotalCount = queryFactory
+                    .select(user.id.count())
+                    .from(user)
+                    .fetchFirst();
+
+            int needSize = pageable.getPageSize() - recommendUserIds.size();
+            int randomOffset = (int)(Math.random()*(userTotalCount-3));
+
+            List<Long> randomUserIds = queryFactory
+                    .select(user.id)
+                    .from(user)
+                    .where(user.id.notIn(loginUserFollowingList).and(user.id.ne(loginUser.getId())).and(user.id.notIn(recommendUserIds))) // 로그인 유저 제외, 유저가 팔로잉하고 있는 사람 제외, 이미 추천에 담긴 userId도 제외
+                    .offset(randomOffset)
+                    .limit(needSize + 1)
+                    .fetch();
+
+            hasNext = false;
+            if (randomUserIds.size() > needSize) {
+                randomUserIds.remove(needSize);
+                hasNext = true;
+            }
+
+            recommendUserIds.addAll(randomUserIds);
         }
 
         return new SliceImpl<>(recommendUserIds, pageable, hasNext);
