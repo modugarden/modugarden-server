@@ -67,4 +67,6 @@ public class User extends BaseTimeEntity {
     public void setOriginalPasswordOfSocialLoginUser(String originalPassword){
         this.password = originalPassword;
     }
+
+    public void changeAuthority(UserAuthority authority) { this.authority = authority;}
 }
