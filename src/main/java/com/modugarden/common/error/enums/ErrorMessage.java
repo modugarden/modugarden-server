@@ -63,6 +63,9 @@ public enum ErrorMessage {
     WRONG_COMMENT(NOT_FOUND,false,"해당 댓글을 찾을 수 없습니다."),
     WRONG_PARENT_COMMENT_ID(BAD_REQUEST, false, "올바르지 않은 부모 댓글 입니다."),
 
+    // LIKE
+    ALREADY_LIKED_BOARD(BAD_REQUEST, false, "이미 좋아요한 게시물입니다."),
+
     // 공통
     INVALID_FILE_UPLOAD(BAD_REQUEST, false, "파일 업로드에 실패하였습니다."),
     INVALID_FORMAT(BAD_REQUEST, false, "형식에 맞지 않습니다.");

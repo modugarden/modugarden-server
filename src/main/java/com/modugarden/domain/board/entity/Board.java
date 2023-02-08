@@ -37,12 +37,19 @@ public class Board extends BaseTimeEntity {
     private InterestCategory category;
 
     @Builder
-    public Board(Long id, String title,Long like_num,String preview_img, User user, InterestCategory category) {
-        this.id = id;
+    public Board(String title,Long like_num,String preview_img, User user, InterestCategory category) {
         this.title = title;
         this.preview_img = preview_img;
         this.like_num = like_num;
         this.user = user;
         this.category = category;
+    }
+
+    public void addLike(){
+        this.like_num += 1;
+    }
+
+    public void delLike(){
+        this.like_num -= 1;
     }
 }
