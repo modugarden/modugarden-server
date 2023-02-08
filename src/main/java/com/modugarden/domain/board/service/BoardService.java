@@ -21,6 +21,7 @@ import com.modugarden.domain.report.repository.ReportBoardRepository;
 import com.modugarden.domain.storage.entity.BoardStorage;
 import com.modugarden.domain.storage.entity.repository.BoardStorageRepository;
 import com.modugarden.domain.user.entity.User;
+import com.modugarden.domain.user.entity.enums.UserAuthority;
 import com.modugarden.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -84,6 +85,10 @@ public class BoardService {
                     .build();
 
             boardImageRepository.save(boardImage);
+        }
+//        회원 권한 큐레이터로 변경!
+        if(user.getUser().getAuthority().equals(UserAuthority.ROLE_GENERAL)) {
+            user.getUser().changeAuthority(UserAuthority.ROLE_CURATOR);
         }
         return new BoardCreateResponseDto(boardRepository.save(board).getId());
     }
@@ -217,7 +222,7 @@ public class BoardService {
             // 좋아요 모두 삭제
             likeBoardRepository.deleteAllByBoard_Id(id);
             // 댓글 삭제
-            commentRepository.deleteAllByBoard_Id(id);
+            commentRepository.deleteAllByBoard(board);
             // 신고 모두 삭제
             reportBoardRepository.deleteAllByReportBoard_Id(id);
             boardRepository.delete(board);
