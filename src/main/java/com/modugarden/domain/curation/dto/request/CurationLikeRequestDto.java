@@ -16,11 +16,4 @@ public class CurationLikeRequestDto {
 
     private User user; // 유저
     private Curation curation; // 카테고리
-
-    public LikeCuration toEntity() {
-        return LikeCuration.builder()
-                .user(user)
-                .curation(curation)
-                .build();
-    }
 }
