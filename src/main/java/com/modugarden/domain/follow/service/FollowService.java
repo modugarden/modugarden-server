@@ -14,6 +14,7 @@ import com.modugarden.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,16 +99,18 @@ public class FollowService {
         return result;
     }
     //팔로우할 유저 추천
-    public List<FollowRecommendResponseDto> recommendFollowingList(User user, Pageable pageable){
+    public Slice<FollowRecommendResponseDto> recommendFollowingList(User user, Pageable pageable){
         List<FollowRecommendResponseDto> responseDto = new ArrayList<>();
 
-        List<Long> recommendUserIds = followRepository.recommend3FollowingId(user, pageable.getOffset(), pageable.getPageSize());
-        for (Long recommendUserId : recommendUserIds) {
+        Slice<Long> sliceRecommendUserIds = followRepository.recommend3FollowingId(user, pageable);
+
+        for (Long recommendUserId : sliceRecommendUserIds) {
             User recommendUser = userRepository.findById(recommendUserId).orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
             List<String> interestCategoryList = userRepository.readUserInterestCategory(recommendUserId);
 
             responseDto.add(new FollowRecommendResponseDto(recommendUserId, recommendUser.getNickname(), recommendUser.getProfileImg(), interestCategoryList));
         }
-        return responseDto;
+
+        return new SliceImpl<>(responseDto, pageable, sliceRecommendUserIds.hasNext());
     }
 }

@@ -10,6 +10,9 @@ import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -32,7 +35,7 @@ public class CustomFollowRepositoryImpl implements CustomFollowRepository {
     // 팔로우 추천할 id - 3명이하를 팔로잉하고 있을 때
     // 로그인 유저와 같은 카테고리, 팔로워 많은 순
     @Override
-    public List<Long> recommend3FollowingId(User loginUser, long offset, int size){
+    public Slice<Long> recommend3FollowingId(User loginUser, Pageable pageable){
         QFollow follow2 = new QFollow("follow2");
         NumberPath<Long> categoryCount = Expressions.numberPath(Long.class, "categoryCount");
         NumberPath<Long> followingCount = Expressions.numberPath(Long.class, "followingCount");
@@ -65,14 +68,20 @@ public class CustomFollowRepositoryImpl implements CustomFollowRepository {
                 .groupBy(follow.user.id)
                 .having(follow.user.id.notIn(loginUserFollowingList).and(follow.user.id.ne(loginUser.getId())))// 유저는 제외, 유저가 팔로잉하고 있는 사람은 제외
                 .orderBy(categoryCount.desc(), followingCount.desc())
-                .offset(offset)
-                .limit(size)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize()+1)
                 .fetch();
 
 
         List<Long> recommendUserIds = recommendTuple.stream().map(tuple -> tuple.get(follow.user.id)).collect(Collectors.toList());
-        
-        return recommendUserIds;
+
+        Boolean hasNext = false;
+        if (recommendUserIds.size() > pageable.getPageSize()) {
+            recommendUserIds.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+
+        return new SliceImpl<>(recommendUserIds, pageable, hasNext);
     }
 
 }

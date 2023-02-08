@@ -1,11 +1,10 @@
 package com.modugarden.domain.follow.repository;
 
-import com.modugarden.domain.comment.entity.Comment;
 import com.modugarden.domain.user.entity.User;
-
-import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 public interface CustomFollowRepository {
     boolean exists(Long userId, Long followingUserId);
-    public List<Long> recommend3FollowingId(User user, long offset, int size);
+    public Slice<Long> recommend3FollowingId(User user, Pageable pageable);
 }
