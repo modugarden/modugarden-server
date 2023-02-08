@@ -5,7 +5,6 @@ import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.common.s3.FileService;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
-import com.modugarden.domain.board.dto.request.BoardLikeRequestDto;
 import com.modugarden.domain.board.dto.response.*;
 import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.board.entity.BoardImage;
@@ -123,7 +122,7 @@ public class BoardService {
     //포스트 하나 조회 api
     public BoardGetResponseDto getBoard(long id, ModugardenUser user) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
-        List<BoardImage> imageList = boardImageRepository.findAllByBoard_Id(id);
+        List<BoardImage> imageList = boardImageRepository.findAllByBoard(board);
 
         return new BoardGetResponseDto(board,imageList,likeBoardRepository.findByUserAndBoard(user.getUser(), board).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), board).isPresent(),followRepository.exists(user.getUserId(), board.getUser().getId()));
     }
@@ -264,7 +263,7 @@ public class BoardService {
         Slice<Board> boardSlice = boardRepository.findBoard(userList,pageable);
 
         return boardSlice
-                .map(u -> new BoardFollowFeedResponseDto(u,boardImageRepository.findAllByBoard_Id(u.getId()),likeBoardRepository.findByUserAndBoard(user.getUser(), u).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), u).isPresent()));
+                .map(b -> new BoardFollowFeedResponseDto(b,boardImageRepository.findAllByBoard(b),likeBoardRepository.findByUserAndBoard(user.getUser(), b).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), b).isPresent()));
     }
 
     // 해당 유저의 모든 포스트 삭제
