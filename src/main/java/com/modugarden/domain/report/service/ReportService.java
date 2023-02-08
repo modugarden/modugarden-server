@@ -56,7 +56,7 @@ public class ReportService {
         ReportType reportType = ReportType.from(type);
         CommentReport commentReport = new CommentReport(reportType, reportComment, user);
         reportCommentRepository.save(commentReport);
-        return new ReportCommentResponseDto(commentReport.getUser().getId(), commentReport.getReportComment().getCommentId());
+        return new ReportCommentResponseDto(commentReport.getUser().getId(), commentReport.getReportComment().getId());
     }
 
     public ReportCurationResponseDto reportCuration(User user, Long curationId, String type) {
