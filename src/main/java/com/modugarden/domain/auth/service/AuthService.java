@@ -62,7 +62,6 @@ public class AuthService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-
     private final BoardService boardService;
     private final CurationService curationService;
 
@@ -71,6 +70,7 @@ public class AuthService {
     private final FcmRepository fcmRepository;
     private final FollowRepository followRepository;
     private final CommentService commentService;
+
     /**
      * 회원 가입
      * 소셜 로그인 유저도 해당 회원가입 함수를 사용
@@ -157,6 +157,7 @@ public class AuthService {
             // 로그인 response 생성
             return LoginResponseDto.builder()
                     .userId(user.getId())
+                    .nickname(user.getNickname())
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
                     .accessToken_expiredDate(expiration)
@@ -202,6 +203,7 @@ public class AuthService {
             // 토큰 DTO생성
             return LoginResponseDto.builder()
                     .userId(user.getId())
+                    .nickname(user.getNickname())
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
                     .accessToken_expiredDate(expiration)
