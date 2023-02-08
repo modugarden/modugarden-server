@@ -28,8 +28,7 @@ public class LikeBoard extends BaseTimeEntity {
     private Board board;
 
     @Builder
-    public LikeBoard(Long id, User user, Board board) {
-        this.id = id;
+    public LikeBoard(User user, Board board) {
         this.user = user;
         this.board = board;
     }

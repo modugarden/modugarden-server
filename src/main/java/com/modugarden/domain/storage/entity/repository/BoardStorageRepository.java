@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface BoardStorageRepository extends JpaRepository<BoardStorage, Long> {
     Optional<BoardStorage> findByUserAndBoard(User user, Board board);
 
-    Optional<BoardStorage> deleteAllByBoard_Id(Long id);
+    Optional<BoardStorage> deleteAllByBoard(Board board);
 
     Long deleteByUser(User user);
 }

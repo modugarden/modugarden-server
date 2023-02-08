@@ -17,10 +17,4 @@ public class BoardLikeRequestDto {
     private User user; // 유저
     private Board board; // 카테고리
 
-    public LikeBoard toEntity() {
-        return LikeBoard.builder()
-                .user(user)
-                .board(board)
-                .build();
-    }
 }

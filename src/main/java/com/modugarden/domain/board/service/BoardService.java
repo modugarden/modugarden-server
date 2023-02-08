@@ -5,7 +5,6 @@ import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.common.s3.FileService;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
-import com.modugarden.domain.board.dto.request.BoardLikeRequestDto;
 import com.modugarden.domain.board.dto.response.*;
 import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.board.entity.BoardImage;
@@ -16,6 +15,7 @@ import com.modugarden.domain.category.repository.InterestCategoryRepository;
 
 import com.modugarden.domain.comment.repository.CommentRepository;
 import com.modugarden.domain.follow.repository.FollowRepository;
+import com.modugarden.domain.like.entity.LikeBoard;
 import com.modugarden.domain.like.repository.LikeBoardRepository;
 import com.modugarden.domain.report.repository.ReportBoardRepository;
 import com.modugarden.domain.storage.entity.BoardStorage;
@@ -67,7 +67,7 @@ public class BoardService {
             if(!index) {
                 board = Board.builder()
                         .title(boardCreateRequestDto.getTitle())
-                        .like_num((long) 0)
+                        .like_num(0L)
                         .preview_img(profileImageUrl)
                         .user(user.getUser())
                         .category(interestCategory)
@@ -97,13 +97,12 @@ public class BoardService {
     @Transactional
     public BoardLikeResponseDto createLikeBoard(Long board_id, ModugardenUser user) {
         Board board = boardRepository.findById(board_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
-        User users = userRepository.findById(user.getUserId()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
 
-        if (likeBoardRepository.findByUserAndBoard(users, board).isEmpty()) {
-            Board modifyBoard = new Board(board.getId(), board.getTitle(), board.getLike_num()+1,board.getPreview_img(),board.getUser(),board.getCategory());
-            BoardLikeRequestDto boardLikeRequestDto = new BoardLikeRequestDto(users, modifyBoard);
-            likeBoardRepository.save(boardLikeRequestDto.toEntity());
-            boardRepository.save(modifyBoard);
+        if (likeBoardRepository.findByUserAndBoard(user.getUser(), board).isEmpty()) {
+            board.addLike(); // 더티 체킹 사용
+            likeBoardRepository.save(new LikeBoard(user.getUser(), board));
+        }else{
+            throw new BusinessException(ErrorMessage.ALREADY_LIKED_BOARD); // 이미 좋아요되어있는 경우, 에러 반환
         }
 
         return new BoardLikeResponseDto(board.getId(), board.getLike_num());
@@ -123,7 +122,7 @@ public class BoardService {
     //포스트 하나 조회 api
     public BoardGetResponseDto getBoard(long id, ModugardenUser user) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
-        List<BoardImage> imageList = boardImageRepository.findAllByBoard_Id(id);
+        List<BoardImage> imageList = boardImageRepository.findAllByBoard(board);
 
         return new BoardGetResponseDto(board,imageList,likeBoardRepository.findByUserAndBoard(user.getUser(), board).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), board).isPresent(),followRepository.exists(user.getUserId(), board.getUser().getId()));
     }
@@ -199,7 +198,7 @@ public class BoardService {
     }
 
 
-    //내 프로필 큐레이션 보관 여부 조회 api
+    //내 프로필 포스트 보관 여부 조회 api
     public BoardGetMyStorageResponseDto getMyStorageBoard(long board_id, ModugardenUser users) {
         Board board = boardRepository.findById(board_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
 
@@ -216,15 +215,15 @@ public class BoardService {
 
         if (board.getUser().getId().equals(user.getId())) {
             //이미지 모두 삭제
-            boardImageRepository.deleteAllByBoard_Id(id);
+            boardImageRepository.deleteAllByBoard(board);
             // 보관 모두 삭제
-            boardStorageRepository.deleteAllByBoard_Id(id);
+            boardStorageRepository.deleteAllByBoard(board);
             // 좋아요 모두 삭제
-            likeBoardRepository.deleteAllByBoard_Id(id);
+            likeBoardRepository.deleteAllByBoard(board);
             // 댓글 삭제
             commentRepository.deleteAllByBoard(board);
             // 신고 모두 삭제
-            reportBoardRepository.deleteAllByReportBoard_Id(id);
+            reportBoardRepository.deleteAllByReportBoard(board);
             boardRepository.delete(board);
         }
         else
@@ -237,13 +236,11 @@ public class BoardService {
     @Transactional
     public BoardLikeResponseDto createUnlikeBoard(Long board_id, ModugardenUser user) {
         Board board = boardRepository.findById(board_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
-        User users = userRepository.findById(user.getUserId()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
 
-        likeBoardRepository.findByUserAndBoard(users, board)
+        likeBoardRepository.findByUserAndBoard(user.getUser(), board)
                 .ifPresent(it -> {
-                    Board modifyBoard = new Board(board.getId(), board.getTitle(), board.getLike_num()-1,board.getPreview_img(), board.getUser(),board.getCategory());
+                    board.delLike();
                     likeBoardRepository.delete(it);
-                    boardRepository.save(modifyBoard);
                 });
 
         return new BoardLikeResponseDto(board.getId(), board.getLike_num());
@@ -266,7 +263,7 @@ public class BoardService {
         Slice<Board> boardSlice = boardRepository.findBoard(userList,pageable);
 
         return boardSlice
-                .map(u -> new BoardFollowFeedResponseDto(u,boardImageRepository.findAllByBoard_Id(u.getId()),likeBoardRepository.findByUserAndBoard(user.getUser(), u).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), u).isPresent()));
+                .map(b -> new BoardFollowFeedResponseDto(b,boardImageRepository.findAllByBoard(b),likeBoardRepository.findByUserAndBoard(user.getUser(), b).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), b).isPresent()));
     }
 
     // 해당 유저의 모든 포스트 삭제
