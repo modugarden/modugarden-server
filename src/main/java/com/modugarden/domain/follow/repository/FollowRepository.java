@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface FollowRepository extends JpaRepository<Follow, Long>, CustomFollowRepository {
     //팔로워 삭제
-    int deleteByUser_IdAndFollowingUser_Id(Long fromUserId, Long toUserId); // 언팔로우 메서드
+    int deleteByUserAndFollowingUser(User fromUserId, User toUserId); // 언팔로우 메서드
 
     //팔로워 명단조회
     //내가 팔로잉 유저

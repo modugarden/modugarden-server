@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.modugarden.common.error.enums.ErrorMessage.*;
 import static com.modugarden.common.error.enums.ErrorMessage.USER_NOT_FOUND;
 
 @Transactional(readOnly = true)
@@ -32,30 +33,24 @@ public class FollowService {
     //팔로우
     @Transactional
     public isFollowedResponseDto follow(ModugardenUser user, Long id) {
-        User oToUser = userRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND)); //예외처리
-        Follow follow = new Follow(user.getUser(), oToUser);
+        User toUser = userRepository.findById(id).orElseThrow(() -> new BusinessException(USER_NOT_FOUND)); //예외처리
+        Follow follow = new Follow(user.getUser(), toUser);
         followRepository.save(follow);
         return new isFollowedResponseDto(true);
     }
+
     //팔로우 취소
     @Transactional
     //변화가 필요할 때 transactional 사용
     public isFollowedResponseDto unFollow(ModugardenUser user, Long id) {
-        User oToUser = userRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND));  //예외처리
-        followRepository.deleteByUser_IdAndFollowingUser_Id(user.getUserId(), oToUser.getId());
-        followRepository.findById(id)
-                .ifPresent(it -> {
-                    Follow follow = new Follow(user.getUser(),oToUser);
-                    followRepository.delete(it);
-                    followRepository.save(follow);
-                });
+        User toUser = userRepository.findById(id).orElseThrow(() -> new BusinessException(USER_NOT_FOUND));  //예외처리
+        followRepository.deleteByUserAndFollowingUser(user.getUser(), toUser);
         return new isFollowedResponseDto(false);
     }
 
-
     //팔로우 유무 체크
     public isFollowedResponseDto profile(Long id, ModugardenUser user) {
-        User oToUser = userRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.FOLLOW_NOT_FOUND));  //예외처리
+        User toUser = userRepository.findById(id).orElseThrow(() -> new BusinessException(USER_NOT_FOUND));  //예외처리
         //User 대신 user 객체가 와야 함
         boolean followcheck = followRepository.exists(user.getUserId(),id);
         return new isFollowedResponseDto(followcheck);
@@ -80,6 +75,7 @@ public class FollowService {
                         , followRepository.exists(id, u.getId())));
         return result;
     }
+
     //타인 팔로워 명단조회
     public Slice<FollowersResponseDto> othersFollowerList(Long id, Long otherId, Pageable pageable) {
         Slice<User> followers = followRepository.findByFollowingUser_Id(otherId, pageable);
@@ -89,6 +85,7 @@ public class FollowService {
                         , followRepository.exists(id, f.getId())));
         return result;
     }
+
     //타인 팔로잉 명단조회
     public Slice<FollowingsResponseDto> othersFollowingList(Long id, Long otherId, Pageable pageable) {
         Slice<User> followings = followRepository.findByUser_Id(otherId, pageable);
@@ -98,6 +95,7 @@ public class FollowService {
                         , followRepository.exists(id, u.getId())));
         return result;
     }
+
     //팔로우할 유저 추천
     public Slice<FollowRecommendResponseDto> recommendFollowingList(User user, Pageable pageable){
         List<FollowRecommendResponseDto> responseDto = new ArrayList<>();
