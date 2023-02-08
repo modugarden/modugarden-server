@@ -16,5 +16,5 @@ public interface BoardImageRepository extends JpaRepository<BoardImage, Long> {
 
     Slice<BoardImage> findAllByUserid(Long user_id, Pageable pageable);
 
-    Optional<BoardImage> deleteAllByBoard_Id(Long id);
+    Optional<BoardImage> deleteAllByBoard(Board board);
 }

@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface LikeBoardRepository extends JpaRepository<LikeBoard, Long> {
     Optional<LikeBoard> findByUserAndBoard(User user, Board board);
 
-    Optional<LikeBoard> deleteAllByBoard_Id(Long id);
+    Optional<LikeBoard> deleteAllByBoard(Board board);
 
     Long deleteByUser(User user);
 }

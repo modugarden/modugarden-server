@@ -198,7 +198,7 @@ public class BoardService {
     }
 
 
-    //내 프로필 큐레이션 보관 여부 조회 api
+    //내 프로필 포스트 보관 여부 조회 api
     public BoardGetMyStorageResponseDto getMyStorageBoard(long board_id, ModugardenUser users) {
         Board board = boardRepository.findById(board_id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
 
@@ -215,15 +215,15 @@ public class BoardService {
 
         if (board.getUser().getId().equals(user.getId())) {
             //이미지 모두 삭제
-            boardImageRepository.deleteAllByBoard_Id(id);
+            boardImageRepository.deleteAllByBoard(board);
             // 보관 모두 삭제
-            boardStorageRepository.deleteAllByBoard_Id(id);
+            boardStorageRepository.deleteAllByBoard(board);
             // 좋아요 모두 삭제
-            likeBoardRepository.deleteAllByBoard_Id(id);
+            likeBoardRepository.deleteAllByBoard(board);
             // 댓글 삭제
             commentRepository.deleteAllByBoard(board);
             // 신고 모두 삭제
-            reportBoardRepository.deleteAllByReportBoard_Id(id);
+            reportBoardRepository.deleteAllByReportBoard(board);
             boardRepository.delete(board);
         }
         else
