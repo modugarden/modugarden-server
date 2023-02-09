@@ -1,5 +1,6 @@
 package com.modugarden.domain.report.entity;
 
+import com.modugarden.common.entity.BaseTimeEntity;
 import com.modugarden.domain.comment.entity.Comment;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.report.entity.enums.ReportType;
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class CurationReport {
+public class CurationReport extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
