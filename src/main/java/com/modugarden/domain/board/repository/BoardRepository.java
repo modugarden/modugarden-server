@@ -21,7 +21,12 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     Slice<Board> findAllByUser_IdOrderByCreatedDateDesc(Long user_id, Pageable pageable);
 
     //제목 검색
-    Slice<Board> findAllByTitleLikeOrderByCreatedDateDesc(String title, Pageable pageable);
+    @Query(value = "SELECT bo FROM Board bo \n" +
+            "            LEFT OUTER JOIN UserBlock bs ON bo.user.id = bs.blockUser.id\n" +
+            "            WHERE bs.user.id is null and bo.title like :title"+
+            "           order by bo.createdDate desc")
+    Slice<Board> querySearchBoard(String title, Pageable pageable);
+
 
     //카테고리로 생성일자 순 조회
     Slice<Board> findAllByCategoryOrderByCreatedDateDesc(InterestCategory category, Pageable pageable);

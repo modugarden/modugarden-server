@@ -4,6 +4,7 @@ import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.common.s3.FileService;
 import com.modugarden.domain.auth.entity.ModugardenUser;
+import com.modugarden.domain.block.repository.BlockRepository;
 import com.modugarden.domain.board.dto.request.BoardCreateRequestDto;
 import com.modugarden.domain.board.dto.response.*;
 import com.modugarden.domain.board.entity.Board;
@@ -19,7 +20,7 @@ import com.modugarden.domain.like.entity.LikeBoard;
 import com.modugarden.domain.like.repository.LikeBoardRepository;
 import com.modugarden.domain.report.repository.ReportBoardRepository;
 import com.modugarden.domain.storage.entity.BoardStorage;
-import com.modugarden.domain.storage.entity.repository.BoardStorageRepository;
+import com.modugarden.domain.storage.repository.BoardStorageRepository;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.entity.enums.UserAuthority;
 import com.modugarden.domain.user.repository.UserRepository;
@@ -47,7 +48,7 @@ public class BoardService {
     private final FollowRepository followRepository;
     private final CommentRepository commentRepository;
     private final ReportBoardRepository reportBoardRepository;
-
+    private final BlockRepository blockRepository;
     //포스트 생성
     @Transactional
     public BoardCreateResponseDto createBoard(BoardCreateRequestDto boardCreateRequestDto, List<MultipartFile> file, ModugardenUser user) throws IOException {
@@ -141,7 +142,8 @@ public class BoardService {
 
     //포스트 검색
     public Slice<BoardSearchResponseDto> searchBoard(String title, Pageable pageable) {
-        Slice<Board> board = boardRepository.findAllByTitleLikeOrderByCreatedDateDesc('%' + title + '%', pageable);
+        Slice<Board> board = boardRepository.querySearchBoard('%' + title + '%', pageable);
+
         if (board.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_BOARD_LIST);
 

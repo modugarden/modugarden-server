@@ -1,5 +1,6 @@
 package com.modugarden.domain.curation.repository;
 
+import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.user.entity.User;
@@ -17,8 +18,12 @@ import java.util.List;
 public interface CurationRepository extends JpaRepository<Curation, Long> {
     //회원 id로 조회
     Page<Curation> findAllByUser_IdOrderByCreatedDateDesc(Long user_id, Pageable pageable);
-    //제목 검색
-    Slice<Curation> findAllByTitleLikeOrderByCreatedDateDesc(String title, Pageable pageable);
+
+    @Query(value = "SELECT bo FROM Curation bo \n" +
+            "            LEFT OUTER JOIN UserBlock bs ON bo.user.id = bs.blockUser.id\n" +
+            "            WHERE bs.user.id is null and bo.title like :title"+
+            "           order by bo.createdDate desc")
+    Slice<Curation> querySearchCuration(String title, Pageable pageable);
     //카테고리로 생성일자 순 조회
     Slice<Curation> findAllByCategoryOrderByCreatedDateDesc(InterestCategory category, Pageable pageable);
 
