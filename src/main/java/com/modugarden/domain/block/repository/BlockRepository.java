@@ -16,4 +16,6 @@ public interface BlockRepository extends JpaRepository<UserBlock, Long> {
     Slice<UserBlock> findByUser_Id(Long id, Pageable pageable);
 
     Long deleteByUser(User user);
+    Boolean existsByUserAndBlockUser(User user, User blockUser);
+    Boolean existsByUser_IdAndBlockUser_Id(Long userId, Long blockUserId);
 }
