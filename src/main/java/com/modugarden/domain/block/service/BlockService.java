@@ -38,9 +38,14 @@ public class BlockService {
         blockRepository.save(userBlock);
 
         boardStorageRepository.deleteAllByUser_Id(user.getId(), blockUserId);
+        boardStorageRepository.deleteAllByUser_Id(blockUserId, user.getId());
+
         curationStorageRepository.deleteAllByUser_Id(user.getId(), blockUserId);
+        curationStorageRepository.deleteAllByUser_Id(blockUserId, user.getId());
+
         followRepository.deleteByUserAndFollowingUser(user, blockUser);
         followRepository.deleteByUserAndFollowingUser(blockUser, user);
+
         return new BlockUserResponseDto(userBlock.getUser().getId(), userBlock.getBlockUser().getId());
     }
 
