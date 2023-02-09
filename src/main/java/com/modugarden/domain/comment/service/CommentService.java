@@ -18,9 +18,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -34,7 +32,6 @@ public class CommentService {
         Slice<Comment> comments = commentRepository.findAllByBoard_IdOrderByCreatedDateAsc(boardId, pageable);
         Slice<CommentListResponseDto> result = comments
                 .map(c -> new CommentListResponseDto(c.getUser().getId(), c.getUser().getNickname(), c.getUser().getProfileImg(), c.getContent(), c.getId(), c.getParentId(), c.getCreatedDate()));
-
         return result;
     }
 
@@ -61,8 +58,8 @@ public class CommentService {
     public CommentDeleteResponseDto delete(User user, CommentDeleteRequestDto dto){
         Comment comment = commentRepository.findById(dto.getCommentId()).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_COMMENT));
 
-        if(comment.getParentId()==null) {// 부모 댓글인 경우
-            commentRepository.deleteByParentId(comment.getId()); // 부모 댓글아래 달린 자식 댓글들 모두 삭제
+        if(comment.getParentId()==null) { // 부모 댓글인 경우
+            commentRepository.deleteByParentId(comment.getId()); // 부모 댓글 아래 달린 자식 댓글들 모두 삭제
         }
 
         commentRepository.deleteById(comment.getId()); // 삭제 요청들어온 댓글 삭제
