@@ -2,7 +2,6 @@ package com.modugarden.domain.comment.service;
 
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
-import com.modugarden.domain.block.entity.UserBlock;
 import com.modugarden.domain.block.repository.BlockRepository;
 import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.board.repository.BoardRepository;
@@ -35,6 +34,7 @@ public class CommentService {
     //댓글 조회
     public Slice<CommentListResponseDto> readCommentList(Long boardId, User user, Pageable pageable){
         //로그인 한 사람 유저 아이디, 코멘트를 작성한 유저 아이디
+        //차단-사용자,댓글 쓴 사용자
         Slice<Comment> comments = commentRepository.findAllByBoard_IdOrderByCreatedDateAsc(boardId, pageable);
         Slice<CommentListResponseDto> result = comments
                 .map(c -> new CommentListResponseDto(c.getUser().getId(), c.getUser().getNickname(), c.getUser().getProfileImg(), c.getContent(), c.getId(), c.getParentId(), c.getCreatedDate(), blockRepository.existsByUserAndBlockUser(user,c.getUser()),blockRepository.existsByUserAndBlockUser(c.getUser(),user)));
