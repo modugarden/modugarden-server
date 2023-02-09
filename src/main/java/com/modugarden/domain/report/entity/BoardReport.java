@@ -1,5 +1,6 @@
 package com.modugarden.domain.report.entity;
 
+import com.modugarden.common.entity.BaseTimeEntity;
 import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.report.entity.enums.ReportType;
 import com.modugarden.domain.user.entity.User;
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class BoardReport {
+public class BoardReport extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
