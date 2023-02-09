@@ -7,7 +7,6 @@ import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 import com.modugarden.domain.curation.dto.request.CurationCreateRequestDto;
-import com.modugarden.domain.curation.dto.request.CurationLikeRequestDto;
 import com.modugarden.domain.curation.dto.response.*;
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.curation.repository.CurationRepository;
@@ -16,7 +15,7 @@ import com.modugarden.domain.like.entity.LikeCuration;
 import com.modugarden.domain.like.repository.LikeCurationRepository;
 import com.modugarden.domain.report.repository.ReportCurationRepository;
 import com.modugarden.domain.storage.entity.CurationStorage;
-import com.modugarden.domain.storage.entity.repository.CurationStorageRepository;
+import com.modugarden.domain.storage.repository.CurationStorageRepository;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -105,7 +104,7 @@ public class CurationService {
 
     //제목별 큐레이션 검색
     public Slice<CurationSearchResponseDto> searchCuration(String title, Pageable pageable) {
-        Slice<Curation> SearchCurationList = curationRepository.findAllByTitleLikeOrderByCreatedDateDesc('%' + title + '%', pageable);
+        Slice<Curation> SearchCurationList = curationRepository.querySearchCuration('%' + title + '%', pageable);
         if (SearchCurationList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
 
