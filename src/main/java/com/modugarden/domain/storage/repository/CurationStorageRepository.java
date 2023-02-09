@@ -1,4 +1,4 @@
-package com.modugarden.domain.storage.entity.repository;
+package com.modugarden.domain.storage.repository;
 
 import com.modugarden.domain.curation.entity.Curation;
 import com.modugarden.domain.storage.entity.CurationStorage;
