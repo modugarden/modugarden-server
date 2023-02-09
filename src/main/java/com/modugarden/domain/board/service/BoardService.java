@@ -88,7 +88,8 @@ public class BoardService {
         }
 //        회원 권한 큐레이터로 변경!
         if(user.getUser().getAuthority().equals(UserAuthority.ROLE_GENERAL)) {
-            user.getUser().changeAuthority(UserAuthority.ROLE_CURATOR);
+            User currentUser = userRepository.findById(user.getUserId()).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+            currentUser.changeAuthority(UserAuthority.ROLE_CURATOR);
         }
         return new BoardCreateResponseDto(boardRepository.save(board).getId());
     }
