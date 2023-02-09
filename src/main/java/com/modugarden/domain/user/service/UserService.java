@@ -3,6 +3,7 @@ package com.modugarden.domain.user.service;
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.common.s3.FileService;
+import com.modugarden.domain.block.repository.BlockRepository;
 import com.modugarden.domain.board.repository.BoardRepository;
 import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.entity.UserInterestCategory;
@@ -39,14 +40,16 @@ public class UserService {
     private final CurationRepository curationRepository;
     private final UserInterestCategoryRepository userInterestCategoryRepository;
     private final InterestCategoryRepository interestCategoryRepository;
-
+    private final BlockRepository blockRepository;
 
     public Slice<UserNicknameFindResponseDto> findByNickname(Long userId, String nickname, Pageable pageable) {
         Slice<User> findUsers = userRepository.findByNicknameLike('%' + nickname + '%', pageable);
         Slice<UserNicknameFindResponseDto> result = findUsers
                 .map(u -> new UserNicknameFindResponseDto(u.getId(), u.getNickname(), u.getProfileImg()
                         , userRepository.readUserInterestCategory((u.getId()))
-                        , followRepository.exists(userId, u.getId())));
+                        , followRepository.exists(userId, u.getId())
+                        , blockRepository.existsByUser_IdAndBlockUser_Id(userId, u.getId())
+                        , blockRepository.existsByUser_IdAndBlockUser_Id(u.getId(), userId)));
         return result;
     }
 
@@ -93,7 +96,9 @@ public class UserService {
         return new UserInfoResponseDto(user.getId(), user.getNickname(), user.getAuthority(), user.getProfileImg(),
                 followRepository.countByFollowingUser_Id(userId),
                 boardRepository.countByUser_Id(userId) + curationRepository.countByUser_Id(userId),
-                categories, followRepository.exists(loginUserId, userId));
+                categories, followRepository.exists(loginUserId, userId),
+                blockRepository.existsByUser_IdAndBlockUser_Id(loginUserId,userId),
+                blockRepository.existsByUser_IdAndBlockUser_Id(userId, loginUserId));
     }
 
     @Transactional
