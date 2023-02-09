@@ -2,6 +2,8 @@ package com.modugarden.domain.comment.service;
 
 import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
+import com.modugarden.domain.block.entity.UserBlock;
+import com.modugarden.domain.block.repository.BlockRepository;
 import com.modugarden.domain.board.entity.Board;
 import com.modugarden.domain.board.repository.BoardRepository;
 import com.modugarden.domain.comment.dto.request.CommentCreateRequestDto;
@@ -12,6 +14,7 @@ import com.modugarden.domain.comment.dto.response.CommentListResponseDto;
 import com.modugarden.domain.comment.entity.Comment;
 import com.modugarden.domain.comment.repository.CommentRepository;
 import com.modugarden.domain.user.entity.User;
+import com.modugarden.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -26,12 +29,15 @@ import java.util.List;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
+    private final BlockRepository blockRepository;
+    private final UserRepository userRepository;
 
     //댓글 조회
     public Slice<CommentListResponseDto> readCommentList(Long boardId, User user, Pageable pageable){
+        //로그인 한 사람 유저 아이디, 코멘트를 작성한 유저 아이디
         Slice<Comment> comments = commentRepository.findAllByBoard_IdOrderByCreatedDateAsc(boardId, pageable);
         Slice<CommentListResponseDto> result = comments
-                .map(c -> new CommentListResponseDto(c.getUser().getId(), c.getUser().getNickname(), c.getUser().getProfileImg(), c.getContent(), c.getId(), c.getParentId(), c.getCreatedDate()));
+                .map(c -> new CommentListResponseDto(c.getUser().getId(), c.getUser().getNickname(), c.getUser().getProfileImg(), c.getContent(), c.getId(), c.getParentId(), c.getCreatedDate(), blockRepository.existsByUserAndBlockUser(user,c.getUser()),blockRepository.existsByUserAndBlockUser(c.getUser(),user)));
         return result;
     }
 
@@ -39,7 +45,6 @@ public class CommentService {
     @Transactional
     public CommentCreateResponseDto write(User user, Long boardId, CommentCreateRequestDto dto) {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
-
         Comment newComment;
         if (dto.getParentId()==null) { // 부모 댓글 작성, null 값 들어올 수 있음
             newComment = new Comment(dto.getContent(), null, board, user); // 부모 댓글인 경우, parentId = null
@@ -49,7 +54,6 @@ public class CommentService {
             newComment = new Comment(dto.getContent(), dto.getParentId(), board, user);
             commentRepository.save(newComment);
         }
-
         return new CommentCreateResponseDto(newComment.getUser().getId(), newComment.getUser().getNickname(), newComment.getUser().getProfileImg(), dto.getContent(), newComment.getId(), dto.getParentId(), newComment.getCreatedDate());
     }
 

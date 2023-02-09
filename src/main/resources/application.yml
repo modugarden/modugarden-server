@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local, security
+    active: dev, security
   mvc:
     pathmatch:
       matching-strategy: ant-path-matcher

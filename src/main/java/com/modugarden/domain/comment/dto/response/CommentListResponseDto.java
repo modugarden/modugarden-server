@@ -15,4 +15,6 @@ public class CommentListResponseDto {
     private Long commentId;
     private Long parentId;
     private LocalDateTime localDateTime;
+    private boolean block;  //차단했는지
+    private boolean isblocked;  //차단 당했는지
 }
