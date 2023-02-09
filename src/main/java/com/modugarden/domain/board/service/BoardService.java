@@ -261,6 +261,8 @@ public class BoardService {
     //팔로우 피드 조회
     public Slice<BoardFollowFeedResponseDto> getFollowFeed(ModugardenUser user, Pageable pageable){
         List<Long> userList = followRepository.listFindByFollowingUser_Id(user.getUserId(),pageable);
+        userList.add(user.getUserId());
+
         Slice<Board> boardSlice = boardRepository.findBoard(userList,pageable);
 
         return boardSlice
