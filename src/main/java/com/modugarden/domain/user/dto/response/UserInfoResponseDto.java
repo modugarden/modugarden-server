@@ -17,4 +17,6 @@ public class UserInfoResponseDto {
     private Long postCount;
     private List<String> categories;
     private boolean isFollow;
+    private boolean block;
+    private boolean isBlocked;
 }
