@@ -9,6 +9,7 @@ import com.modugarden.domain.block.entity.UserBlock;
 import com.modugarden.domain.block.repository.BlockRepository;
 import com.modugarden.domain.follow.repository.FollowRepository;
 import com.modugarden.domain.storage.entity.repository.BoardStorageRepository;
+import com.modugarden.domain.storage.entity.repository.CurationStorageRepository;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class BlockService {
     private final UserRepository userRepository;
     private final BoardStorageRepository boardStorageRepository;
     private final FollowRepository followRepository;
+    private final CurationStorageRepository curationStorageRepository;
 
     @Transactional
     public BlockUserResponseDto blockUser(User user, Long blockUserId) {
@@ -36,6 +38,7 @@ public class BlockService {
         blockRepository.save(userBlock);
 
         boardStorageRepository.deleteAllByUser_Id(user.getId(), blockUserId);
+        curationStorageRepository.deleteAllByUser_Id(user.getId(), blockUserId);
         followRepository.deleteByUserAndFollowingUser(user, blockUser);
         followRepository.deleteByUserAndFollowingUser(blockUser, user);
         return new BlockUserResponseDto(userBlock.getUser().getId(), userBlock.getBlockUser().getId());
