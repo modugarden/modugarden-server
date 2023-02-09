@@ -13,4 +13,6 @@ public class UserNicknameFindResponseDto {
     private String profileImage;
     private List<String> categories;
     private boolean isFollow;
+    private boolean block;
+    private boolean isBlocked;
 }

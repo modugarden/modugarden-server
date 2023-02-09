@@ -47,7 +47,9 @@ public class UserService {
         Slice<UserNicknameFindResponseDto> result = findUsers
                 .map(u -> new UserNicknameFindResponseDto(u.getId(), u.getNickname(), u.getProfileImg()
                         , userRepository.readUserInterestCategory((u.getId()))
-                        , followRepository.exists(userId, u.getId())));
+                        , followRepository.exists(userId, u.getId())
+                        , blockRepository.existsByUser_IdAndBlockUser_Id(userId, u.getId())
+                        , blockRepository.existsByUser_IdAndBlockUser_Id(u.getId(), userId)));
         return result;
     }
 
