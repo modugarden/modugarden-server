@@ -7,6 +7,9 @@ import com.modugarden.domain.block.dto.response.BlockUserResponseDto;
 import com.modugarden.domain.block.dto.response.UnBlockUserResponseDto;
 import com.modugarden.domain.block.entity.UserBlock;
 import com.modugarden.domain.block.repository.BlockRepository;
+import com.modugarden.domain.follow.repository.FollowRepository;
+import com.modugarden.domain.storage.entity.repository.BoardStorageRepository;
+import com.modugarden.domain.storage.entity.repository.CurationStorageRepository;
 import com.modugarden.domain.user.entity.User;
 import com.modugarden.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +27,25 @@ public class BlockService {
 
     private final BlockRepository blockRepository;
     private final UserRepository userRepository;
+    private final BoardStorageRepository boardStorageRepository;
+    private final FollowRepository followRepository;
+    private final CurationStorageRepository curationStorageRepository;
 
     @Transactional
     public BlockUserResponseDto blockUser(User user, Long blockUserId) {
         User blockUser = userRepository.findById(blockUserId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
         UserBlock userBlock = new UserBlock(user, blockUser);
         blockRepository.save(userBlock);
+
+        boardStorageRepository.deleteAllByUser_Id(user.getId(), blockUserId);
+        boardStorageRepository.deleteAllByUser_Id(blockUserId, user.getId());
+
+        curationStorageRepository.deleteAllByUser_Id(user.getId(), blockUserId);
+        curationStorageRepository.deleteAllByUser_Id(blockUserId, user.getId());
+
+        followRepository.deleteByUserAndFollowingUser(user, blockUser);
+        followRepository.deleteByUserAndFollowingUser(blockUser, user);
+
         return new BlockUserResponseDto(userBlock.getUser().getId(), userBlock.getBlockUser().getId());
     }
 
