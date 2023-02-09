@@ -23,7 +23,6 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@EnableJpaAuditing
 public class BoardController {
 
     private final BoardService boardService;

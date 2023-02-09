@@ -23,7 +23,6 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
-@EnableJpaAuditing
 public class CurationController {
 
     private final CurationService curationService;
