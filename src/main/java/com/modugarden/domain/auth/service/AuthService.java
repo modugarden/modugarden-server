@@ -4,6 +4,7 @@ import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.common.error.exception.custom.InvalidTokenException;
 import com.modugarden.common.error.exception.custom.LoginCancelException;
+import com.modugarden.common.s3.FileService;
 import com.modugarden.domain.auth.dto.request.IsEmailDuplicatedRequestDto;
 import com.modugarden.domain.auth.dto.request.TokenReissueRequestDto;
 import com.modugarden.domain.auth.dto.response.IsEmailDuplicatedResponseDto;
@@ -64,12 +65,12 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final BoardService boardService;
     private final CurationService curationService;
-
     private final BlockRepository blockRepository;
     private final ReportUserRepository reportUserRepository;
     private final FcmRepository fcmRepository;
     private final FollowRepository followRepository;
     private final CommentService commentService;
+    private final FileService fileService;
 
     /**
      * 회원 가입
@@ -145,8 +146,6 @@ public class AuthService {
             String refreshToken = tokenProvider.createRefreshToken(authentication);
             String expiration = tokenProvider.parseClaims(accessToken).getExpiration().toString();
 
-            System.out.println("일반 로그인 expiration = " + expiration);
-
             // 4. RefreshToken Redis에 저장
             String userEmail = authentication.getName();
             refreshTokenRepository.save(new RefreshToken(userEmail, refreshToken));
@@ -180,7 +179,7 @@ public class AuthService {
         // 암호화하기 전의 비번
         String password = socialLoginUser.getPassword();
 
-        // 비번 잠시 암호화했다가 나중에 다시 해제
+        // 비번 잠시 암호화했다가 나중에 다시 해제 -> userDetails의 getPassword를하면 암호화된 password를 가져옴
         socialLoginUser.encodePassword(passwordEncoder);
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(requestDto.getEmail(), password); // 이미 인증되었기 때문에 DB에 저장된 password 넣어줌
@@ -246,7 +245,7 @@ public class AuthService {
         // 3. access Token이 만료되지 않았다면, refresh Token이 탈취되었다고 판단하여 재로그인 필요 메세지 전달
         Date expiration = tokenProvider.parseClaims(requestDto.getAccessToken()).getExpiration();
 
-        if(!expiration.before(new Date())){ // 만료여부 체크 하는 거 헷갈림
+        if(!expiration.before(new Date())){
             throw new InvalidTokenException(WRONG_REISSUE_TOKEN_ACCESS);
         }
 
@@ -255,7 +254,6 @@ public class AuthService {
 
         // 5. Redis에서 user email을 기반으로 저장된 RefreshToken값을 가져옴
         RefreshToken redisRefreshToken = refreshTokenRepository.findById(userEmail).orElseThrow(() -> new BusinessException(WRONG_JWT_TOKEN));// accessToken속 정보와 일치하는 refreshToken이 존재하지 않음. 재 로그인 필요.
-       // System.out.println("redisRefreshToken = " + redisRefreshToken.getRefreshToken());
 
         if(!redisRefreshToken.getRefreshToken().equals(requestDto.getRefreshToken())){ // request로 받은 refreshToken과 redis에 저장된 refreshToken 비교
             throw new InvalidTokenException(WRONG_JWT_TOKEN);// refresh Token 정보가 일치하지 않습니다.
@@ -271,7 +269,6 @@ public class AuthService {
         // 7. RefreshToken Redis 업데이트(accessToken reissue시 refreshToken도 함께 재발급)
         refreshTokenRepository.delete(redisRefreshToken);
         refreshTokenRepository.save(new RefreshToken(userEmail, newRefreshToken));
-        System.out.println("newRefreshToken = " + newRefreshToken);
 
         // 8. 유저 이메일로 유저 가져오기
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
@@ -323,6 +320,11 @@ public class AuthService {
 
         // 유저 삭제
         userRepository.deleteById(user.getId());
+
+        // 유저 사진 S3에서 삭제
+        if(user.getProfileImg() != null){
+            fileService.deleteFile(user.getProfileImg());
+        }
 
         // 알림 삭제
         userNotificationRepository.delete(user.getNotification());
