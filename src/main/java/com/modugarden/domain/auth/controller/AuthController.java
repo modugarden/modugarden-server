@@ -72,7 +72,7 @@ public class AuthController {
         return new BaseResponseDto<>(userService2.isEmailDuplicate(requestDto));
     }
 
-    @Secured("ROLE_GENERAL")
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "내 프로필 - 설정 - 회원 탈퇴", notes = "현재 로그인한 유저 회원 탈퇴를 진행한다.")
     @DeleteMapping("/me")
     public BaseResponseDto<DeleteUserResponseDto> deleteCurrentUser(@AuthenticationPrincipal ModugardenUser modugardenUser){
