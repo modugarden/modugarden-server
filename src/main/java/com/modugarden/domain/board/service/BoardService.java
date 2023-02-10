@@ -141,8 +141,8 @@ public class BoardService {
     }
 
     //포스트 검색
-    public Slice<BoardSearchResponseDto> searchBoard(String title, Pageable pageable) {
-        Slice<Board> board = boardRepository.querySearchBoard('%' + title + '%', pageable);
+    public Slice<BoardSearchResponseDto> searchBoard(User user, String title, Pageable pageable) {
+        Slice<Board> board = boardRepository.querySearchBoard('%' + title + '%', pageable, user.getId());
 
         if (board.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_BOARD_LIST);

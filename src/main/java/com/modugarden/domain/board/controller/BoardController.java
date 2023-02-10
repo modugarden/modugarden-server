@@ -72,10 +72,11 @@ public class BoardController {
     }
 
     //제목 포스트 검색 api
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "탐색 피드 - 제목 포스트 검색", notes = "제목 으로 포스트 검색")
     @GetMapping("/boards/search")
-    public SliceResponseDto<BoardSearchResponseDto> searchBoard(@RequestParam @Size(max=50) String title, Pageable pageable) {
-        return new SliceResponseDto<>(boardService.searchBoard(title, pageable));
+    public SliceResponseDto<BoardSearchResponseDto> searchBoard(@RequestParam @Size(max=50) String title, Pageable pageable, @AuthenticationPrincipal ModugardenUser user) {
+        return new SliceResponseDto<>(boardService.searchBoard(user.getUser(), title, pageable));
     }
 
     //카테고리,날짜별 큐레이션 조회 api
