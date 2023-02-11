@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,9 +24,7 @@ public interface CurationStorageRepository extends JpaRepository<CurationStorage
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM CurationStorage cs \n" +
-            "WHERE :user_id = cs.user.id and cs IN \n" +
-            "(SELECT cs2 FROM CurationStorage cs2 \n" +
-            "LEFT JOIN cs2.curation c \n" +
-            "WHERE :block_user_id = c.user.id)")
+            "WHERE :user_id = cs.user.id and cs.curation.id IN" +
+            "(SELECT c.id FROM Curation c where c.user.id = :block_user_id)")
     void deleteAllByUser_Id(@Param("user_id") Long user_id, @Param("block_user_id") Long block_user_id);
 }

@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 public interface BoardStorageRepository extends JpaRepository<BoardStorage, Long> {
@@ -24,9 +25,7 @@ public interface BoardStorageRepository extends JpaRepository<BoardStorage, Long
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM BoardStorage bs \n" +
-            "WHERE :user_id = bs.user.id and bs IN \n" +
-            "(SELECT bs2 FROM BoardStorage bs2 \n" +
-            "LEFT JOIN bs2.board b \n" +
-            "WHERE :block_user_id = b.user.id)")
+            "WHERE bs.user.id = :user_id and bs.board.id in " +
+            "(SELECT b.id FROM Board b where b.user.id = :block_user_id)")
     void deleteAllByUser_Id(@Param("user_id") Long user_id, @Param("block_user_id") Long block_user_id);
 }
