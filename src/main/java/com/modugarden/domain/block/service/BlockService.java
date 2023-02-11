@@ -61,7 +61,7 @@ public class BlockService {
         Slice<UserBlock> findUserBlocks = blockRepository.findByUser_Id(user.getId(), pageable);
         Slice<BlockUserListResponseDto> result = findUserBlocks
                 .map(b -> new BlockUserListResponseDto(b.getBlockUser().getId(), b.getBlockUser().getNickname()
-                        ,b.getBlockUser().getProfileImg(), userRepository.readUserInterestCategory(b.getId())));
+                        ,b.getBlockUser().getProfileImg(), userRepository.readUserInterestCategory(b.getBlockUser().getId())));
         return result;
     }
 }
