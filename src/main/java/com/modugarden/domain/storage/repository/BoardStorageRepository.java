@@ -25,8 +25,8 @@ public interface BoardStorageRepository extends JpaRepository<BoardStorage, Long
     @Transactional
     @Query(value = "DELETE FROM BoardStorage bs \n" +
             "WHERE :user_id = bs.user.id and bs IN \n" +
-            "(SELECT bs FROM BoardStorage bs \n" +
-            "LEFT JOIN bs.board b \n" +
+            "(SELECT bs2 FROM BoardStorage bs2 \n" +
+            "LEFT JOIN bs2.board b \n" +
             "WHERE :block_user_id = b.user.id)")
     void deleteAllByUser_Id(@Param("user_id") Long user_id, @Param("block_user_id") Long block_user_id);
 }

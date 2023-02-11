@@ -24,8 +24,8 @@ public interface CurationStorageRepository extends JpaRepository<CurationStorage
     @Transactional
     @Query(value = "DELETE FROM CurationStorage cs \n" +
             "WHERE :user_id = cs.user.id and cs IN \n" +
-            "(SELECT cs FROM CurationStorage cs \n" +
-            "LEFT JOIN cs.curation c \n" +
+            "(SELECT cs2 FROM CurationStorage cs2 \n" +
+            "LEFT JOIN cs2.curation c \n" +
             "WHERE :block_user_id = c.user.id)")
     void deleteAllByUser_Id(@Param("user_id") Long user_id, @Param("block_user_id") Long block_user_id);
 }
