@@ -13,4 +13,5 @@ public class FollowersResponseDto {
     private String profileImage;
     private List<String> categories;
     private boolean isFollow;
+    private List<String> fcmTokens;
 }
