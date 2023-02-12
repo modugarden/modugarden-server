@@ -19,11 +19,12 @@ public interface CurationRepository extends JpaRepository<Curation, Long> {
     //회원 id로 조회
     Page<Curation> findAllByUser_IdOrderByCreatedDateDesc(Long user_id, Pageable pageable);
 
-    @Query(value = "SELECT bo FROM Curation bo \n" +
-            "            LEFT OUTER JOIN UserBlock bs ON bo.user.id = bs.blockUser.id\n" +
-            "            WHERE bs.user.id is null and bo.title like :title"+
-            "           order by bo.createdDate desc")
-    Slice<Curation> querySearchCuration(String title, Pageable pageable);
+    @Query("select c from Curation c " +
+            "           where c.user.id not in (select ub.blockUser.id from UserBlock ub where ub.user.id = :user_id)" +
+            "           and c.user.id not in (select ub.user.id from UserBlock ub where ub.blockUser.id = :user_id)" +
+            "           and c.title like :title"+
+            "           order by c.createdDate desc")
+    Slice<Curation> querySearchCuration(String title, Pageable pageable, @Param("user_id") Long user_id);
     //카테고리로 생성일자 순 조회
     Slice<Curation> findAllByCategoryOrderByCreatedDateDesc(InterestCategory category, Pageable pageable);
 

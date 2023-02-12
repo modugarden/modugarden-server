@@ -65,6 +65,11 @@ public class UserService {
     public UpdateProfileResponseDto updateUserInfo(Long userId, MultipartFile file, UpdateProfileRequestDto updateProfileRequestDto) throws IOException {
         if(updateProfileRequestDto.getCategories().isEmpty()) throw new BusinessException(ErrorMessage.WRONG_CATEGORY);
         User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+
+        if(user.getProfileImg() != null){
+            fileService.deleteFile(user.getProfileImg());
+        }
+
         String userNickname = updateProfileRequestDto.getNickname().toLowerCase();
         String profileImageUrl = fileService.uploadFile(file, userId, "profileImage");
         user.updateUserInfo(userNickname, profileImageUrl);

@@ -103,8 +103,8 @@ public class CurationService {
     }
 
     //제목별 큐레이션 검색
-    public Slice<CurationSearchResponseDto> searchCuration(String title, Pageable pageable) {
-        Slice<Curation> SearchCurationList = curationRepository.querySearchCuration('%' + title + '%', pageable);
+    public Slice<CurationSearchResponseDto> searchCuration(String title, Pageable pageable, Long userId) {
+        Slice<Curation> SearchCurationList = curationRepository.querySearchCuration('%' + title + '%', pageable, userId);
         if (SearchCurationList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_CURATION_LIST);
 

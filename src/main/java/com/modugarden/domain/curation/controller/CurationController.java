@@ -73,8 +73,8 @@ public class CurationController {
     //제목 큐레이션 검색 api
     @ApiOperation(value = "탐색 피드 - 제목 큐레이션 검색", notes = "제목 으로 큐레이션 검색")
     @GetMapping("/curations/search")
-    public SliceResponseDto<CurationSearchResponseDto> searchCuration(@RequestParam @Size(max=50) String title, Pageable pageable) {
-        return new SliceResponseDto<>(curationService.searchCuration(title, pageable));
+    public SliceResponseDto<CurationSearchResponseDto> searchCuration(@RequestParam @Size(max=50) String title, Pageable pageable, @AuthenticationPrincipal ModugardenUser user) {
+        return new SliceResponseDto<>(curationService.searchCuration(title, pageable, user.getUserId()));
     }
 
     //카테고리,날짜별 큐레이션 조회 api
