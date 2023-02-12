@@ -62,7 +62,7 @@ public class UserService {
     }
 
     @Transactional
-    public UpdateProfileResponseDto updateUserInfo(Long userId, MultipartFile file, UpdateProfileRequestDto updateProfileRequestDto) throws IOException {
+    public UpdateInfoResponseDto updateUserInfo(Long userId, MultipartFile file, UpdateProfileRequestDto updateProfileRequestDto) throws IOException {
         if(updateProfileRequestDto.getCategories().isEmpty()) throw new BusinessException(ErrorMessage.WRONG_CATEGORY);
         User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
 
@@ -85,7 +85,28 @@ public class UserService {
             categories.add(category);
             userInterestCategoryRepository.save(userInterestCategory);
         }
-        return new UpdateProfileResponseDto(userId, userNickname, user.getProfileImg(), categories);
+        return new UpdateInfoResponseDto(userId, user.getNickname(), user.getProfileImg(), categories);
+    }
+
+    @Transactional
+    public UpdateProfileResponseDto updateUserProfile(Long userId, UpdateProfileRequestDto updateProfileRequestDto) {
+        if(updateProfileRequestDto.getCategories().isEmpty()) throw new BusinessException(ErrorMessage.WRONG_CATEGORY);
+        User user = userRepository.findById(userId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+        String userNickname = updateProfileRequestDto.getNickname().toLowerCase();
+        user.updateUserProfile(userNickname);
+
+        userInterestCategoryRepository.deleteAllByUser(user);
+        List<String> categories = new ArrayList<>();
+        for (String category: updateProfileRequestDto.getCategories()) {
+            InterestCategory interestCategory = interestCategoryRepository.findByCategory(category).get();
+            UserInterestCategory userInterestCategory = UserInterestCategory.builder()
+                    .user(user)
+                    .category(interestCategory)
+                    .build();
+            categories.add(category);
+            userInterestCategoryRepository.save(userInterestCategory);
+        }
+        return new UpdateProfileResponseDto(userId, user.getNickname(), categories);
     }
 
     public UserSettingInfoResponseDto readUserSettingInfo(User user) {
@@ -123,4 +144,5 @@ public class UserService {
         return new UserNotificationResponseDto(currentUser.getId(), userNotification.getCommentOnOff()
                 , userNotification.getFollowOnOff(), userNotification.getServiceOnOff(), userNotification.getMarketingOnOff());
     }
+
 }
