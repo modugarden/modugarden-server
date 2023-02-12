@@ -3,10 +3,7 @@ package com.modugarden.domain.follow.controller;
 import com.modugarden.common.response.BaseResponseDto;
 import com.modugarden.common.response.SliceResponseDto;
 import com.modugarden.domain.auth.entity.ModugardenUser;
-import com.modugarden.domain.follow.dto.FollowRecommendResponseDto;
-import com.modugarden.domain.follow.dto.FollowersResponseDto;
-import com.modugarden.domain.follow.dto.FollowingsResponseDto;
-import com.modugarden.domain.follow.dto.isFollowedResponseDto;
+import com.modugarden.domain.follow.dto.*;
 import com.modugarden.domain.follow.service.FollowService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,13 +46,13 @@ public class FollowController {
     //내 팔로워 명단조회
     @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @GetMapping("/me/follower")
-    public SliceResponseDto<FollowersResponseDto> meFollowerList(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+    public SliceResponseDto<meFollowersResponseDto> meFollowerList(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
         return new SliceResponseDto<>(followService.meFollowerList(user.getUserId(), pageable));
     }
     //내 팔로잉 명단조회
     @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @GetMapping("/me/following")
-    public SliceResponseDto<FollowingsResponseDto> meFollowingList( @AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
+    public SliceResponseDto<meFollowingsResponseDto> meFollowingList(@AuthenticationPrincipal ModugardenUser user, Pageable pageable) {
         return new SliceResponseDto<>(followService.meFollowingList(user.getUserId(), pageable));
     }
 

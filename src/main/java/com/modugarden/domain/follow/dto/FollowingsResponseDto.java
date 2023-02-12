@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
+
 @AllArgsConstructor
 @Getter
 public class FollowingsResponseDto {
@@ -12,4 +13,5 @@ public class FollowingsResponseDto {
     private String profileImage;
     private List<String> categories;
     private boolean isFollow;
+    private List<String> fcmTokens;
 }

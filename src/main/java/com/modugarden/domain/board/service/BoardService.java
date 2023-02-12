@@ -15,6 +15,8 @@ import com.modugarden.domain.category.entity.InterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 
 import com.modugarden.domain.comment.repository.CommentRepository;
+import com.modugarden.domain.fcm.entity.FcmToken;
+import com.modugarden.domain.fcm.repository.FcmRepository;
 import com.modugarden.domain.follow.repository.FollowRepository;
 import com.modugarden.domain.like.entity.LikeBoard;
 import com.modugarden.domain.like.repository.LikeBoardRepository;
@@ -33,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +52,7 @@ public class BoardService {
     private final CommentRepository commentRepository;
     private final ReportBoardRepository reportBoardRepository;
     private final BlockRepository blockRepository;
+    private final FcmRepository fcmRepository;
     //포스트 생성
     @Transactional
     public BoardCreateResponseDto createBoard(BoardCreateRequestDto boardCreateRequestDto, List<MultipartFile> file, ModugardenUser user) throws IOException {
@@ -125,8 +129,9 @@ public class BoardService {
     public BoardGetResponseDto getBoard(long id, ModugardenUser user) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
         List<BoardImage> imageList = boardImageRepository.findAllByBoard(board);
-
-        return new BoardGetResponseDto(board,imageList,likeBoardRepository.findByUserAndBoard(user.getUser(), board).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), board).isPresent(),followRepository.exists(user.getUserId(), board.getUser().getId()));
+        List<FcmToken> fcmTokens = fcmRepository.findByUser(board.getUser());
+        List<String> result = fcmTokens.stream().map(fcm -> fcm.getFcmToken()).collect(Collectors.toList());
+        return new BoardGetResponseDto(board,imageList,likeBoardRepository.findByUserAndBoard(user.getUser(), board).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), board).isPresent(),followRepository.exists(user.getUserId(), board.getUser().getId()), result);
     }
 
     //회원 포스트 조회
@@ -268,7 +273,7 @@ public class BoardService {
         Slice<Board> boardSlice = boardRepository.findBoard(userList,pageable);
 
         return boardSlice
-                .map(b -> new BoardFollowFeedResponseDto(b,boardImageRepository.findAllByBoard(b),likeBoardRepository.findByUserAndBoard(user.getUser(), b).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), b).isPresent()));
+                .map(b -> new BoardFollowFeedResponseDto(b,boardImageRepository.findAllByBoard(b),likeBoardRepository.findByUserAndBoard(user.getUser(), b).isPresent(),boardStorageRepository.findByUserAndBoard(user.getUser(), b).isPresent(), fcmRepository.findByUser(b.getUser()).stream().map(fcm -> fcm.getFcmToken()).collect(Collectors.toList())));
     }
 
     // 해당 유저의 모든 포스트 삭제

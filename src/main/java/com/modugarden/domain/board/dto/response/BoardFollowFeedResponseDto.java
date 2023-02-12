@@ -23,8 +23,9 @@ public class BoardFollowFeedResponseDto {
     private String category_category;
     private boolean isLiked;
     private boolean isSaved;
+    private List<String> fcmTokens;
 
-    public BoardFollowFeedResponseDto(Board board, List<BoardImage> image, boolean like, boolean save) {
+    public BoardFollowFeedResponseDto(Board board, List<BoardImage> image, boolean like, boolean save, List<String> fcmTokens) {
         this.board_id = board.getId();
         this.title=board.getTitle();
         this.created_Date=board.getCreatedDate();
@@ -35,5 +36,6 @@ public class BoardFollowFeedResponseDto {
         this.category_category=board.getCategory().getCategory();
         this.isLiked=like;
         this.isSaved=save;
+        this.fcmTokens = fcmTokens;
     }
 }
