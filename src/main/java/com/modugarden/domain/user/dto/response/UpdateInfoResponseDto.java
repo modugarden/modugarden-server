@@ -7,8 +7,9 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class UpdateProfileResponseDto {
+public class UpdateInfoResponseDto {
     private Long id;
     private String nickname;
+    private String profileImage;
     private List<String> categories;
 }
