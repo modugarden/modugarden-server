@@ -25,8 +25,9 @@ public class BoardGetResponseDto {
     private Boolean isliked;
     private Boolean isSaved;
     private Boolean isFollowed;
+    private List<String> fcmTokens;
 
-    public BoardGetResponseDto(Board board, List<BoardImage> image,Boolean isliked, Boolean isSaved,Boolean isFollowed) {
+    public BoardGetResponseDto(Board board, List<BoardImage> image,Boolean isliked, Boolean isSaved, Boolean isFollowed, List<String> fcmTokens) {
         this.id=board.getId();
         this.title=board.getTitle();
         this.created_Date=board.getCreatedDate();
@@ -39,6 +40,7 @@ public class BoardGetResponseDto {
         this.isliked=isliked;
         this.isSaved=isSaved;
         this.isFollowed=isFollowed;
+        this.fcmTokens=fcmTokens;
     }
 }
 
