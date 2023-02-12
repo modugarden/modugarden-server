@@ -63,10 +63,18 @@ public class UserController {
     @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
     @ApiOperation(value = "내 프로필 - 프로필 설정", notes = "내 프로필 - 프로필 설정에서 닉네임, 사진, 카테고리를 변경한다.")
     @PatchMapping(value = "/me/setting-info", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public BaseResponseDto<UpdateProfileResponseDto> updateUserInfo(@RequestPart @Valid UpdateProfileRequestDto updateProfileRequestDto,
-                                                                    @RequestPart(name = "file", required = false) MultipartFile file,
-                                                                    @AuthenticationPrincipal ModugardenUser user) throws IOException {
+    public BaseResponseDto<UpdateInfoResponseDto> updateUserInfo(@RequestPart @Valid UpdateProfileRequestDto updateProfileRequestDto,
+                                                                 @RequestPart(name = "file", required = false) MultipartFile file,
+                                                                 @AuthenticationPrincipal ModugardenUser user) throws IOException {
         return new BaseResponseDto<>(userService.updateUserInfo(user.getUserId(), file, updateProfileRequestDto));
+    }
+
+    @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
+    @ApiOperation(value = "내 프로필 - 프로필 설정", notes = "내 프로필 - 프로필 설정에서 닉네임, 카테고리를 변경한다.")
+    @PatchMapping(value = "/me/setting-profile")
+    public BaseResponseDto<UpdateProfileResponseDto> updateUserProfile(@RequestPart @Valid UpdateProfileRequestDto updateProfileRequestDto,
+                                                                    @AuthenticationPrincipal ModugardenUser user) {
+        return new BaseResponseDto<>(userService.updateUserProfile(user.getUserId(), updateProfileRequestDto));
     }
 
     @Secured({"ROLE_GENERAL", "ROLE_CURATOR"})
