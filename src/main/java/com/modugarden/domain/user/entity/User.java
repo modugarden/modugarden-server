@@ -69,4 +69,6 @@ public class User extends BaseTimeEntity {
     }
 
     public void changeAuthority(UserAuthority authority) { this.authority = authority;}
+
+    public void updateUserProfile(String nickname) { this.nickname = nickname; }
 }
