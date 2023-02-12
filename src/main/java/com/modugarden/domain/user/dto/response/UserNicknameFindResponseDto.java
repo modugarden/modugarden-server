@@ -15,4 +15,5 @@ public class UserNicknameFindResponseDto {
     private boolean isFollow;
     private boolean block;
     private boolean isBlocked;
+    private List<String> fcmTokens;
 }

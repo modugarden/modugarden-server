@@ -10,6 +10,7 @@ import com.modugarden.domain.category.entity.UserInterestCategory;
 import com.modugarden.domain.category.repository.InterestCategoryRepository;
 import com.modugarden.domain.category.repository.UserInterestCategoryRepository;
 import com.modugarden.domain.curation.repository.CurationRepository;
+import com.modugarden.domain.fcm.repository.FcmRepository;
 import com.modugarden.domain.follow.repository.FollowRepository;
 import com.modugarden.domain.user.dto.request.UpdateNotificationRequestDto;
 import com.modugarden.domain.user.dto.request.UpdateProfileRequestDto;
@@ -27,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -41,6 +43,7 @@ public class UserService {
     private final UserInterestCategoryRepository userInterestCategoryRepository;
     private final InterestCategoryRepository interestCategoryRepository;
     private final BlockRepository blockRepository;
+    private final FcmRepository fcmRepository;
 
     public Slice<UserNicknameFindResponseDto> findByNickname(Long userId, String nickname, Pageable pageable) {
         Slice<User> findUsers = userRepository.findByNicknameLike('%' + nickname + '%', pageable);
@@ -49,7 +52,8 @@ public class UserService {
                         , userRepository.readUserInterestCategory((u.getId()))
                         , followRepository.exists(userId, u.getId())
                         , blockRepository.existsByUser_IdAndBlockUser_Id(userId, u.getId())
-                        , blockRepository.existsByUser_IdAndBlockUser_Id(u.getId(), userId)));
+                        , blockRepository.existsByUser_IdAndBlockUser_Id(u.getId(), userId)
+                        , fcmRepository.findByUser(u).stream().map(fcm -> fcm.getFcmToken()).collect(Collectors.toList())));
         return result;
     }
 
@@ -124,7 +128,8 @@ public class UserService {
                 boardRepository.countByUser_Id(userId) + curationRepository.countByUser_Id(userId),
                 categories, followRepository.exists(loginUserId, userId),
                 blockRepository.existsByUser_IdAndBlockUser_Id(loginUserId,userId),
-                blockRepository.existsByUser_IdAndBlockUser_Id(userId, loginUserId));
+                blockRepository.existsByUser_IdAndBlockUser_Id(userId, loginUserId),
+                fcmRepository.findByUser(user).stream().map(fcm -> fcm.getFcmToken()).collect(Collectors.toList()));
     }
 
     @Transactional

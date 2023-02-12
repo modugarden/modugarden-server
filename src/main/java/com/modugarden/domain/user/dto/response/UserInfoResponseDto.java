@@ -19,4 +19,5 @@ public class UserInfoResponseDto {
     private boolean isFollow;
     private boolean block;
     private boolean isBlocked;
+    private List<String> fcmTokens;
 }
