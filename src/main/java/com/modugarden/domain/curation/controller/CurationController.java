@@ -80,8 +80,8 @@ public class CurationController {
     //카테고리,날짜별 큐레이션 조회 api
     @ApiOperation(value = "탐색 피드 - 카테고리 별 큐레이션 검색", notes = "카테고리별로 큐레이션 검색")
     @GetMapping("/curations")
-    public SliceResponseDto<CurationSearchResponseDto> getFeedCuration(@RequestParam String category, Pageable pageable) {
-        return new SliceResponseDto<>(curationService.getFeed(category, pageable));
+    public SliceResponseDto<CurationSearchResponseDto> getFeedCuration(@AuthenticationPrincipal ModugardenUser user, @RequestParam String category, Pageable pageable) {
+        return new SliceResponseDto<>(curationService.getFeed(user.getUser(), category, pageable));
     }
 
     //큐레이션 좋아요 개수 조회 api
