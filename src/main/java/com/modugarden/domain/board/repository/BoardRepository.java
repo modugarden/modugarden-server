@@ -31,7 +31,12 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
 
     //카테고리로 생성일자 순 조회
-    Slice<Board> findAllByCategoryOrderByCreatedDateDesc(InterestCategory category, Pageable pageable);
+    @Query("select b from Board b " +
+            "           where b.user.id not in (select ub.blockUser.id from UserBlock ub where ub.user.id = :user_id)" +
+            "           and b.user.id not in (select ub.user.id from UserBlock ub where ub.blockUser.id = :user_id)" +
+            "           and :category = b.category" +
+            "           order by b.createdDate desc")
+    Slice<Board> querySearchBoardByCategory(@Param("user_id") Long user_id, @Param("category") InterestCategory category, Pageable pageable);
 
     @Query(value = "SELECT bo FROM Board bo \n" +
             "            LEFT JOIN BoardStorage bs ON bo.id = bs.board.id\n" +

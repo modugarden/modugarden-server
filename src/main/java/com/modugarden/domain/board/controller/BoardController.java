@@ -82,8 +82,8 @@ public class BoardController {
     //카테고리,날짜별 큐레이션 조회 api
     @ApiOperation(value = "탐색 피드 - 카테고리 별 포스트 검색", notes = "카테고리별로 포스트 검색")
     @GetMapping("/boards")
-    public SliceResponseDto<BoardSearchResponseDto> getFeedBoard(@RequestParam String category, Pageable pageable) {
-        return new SliceResponseDto<>(boardService.getFeed(category, pageable));
+    public SliceResponseDto<BoardSearchResponseDto> getFeedBoard(@AuthenticationPrincipal ModugardenUser user, @RequestParam String category, Pageable pageable) {
+        return new SliceResponseDto<>(boardService.getFeed(user.getUser(), category, pageable));
     }
 
 

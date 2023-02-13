@@ -156,9 +156,9 @@ public class BoardService {
     }
 
     //카테고리,날짜별 포스트 조회
-    public Slice<BoardSearchResponseDto> getFeed(String category, Pageable pageable) {
+    public Slice<BoardSearchResponseDto> getFeed(User user, String category, Pageable pageable) {
         InterestCategory interestCategory = interestCategoryRepository.findByCategory(category).get();
-        Slice<Board> getFeedBoardList = boardRepository.findAllByCategoryOrderByCreatedDateDesc(interestCategory, pageable);
+        Slice<Board> getFeedBoardList = boardRepository.querySearchBoardByCategory(user.getId(),interestCategory, pageable);
 
         if (getFeedBoardList.isEmpty())
             throw new BusinessException(ErrorMessage.WRONG_BOARD_LIST);
