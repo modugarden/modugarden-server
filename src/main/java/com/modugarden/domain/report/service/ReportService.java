@@ -75,6 +75,8 @@ public class ReportService {
 
     public ReportBoardResponseDto reportBoard(User user, Long boardId, String type) {
         Board reportBoard = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
+        if(reportBoardRepository.existsByUserAndReportBoard(user, reportBoard))
+            throw new BusinessException(ErrorMessage.ALREADY_REPORT_BOARD);
         ReportType reportType = ReportType.from(type);
         BoardReport boardReport = new BoardReport(reportType, reportBoard, user);
         reportBoardRepository.save(boardReport);
