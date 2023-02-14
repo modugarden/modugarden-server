@@ -60,6 +60,7 @@ public enum ErrorMessage {
 
     // FOLLOW
     FOLLOW_NOT_FOUND(NOT_FOUND, false, "팔로잉을 찾을 수 없습니다."),
+    ALREADY_FOLLOWED(BAD_REQUEST, false, "이미 팔로잉되어있는 사람입니다."),
 
     // COMMENT
     COMMENT_NOT_FOUND(NOT_FOUND, false, "댓글을 찾을 수 없습니다"),
