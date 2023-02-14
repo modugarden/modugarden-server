@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ReportUserRepository extends JpaRepository<UserReport, Long> {
 
     Long deleteByUser(User user);
+    Boolean existsByUserAndReportUser(User user, User reportUser);
 }

@@ -46,6 +46,8 @@ public class ReportService {
 
     public ReportUserResponseDto reportUser(User user, Long reportUserId) {
         User reportUser = userRepository.findById(reportUserId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+        if(reportUserRepository.existsByUserAndReportUser(user,reportUser))
+            throw new BusinessException(ErrorMessage.ALREADY_REPORT_USER);
         UserReport userReport = new UserReport(user, reportUser);
         reportUserRepository.save(userReport);
         return new ReportUserResponseDto(userReport.getUser().getId(), userReport.getReportUser().getId());
