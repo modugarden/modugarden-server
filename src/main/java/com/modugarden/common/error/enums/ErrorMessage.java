@@ -32,6 +32,7 @@ public enum ErrorMessage {
     WRONG_REISSUE_TOKEN_ACCESS(BAD_REQUEST, false, "RefreshToken 탈취가 의심됩니다. 재 로그인해주세요."),
     FCM_TOKEN_NOT_FOUND(BAD_REQUEST, false, "해당 FCM 토큰이 없습니다."),
     WRONG_CATEGORY(BAD_REQUEST, false, "카테고리를 입력해야 합니다."),
+    ALREADY_REPORT_USER(BAD_REQUEST, false, "이미 신고한 회원입니다."),
 
 
     // POST
@@ -40,6 +41,7 @@ public enum ErrorMessage {
     WRONG_BOARD_FILE(NOT_FOUND,false,"해당 포스트 파일을 찾을 수 없습니다."),
     WRONG_BOARD_DELETE(NOT_FOUND,false,"해당 포스트를 삭제할 수 없습니다."),
     WRONG_BOARD_STORAGE(NOT_FOUND,false,"이미 포스트가 저장되어 있습니다."),
+    ALREADY_REPORT_BOARD(BAD_REQUEST, false, "이미 신고한 포스트입니다."),
 
 
     // CURATION
@@ -48,6 +50,7 @@ public enum ErrorMessage {
     WRONG_CURATION_FILE(NOT_FOUND,false,"큐레이션 이미지 파일을 찾을 수 없습니다."),
     WRONG_CURATION_DELETE(NOT_FOUND,false,"해당 큐레이션을 삭제할 수 없습니다."),
     WRONG_CURATION_STORAGE(NOT_FOUND,false,"이미 큐레이션이 저장되어 있습니다."),
+    ALREADY_REPORT_CURATION(BAD_REQUEST, false, "이미 신고한 큐레이션입니다."),
 
     // JWT
     WRONG_JWT_SIGNITURE(NOT_FOUND, false, "잘못된 JWT 서명입니다."),
@@ -62,6 +65,7 @@ public enum ErrorMessage {
     COMMENT_NOT_FOUND(NOT_FOUND, false, "댓글을 찾을 수 없습니다"),
     WRONG_COMMENT(NOT_FOUND,false,"해당 댓글을 찾을 수 없습니다."),
     WRONG_PARENT_COMMENT_ID(BAD_REQUEST, false, "올바르지 않은 부모 댓글 입니다."),
+    ALREADY_REPORT_COMMENT(BAD_REQUEST, false, "이미 신고한 댓글입니다."),
 
     // LIKE
     ALREADY_LIKED_BOARD(BAD_REQUEST, false, "이미 좋아요한 게시물입니다."),

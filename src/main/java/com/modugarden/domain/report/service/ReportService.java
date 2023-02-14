@@ -46,6 +46,8 @@ public class ReportService {
 
     public ReportUserResponseDto reportUser(User user, Long reportUserId) {
         User reportUser = userRepository.findById(reportUserId).orElseThrow(() -> new BusinessException(ErrorMessage.USER_NOT_FOUND));
+        if(reportUserRepository.existsByUserAndReportUser(user,reportUser))
+            throw new BusinessException(ErrorMessage.ALREADY_REPORT_USER);
         UserReport userReport = new UserReport(user, reportUser);
         reportUserRepository.save(userReport);
         return new ReportUserResponseDto(userReport.getUser().getId(), userReport.getReportUser().getId());
@@ -53,6 +55,8 @@ public class ReportService {
 
     public ReportCommentResponseDto reportComment(User user, Long reportCommentId, String type) {
         Comment reportComment = commentRepository.findById(reportCommentId).orElseThrow(() -> new BusinessException(ErrorMessage.COMMENT_NOT_FOUND));
+        if(reportCommentRepository.existsByUserAndReportComment(user, reportComment))
+            throw new BusinessException(ErrorMessage.ALREADY_REPORT_COMMENT);
         ReportType reportType = ReportType.from(type);
         CommentReport commentReport = new CommentReport(reportType, reportComment, user);
         reportCommentRepository.save(commentReport);
@@ -61,6 +65,8 @@ public class ReportService {
 
     public ReportCurationResponseDto reportCuration(User user, Long curationId, String type) {
         Curation reportCuration = curationRepository.findById(curationId).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+        if(reportCurationRepository.existsByUserAndReportCuration(user, reportCuration))
+            throw new BusinessException(ErrorMessage.ALREADY_REPORT_CURATION);
         ReportType reportType = ReportType.from(type);
         CurationReport curationReport = new CurationReport(reportType,reportCuration,user);
         reportCurationRepository.save(curationReport);
@@ -69,6 +75,8 @@ public class ReportService {
 
     public ReportBoardResponseDto reportBoard(User user, Long boardId, String type) {
         Board reportBoard = boardRepository.findById(boardId).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_BOARD));
+        if(reportBoardRepository.existsByUserAndReportBoard(user, reportBoard))
+            throw new BusinessException(ErrorMessage.ALREADY_REPORT_BOARD);
         ReportType reportType = ReportType.from(type);
         BoardReport boardReport = new BoardReport(reportType, reportBoard, user);
         reportBoardRepository.save(boardReport);
