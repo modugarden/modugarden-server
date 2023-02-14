@@ -1,5 +1,6 @@
 package com.modugarden.domain.follow.service;
 
+import com.modugarden.common.error.enums.ErrorMessage;
 import com.modugarden.common.error.exception.custom.BusinessException;
 import com.modugarden.domain.auth.entity.ModugardenUser;
 import com.modugarden.domain.fcm.repository.FcmRepository;
@@ -31,6 +32,10 @@ public class FollowService {
     //팔로우
     @Transactional
     public isFollowedResponseDto follow(ModugardenUser user, Long id) {
+        if(followRepository.exists(user.getUserId(), id)){
+            throw new BusinessException(ErrorMessage.ALREADY_FOLLOWED);
+        }
+
         User toUser = userRepository.findById(id).orElseThrow(() -> new BusinessException(USER_NOT_FOUND)); //예외처리
         Follow follow = new Follow(user.getUser(), toUser);
         followRepository.save(follow);
