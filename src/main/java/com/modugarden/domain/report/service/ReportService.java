@@ -55,6 +55,8 @@ public class ReportService {
 
     public ReportCommentResponseDto reportComment(User user, Long reportCommentId, String type) {
         Comment reportComment = commentRepository.findById(reportCommentId).orElseThrow(() -> new BusinessException(ErrorMessage.COMMENT_NOT_FOUND));
+        if(reportCommentRepository.existsByUserAndReportComment(user, reportComment))
+            throw new BusinessException(ErrorMessage.ALREADY_REPORT_COMMENT);
         ReportType reportType = ReportType.from(type);
         CommentReport commentReport = new CommentReport(reportType, reportComment, user);
         reportCommentRepository.save(commentReport);

@@ -63,6 +63,7 @@ public enum ErrorMessage {
     COMMENT_NOT_FOUND(NOT_FOUND, false, "댓글을 찾을 수 없습니다"),
     WRONG_COMMENT(NOT_FOUND,false,"해당 댓글을 찾을 수 없습니다."),
     WRONG_PARENT_COMMENT_ID(BAD_REQUEST, false, "올바르지 않은 부모 댓글 입니다."),
+    ALREADY_REPORT_COMMENT(BAD_REQUEST, false, "이미 신고한 댓글입니다."),
 
     // LIKE
     ALREADY_LIKED_BOARD(BAD_REQUEST, false, "이미 좋아요한 게시물입니다."),
