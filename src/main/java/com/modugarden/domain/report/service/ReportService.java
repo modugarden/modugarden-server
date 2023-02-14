@@ -65,6 +65,8 @@ public class ReportService {
 
     public ReportCurationResponseDto reportCuration(User user, Long curationId, String type) {
         Curation reportCuration = curationRepository.findById(curationId).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION));
+        if(reportCurationRepository.existsByUserAndReportCuration(user, reportCuration))
+            throw new BusinessException(ErrorMessage.ALREADY_REPORT_CURATION);
         ReportType reportType = ReportType.from(type);
         CurationReport curationReport = new CurationReport(reportType,reportCuration,user);
         reportCurationRepository.save(curationReport);

@@ -49,6 +49,7 @@ public enum ErrorMessage {
     WRONG_CURATION_FILE(NOT_FOUND,false,"큐레이션 이미지 파일을 찾을 수 없습니다."),
     WRONG_CURATION_DELETE(NOT_FOUND,false,"해당 큐레이션을 삭제할 수 없습니다."),
     WRONG_CURATION_STORAGE(NOT_FOUND,false,"이미 큐레이션이 저장되어 있습니다."),
+    ALREADY_REPORT_CURATION(BAD_REQUEST, false, "이미 신고한 큐레이션입니다."),
 
     // JWT
     WRONG_JWT_SIGNITURE(NOT_FOUND, false, "잘못된 JWT 서명입니다."),
