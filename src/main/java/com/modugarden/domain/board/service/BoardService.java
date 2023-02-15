@@ -223,6 +223,11 @@ public class BoardService {
 
         if (board.getUser().getId().equals(user.getId())) {
             //이미지 모두 삭제
+            List<BoardImage> boardImageList = boardImageRepository.findAllByBoard(board);
+            for (BoardImage boardImage : boardImageList) {
+                fileService.deleteFile(boardImage.getImage());
+            }
+
             boardImageRepository.deleteAllByBoard(board);
             // 보관 모두 삭제
             boardStorageRepository.deleteAllByBoard(board);

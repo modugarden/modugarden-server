@@ -173,7 +173,7 @@ public class CurationService {
     @Transactional
     public CurationDeleteResponseDto delete(long id, User user) {
         Curation curation = curationRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorMessage.WRONG_CURATION_DELETE));
-
+        fileService.deleteFile(curation.getPreviewImage()); // s3에서 이미지 삭제
         if (curation.getUser().getId().equals(user.getId())) {
             // 보관 모두 삭제
             curationStorageRepository.deleteAllByCuration(curation);
