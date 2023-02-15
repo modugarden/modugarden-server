@@ -149,5 +149,4 @@ public class UserService {
         return new UserNotificationResponseDto(currentUser.getId(), userNotification.getCommentOnOff()
                 , userNotification.getFollowOnOff(), userNotification.getServiceOnOff(), userNotification.getMarketingOnOff());
     }
-
 }
