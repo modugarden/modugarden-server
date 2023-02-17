@@ -24,7 +24,6 @@ public class RefreshToken{
     @Column
     private String refreshToken;
 
-
     public RefreshToken(String userEmail, String refreshToken) {
         this.userEmail = userEmail;
         this.refreshToken = refreshToken;
