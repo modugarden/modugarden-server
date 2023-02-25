@@ -5,6 +5,7 @@
 ### 백엔드
 |미니 (김민정)|이안 (민경혁)|오션 (김동해)|제리 (김지은)|
 |:------:|:---:|:------:|:---:|
+| ![](https://github.com/mingsound21.png?size=120) | ![](https://github.com/kyeong-hyeok.png?size=120) | ![](https://github.com/donghae-kim.png?size=120) | ![](https://github.com/0zlrlo.png?size=120) |
 |[mingsound](https://github.com/mingsound21)|[kyeong-hyeok](https://github.com/kyeong-hyeok)|[donghae-kim](https://github.com/donghae-kim)|[0zlrlo](https://github.com/0zlrlo)|
 <br>
 <br>
