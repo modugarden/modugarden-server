@@ -1,27 +1,18 @@
 package com.modugarden.domain.auth.entity;
 
 
-import lombok.AccessLevel;
 import lombok.Getter;
-//import org.springframework.data.annotation.Id;
-import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity
+@RedisHash(value = "refreshToken", timeToLive = 1209600) // @RedisHash : Redis 스토리지에 저장할 객체 클래스에 설정, timeToLive 단위는 초, timeToLive 시간이 지나면 Redis에서 삭제됨, 2주로 설정
 public class RefreshToken{
 
-    @Id
-    @Column
+    @Id // javax.persistence.Id 대신 org.springframework.data.annotation.Id
     private String userEmail;
 
-    @Column
     private String refreshToken;
 
     public RefreshToken(String userEmail, String refreshToken) {
