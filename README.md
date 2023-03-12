@@ -5,6 +5,7 @@
 ### 백엔드
 |미니 (김민정)|이안 (민경혁)|오션 (김동해)|제리 (김지은)|
 |:------:|:---:|:------:|:---:|
+| <img width="160px" src="https://avatars.githubusercontent.com/u/62479120?v=4"/> | <img width="160px" src="https://avatars.githubusercontent.com/u/80199502?v=4"/> | <img width="160px" src="https://avatars.githubusercontent.com/u/86547109?v=4"/> | <img width="160px" src="https://avatars.githubusercontent.com/u/99941493?v=4"/> |
 |[mingsound](https://github.com/mingsound21)|[kyeong-hyeok](https://github.com/kyeong-hyeok)|[donghae-kim](https://github.com/donghae-kim)|[0zlrlo](https://github.com/0zlrlo)|
 <br>
 <br>
@@ -26,7 +27,7 @@
 <br>
 <br>
 
-## 
+## BRANCH CONVENTION
 ```
 [작업유형/#이슈번호] 작업 내용
 ```
