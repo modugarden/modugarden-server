@@ -10,16 +10,16 @@
 <br>
 <br>
 
-## Stack
+## 🛠️ Stack
 <img src="https://user-images.githubusercontent.com/80199502/224552638-ffd337ce-1e5c-4c87-830e-2e6256ee0b25.jpg"  width="540">
 
-## Communication
+## 🏡 Communication
 <img src="https://user-images.githubusercontent.com/80199502/224553624-22fd8938-92e2-410b-92be-b9ad0a9c9943.png"  width="400">
 
-## Infra
+## ⚙️ Infra
 <img src="https://user-images.githubusercontent.com/80199502/224553765-2c5cd173-62db-4eef-8b5b-142dce4ba392.png"  width="400">
 
-## Architecture
+## 💻 Architecture
 ### Infrastructure
 <img src="https://user-images.githubusercontent.com/80199502/224554154-f93c65ea-d15f-4bf4-8c3f-6b42f4a58688.png"  width="1300">
 
